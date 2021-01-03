@@ -4,27 +4,6 @@ using System.Drawing;
 
 namespace EU4_PCP_WPF
 {
-	public class P_Color
-	{
-		public byte R;
-		public byte G;
-		public byte B;
-		public Color Color;
-
-		public P_Color(params string[] stringColor)
-		{
-			stringColor.ToByte(out byte[] provColor);
-
-			R = provColor[0];
-			G = provColor[1];
-			B = provColor[2];
-			Color = Color.FromArgb(R, G, B);
-		}
-
-		public static implicit operator Color(P_Color c) => c.Color;
-
-		public static implicit operator int(P_Color c) => c.Color.ToArgb();
-	}
 
 	public abstract class ProvinceAbstract : IComparable<ProvinceAbstract>
     {
