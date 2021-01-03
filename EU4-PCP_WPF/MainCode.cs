@@ -401,9 +401,9 @@ namespace EU4_PCP_WPF
 		{
 			//ProvTableList = Provinces.Where(prov => prov && prov.Show).Select(prov => (TableProvince)prov).ToList();
 
-			ProvTableList = (from prov in Provinces
-							where prov && prov.Show
-							select (TableProvince)prov).ToList();
+			//ProvTableList = (from prov in Provinces
+			//				where prov && prov.Show
+			//				select (TableProvince)prov).ToList();
 
 			//Province[] selProv = Provinces.Where(prov => prov && prov.Show).ToArray();
 			//var oldCount = ProvTable.RowCount;

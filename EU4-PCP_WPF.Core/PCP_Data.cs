@@ -23,7 +23,8 @@ namespace EU4_PCP_WPF
 		public static List<string> CultureFiles = new List<string>();
 
 		// CLASS ARRAYS AND LISTS
-		public static Province[] Provinces;
+		//public static Province[] Provinces;
+		public static List<Province> Provinces = new List<Province>();
 		public static List<Country> Countries = new List<Country>();
 		public static List<Culture> Cultures = new List<Culture>();
 		public static List<Bookmark> Bookmarks = new List<Bookmark>();

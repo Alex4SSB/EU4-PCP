@@ -17,8 +17,9 @@ namespace EU4_PCP_WPF.Views
 
         public void OnNavigatedTo(object parameter)
         {
-            if (MainCode.ProvTableList.Any())
-                ProvTable.ItemsSource = MainCode.ProvTableList;
+            ProvTable.ItemsSource = from prov in Provinces
+                                    where prov && prov.Show
+                                    select new TableProvince(prov);
         }
 
         public void OnNavigatedFrom()

@@ -18,6 +18,16 @@ namespace EU4_PCP_WPF
 		#region Overrides and Helper Functions
 
 		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="color"></param>
+		/// <returns></returns>
+		public static string ToCsv(this Color color)
+        {
+			return $"{color.R};{color.G};{color.B}";
+		}
+
+		/// <summary>
 		/// Appends an array of strings with a new <see cref="string"/>, growing the array if the last cell isn't empty. <br />
 		/// [Emulates the List.Add() method for arrays.]
 		/// </summary>
@@ -86,6 +96,11 @@ namespace EU4_PCP_WPF
 			}
 			return res;
 		}
+
+		public static Color ToColor(this byte[] color)
+        {
+			return Color.FromArgb(color[0], color[1], color[2]);
+        }
 
 		/// <summary>
 		/// Trims and then compares two numeric strings using > (greater than) operator
@@ -213,34 +228,54 @@ namespace EU4_PCP_WPF
 			catch (Exception)
 			{ return false; }
 
-			Array.Resize(ref Provinces, dFile.Length);
-			Array.Clear(Provinces, 0, dFile.Length);
+			//Array.Resize(ref Provinces, dFile.Length);
+			//Array.Clear(Provinces, 0, dFile.Length);
+			Provinces.Clear();
+			Provinces.Add(new Province());
 
-			Parallel.ForEach(dFile, p =>
-			{
-				string[] list = p.Split(';');
-				int i = -1;
-				byte[] provColor = new byte[3];
-				if (!(int.TryParse(list[0], out i) &&
-					list[1..].ToByte(out provColor)))
-					return;
+   //         foreach (var p in dFile)
+   //         {
+			//	string[] list = p.Split(';');
+			//	int i = -1;
+			//	byte[] provColor = new byte[3];
+			//	if (!(int.TryParse(list[0], out i) &&
+			//		list[1..].ToByte(out provColor)))
+			//		continue;
 
-				Province prov = new Province
-				{
-					Index = i,
-					Color = new P_Color(provColor),
-					DefName = DefinProvName(list),
-					LocName = "",
-					DynName = ""
-				};
-				
+			//	Province prov = new Province
+			//	(
+			//		index: i,
+			//		color: provColor.ToColor(),
+			//		name: DefinProvName(list)
+			//	);
+
+			//	Add(ref Provinces, prov);
+			//}
+
+            Parallel.ForEach(dFile, p =>
+            {
+                string[] list = p.Split(';');
+                int i = -1;
+                byte[] provColor = new byte[3];
+                if (!(int.TryParse(list[0], out i) &&
+                    list[1..].ToByte(out provColor)))
+                    return;
+
+                Province prov = new Province
+				(
+					index: i,
+					color: provColor.ToColor(),
+					name: DefinProvName(list)
+				);
+
                 lock (definLock)
                 {
-					Add(ref Provinces, prov);
-				}
+					Provinces.Add(prov);
+                    //Add(ref Provinces, prov);
+                }
             });
-
-			return true;
+			Provinces.Sort();
+            return true;
 		}
 
 		/// <summary>
@@ -404,11 +439,11 @@ namespace EU4_PCP_WPF
 			string name = match.Split('"')[1].Trim();
 			var provId = match.Split(':')[0].ToInt();
 
-			if (name.Length < 1 || provId >= Provinces.Length) return false;
+			if (name.Length < 1 || provId >= Provinces.Count) return false;
 			if (!Provinces[provId]) return false;
-			if (Provinces[provId].LocName != "" && path.Contains(GamePath)) return false;
+			if (Provinces[provId].Name.Localisation != "" && path.Contains(GamePath)) return false;
 
-			Provinces[provId].LocName = name;
+			Provinces[provId].Name.Localisation = name;
 			return true;
 		}
 
@@ -488,7 +523,7 @@ namespace EU4_PCP_WPF
 				var match = ProvFileRE.Match(p_file.File);
 				if (!match.Success) return;
 				int i = match.Value.ToInt();
-				if (i >= Provinces.Length) return;
+				if (i >= Provinces.Count) return;
 				if (!updateOwner && Provinces[i].Owner) return;
 
 				string provFile = File.ReadAllText(p_file.Path);
@@ -503,7 +538,7 @@ namespace EU4_PCP_WPF
 					currentOwner = match.Value;
 				}
 
-				var owner = Countries.Where(c => c.Code == currentOwner);
+				var owner = Countries.Where(c => c.Name == currentOwner);
 				if (owner.Any())
 					Provinces[i].Owner = owner.First();
 			});
@@ -638,7 +673,7 @@ namespace EU4_PCP_WPF
 
 				if (UpdateCountries)
 				{
-					var tempCountry = Countries.Where(c => c.Code == code);
+					var tempCountry = Countries.Where(c => c.Name == code);
 					var tempCulture = Cultures.Where(cul => cul.Name == priCul);
 
 					if (tempCountry.Any() && tempCulture.Any())
@@ -651,7 +686,7 @@ namespace EU4_PCP_WPF
 
 					var country = new Country
 					{
-						Code = code,
+						Name = code,
 						Culture = cul.First()
 					};
 
@@ -786,7 +821,7 @@ namespace EU4_PCP_WPF
 				}
 
 				// store country query in a parent class
-				IEnumerable<ProvNameClass> query = Countries.Where(cnt => cnt.Code == name);
+				IEnumerable<ProvNameClass> query = Countries.Where(cnt => cnt.Name == name);
 				
 				// If no matching country was found, update the query with culture
 				if (!query.Any())
@@ -806,13 +841,13 @@ namespace EU4_PCP_WPF
 			foreach (var prov in Provinces)
 			{
 				if (!prov) { continue; }
-				prov.DynName = "";
+				prov.Name.Dynamic = "";
 				if (!ShowRnw) { prov.IsRNW(); }
 				if (!prov.Owner)
 				{
 					if (prov.Show
-						&& prov.DefName.Length < 1
-						&& prov.LocName.Length < 1)
+						&& prov.Name.Definition.Length < 1
+						&& prov.Name.Localisation.Length < 1)
 					{ prov.Show = false; }
 					continue;
 				}
@@ -842,7 +877,7 @@ namespace EU4_PCP_WPF
 			if (source == null) return false;
 			var query = source.Where(prv => prv.Index == prov.Index);
 			if (query.Count() != 1) return false;
-			prov.DynName = query.First().Name;
+			prov.Name.Dynamic = query.First().Name.ToString();
 			return true;
 		}
 

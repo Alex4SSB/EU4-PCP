@@ -10,14 +10,6 @@ namespace EU4_PCP_WPF
 		public byte B;
 		public Color Color;
 
-		public P_Color(byte[] provColor)
-		{
-			R = provColor[0];
-			G = provColor[1];
-			B = provColor[2];
-			Color = Color.FromArgb(R, G, B);
-		}
-
 		public P_Color(params string[] stringColor)
 		{
 			stringColor.ToByte(out byte[] provColor);
@@ -28,112 +20,95 @@ namespace EU4_PCP_WPF
 			Color = Color.FromArgb(R, G, B);
 		}
 
-		public string ToCsv()
-		{
-			return $"{R};{G};{B}";
-		}
-
 		public static implicit operator Color(P_Color c) => c.Color;
 
 		public static implicit operator int(P_Color c) => c.Color.ToArgb();
 	}
 
-	public class Province
-	{
+	public abstract class ProvinceAbstract : IComparable<ProvinceAbstract>
+    {
 		public int Index;
-		public string DefName = "";
-		public string LocName = "";
-		public string DynName = "";
-		public P_Color Color;
+		public CompositeName Name;
+
+		public ProvinceAbstract(int index = -1, CompositeName name = null)
+        {
+            Index = index;
+			Name = name;
+        }
+
+        public int CompareTo(ProvinceAbstract other)
+        {
+			return Index.CompareTo(other.Index);
+        }
+
+        public override string ToString() => Name.ToString();
+
+		public static implicit operator bool(ProvinceAbstract obj)
+		{
+			return obj is object && obj.Index > -1;
+		}
+
+		public static implicit operator int(ProvinceAbstract prov)
+		{
+			return prov.Index;
+		}
+
+	}
+
+	public class Province : ProvinceAbstract
+	{
+		public Color Color;
 		public Country Owner;
 		public bool Show = true;
-		public int TableIndex;
 
-		public static implicit operator bool(Province obj)
-		{
-			return obj is object;
+        public Province(int index = -1, CompositeName name = null, Color color = new Color()) : base (index, name)
+        {
+			Color = color;
 		}
 
-		public static implicit operator int(Province p)
+        public Province(Province prov) : base(prov.Index, prov.Name)
 		{
-			return p.Index;
+			Color = prov.Color;
+			Owner = prov.Owner;
+			Show = prov.Show;
 		}
 
-		public override string ToString()
+        public string ToCsv()
 		{
-			if (DynName.Length > 0) { return DynName; }
-			if (LocName.Length > 0) { return LocName; }
-			return DefName;
+			return $"{Index};{Color.ToCsv()};{Name.Definition};x";
 		}
 
-		//public string[] ToRow()
-		//{
-		//	return new string[] {
-		//		"",
-		//		Index.ToString(),
-		//		ToString(),
-		//		Color.R.ToString(),
-		//		Color.G.ToString(),
-		//		Color.B.ToString() };
-		//}
-
-		public string ToCsv()
+        public bool IsRNW(bool updateShow = true)
 		{
-			return $"{Index};{Color.ToCsv()};{DefName};x";
-		}
-
-		public bool IsRNW(bool updateShow = true)
-		{
-			var isRnw = PCP_RegEx.RnwRE.Match(DefName).Success;
+			var isRnw = PCP_RegEx.RnwRE.Match(Name.Definition).Success;
 			if (updateShow && isRnw)
 				Show = false;
 			return isRnw;
 		}
+
     }
 
-	public class ProvName
-	{
-		public int Index;
-		public string Name;
+	public class TableProvince : Province
+    {
+		public string B_Color { get { return '#' + Color.Name; } }
+		public int ID { get { return Index; } }
+		public string P_Name { get { return Name.ToString(); } }
+		public byte Red { get { return Color.R; } }
+		public byte Green { get { return Color.G; } }
+		public byte Blue { get { return Color.B; } }
 
-		public static implicit operator bool(ProvName obj)
-		{
-			return obj is object;
-		}
-
-		public override string ToString()
-		{
-			return Name;
-		}
+		public TableProvince(Province prov) : base(prov) { }
 	}
+
+	public class ProvName : ProvinceAbstract
+	{ }
 
 	public class ProvNameClass
 	{
 		public ProvName[] ProvNames;
-	}
-
-	public class Country : ProvNameClass
-	{
-		public string Code;
-		public Culture Culture;
-
-		public static implicit operator bool(Country obj)
-		{
-			return obj is object;
-		}
-
-		public override string ToString()
-		{
-			return Code;
-		}
-	}
-
-	public class Culture : ProvNameClass
-	{
 		public string Name;
-		public Culture Group;
 
-		public static implicit operator bool(Culture obj)
+		public static implicit operator bool(ProvNameClass obj)
 		{
 			return obj is object;
 		}
@@ -142,6 +117,16 @@ namespace EU4_PCP_WPF
 		{
 			return Name;
 		}
+	}
+
+	public class Country : ProvNameClass
+	{
+		public Culture Culture;
+	}
+
+	public class Culture : ProvNameClass
+	{
+		public Culture Group;
 
 		public Culture() { }
 
@@ -149,6 +134,32 @@ namespace EU4_PCP_WPF
 		{
 			Name = name;
 		}
+	}
+
+	public class CompositeName
+    {
+		public string Definition;
+		public string Localisation;
+		public string Dynamic;
+
+        public CompositeName(string definition, string localisation = "", string dynamic = "")
+        {
+            Definition = definition;
+            Localisation = localisation;
+            Dynamic = dynamic;
+        }
+
+        public override string ToString()
+		{
+			if (!string.IsNullOrEmpty(Dynamic)) { return Dynamic; }
+			if (!string.IsNullOrEmpty(Localisation)) { return Localisation; }
+			return Definition;
+		}
+
+		public static implicit operator CompositeName(string name)
+        {
+			return new CompositeName(name);
+        }
 	}
 
 	public class Bookmark : IComparable<Bookmark>

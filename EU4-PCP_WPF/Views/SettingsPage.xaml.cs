@@ -57,7 +57,7 @@ namespace EU4_PCP_WPF.Views
 
         public void OnNavigatedTo(object parameter)
         {
-            VersionDescription = $"EU4-PCP_WPF - {_applicationInfoService.GetVersion()}";
+            VersionDescription = $"{Properties.Resources.AppDisplayName} - {Properties.Resources.AppVersion}";
             Theme = _themeSelectorService.GetCurrentTheme();
             _isInitialized = true;
         }

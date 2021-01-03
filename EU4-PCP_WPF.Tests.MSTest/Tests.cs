@@ -289,16 +289,16 @@ namespace EU4_PCP_WPF.Tests.MSTest
         public void RandomProvColorTest()
         {
             var testProv = new Province[] {
-                new Province() {Color = new P_Color("130", "12", "56")},
-                new Province() {Color = new P_Color("1", "40", "100")},
-                new Province() {Color = new P_Color("78", "32", "47")},
-                new Province() {Color = new P_Color("23", "190", "200")},
-                new Province() {Color = new P_Color("90", "212", "231")}
+                new Province(color: Color.FromArgb(130, 12, 56)),
+                new Province(color: Color.FromArgb(1, 40, 100)),
+                new Province(color: Color.FromArgb(78, 32, 47)),
+                new Province(color: Color.FromArgb(23, 190, 200)),
+                new Province(color: Color.FromArgb(90, 212, 231))
             };
 
             Color newColor = RandomProvColor(testProv);
 
-            Assert.IsTrue(testProv.Count(p => p.Color == newColor) == 0);
+            Assert.IsTrue(!testProv.Any(p => p.Color == newColor));
         }
 
         [TestMethod]
