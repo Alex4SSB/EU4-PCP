@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace EU4_PCP_WPF
@@ -105,7 +106,7 @@ namespace EU4_PCP_WPF
 
 	public class ProvNameClass
 	{
-		public ProvName[] ProvNames;
+		public List<ProvName> ProvNames;
 		public string Name;
 
 		public static implicit operator bool(ProvNameClass obj)

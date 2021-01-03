@@ -228,29 +228,8 @@ namespace EU4_PCP_WPF
 			catch (Exception)
 			{ return false; }
 
-			//Array.Resize(ref Provinces, dFile.Length);
-			//Array.Clear(Provinces, 0, dFile.Length);
 			Provinces.Clear();
 			Provinces.Add(new Province());
-
-   //         foreach (var p in dFile)
-   //         {
-			//	string[] list = p.Split(';');
-			//	int i = -1;
-			//	byte[] provColor = new byte[3];
-			//	if (!(int.TryParse(list[0], out i) &&
-			//		list[1..].ToByte(out provColor)))
-			//		continue;
-
-			//	Province prov = new Province
-			//	(
-			//		index: i,
-			//		color: provColor.ToColor(),
-			//		name: DefinProvName(list)
-			//	);
-
-			//	Add(ref Provinces, prov);
-			//}
 
             Parallel.ForEach(dFile, p =>
             {
@@ -829,7 +808,7 @@ namespace EU4_PCP_WPF
 
 				// If the query contains a country or a culture (or a culture group)
 				if (query.Any())
-					query.First().ProvNames = names.ToArray();
+					query.First().ProvNames = names;
 			});
 		}
 		/// <summary>
@@ -866,7 +845,7 @@ namespace EU4_PCP_WPF
 		/// <returns><see langword="true"/> if a name was successfully selected.</returns>
 		private static bool DynamicName(Province prov, NameType mode)
 		{
-			ProvName[] source = mode switch
+			List<ProvName> source = mode switch
 			{
 				NameType.Country => prov.Owner.ProvNames,
 				NameType.Culture => prov.Owner.Culture.ProvNames,
