@@ -59,6 +59,7 @@ namespace EU4_PCP_WPF.Views
             ModProvCountBlock.Text = $" {ModProvinceCount} ";
             GameMaxProvBlock.Text = $" {GameMaxProvinces} ";
             ModMaxProvBlock.Text = $" {ModMaxProvinces} ";
+            ProvShownBlock.Text = ProvincesShown;
 
             BookmarkComboBox.IsEnabled = EnableBooks;
             BookmarkComboBox.ItemsSource = BookmarkComboBox.IsEnabled ? BookmarkList : null;

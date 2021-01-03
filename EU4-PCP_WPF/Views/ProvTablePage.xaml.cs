@@ -20,6 +20,8 @@ namespace EU4_PCP_WPF.Views
             ProvTable.ItemsSource = from prov in Provinces
                                     where prov && prov.Show
                                     select new TableProvince(prov);
+
+            ProvincesShown = ProvTable.Items.Count.ToString();
         }
 
         public void OnNavigatedFrom()
