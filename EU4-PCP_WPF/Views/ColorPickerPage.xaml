@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:EU4_PCP_WPF.Properties"
     d:DesignHeight="450"
@@ -25,7 +26,96 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <mah:ToggleSwitch
+                        x:Name="ColorModeSwitch"
+                        Header="Mode"
+                        IsOn="true"
+                        OffContent="RGB"
+                        OnContent="HSV"
+                        Toggled="ColorModeSwitch_Toggled" />
+                    <Rectangle
+                        x:Name="ColorRectangle"
+                        Grid.Column="1"
+                        Fill="Black" ToolTip="{Binding Fill.Color, ElementName=ColorRectangle}" />
+                </Grid>
 
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <Slider
+                        x:Name="HueSlider"
+                        Margin="4"
+                        IsSnapToTickEnabled="True"
+                        Maximum="359"
+                        SmallChange="1"
+                        ValueChanged="Slider_ValueChanged" />
+                    <TextBox
+                        x:Name="HueTextBox"
+                        Grid.Column="1"
+                        Margin="4"
+                        Text="{Binding Value, ElementName=HueSlider}" />
+                    <Border Grid.Column="2">
+                        <TextBlock
+                            x:Name="HueTextBlock"
+                            Margin="4"
+                            VerticalAlignment="Center"
+                            Text="Hue" />
+                    </Border>
+                    <Slider
+                        x:Name="SaturationSlider"
+                        Grid.Row="1"
+                        Margin="4"
+                        IsSnapToTickEnabled="True"
+                        SmallChange="1"
+                        ValueChanged="Slider_ValueChanged" />
+                    <TextBox
+                        x:Name="SaturationTextBox"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="4"
+                        Text="{Binding Value, ElementName=SaturationSlider}" />
+                    <Border Grid.Row="1" Grid.Column="2">
+                        <TextBlock
+                            x:Name="SaturationTextBlock"
+                            Margin="4"
+                            VerticalAlignment="Center"
+                            Text="Saturation" />
+                    </Border>
+                    <Slider
+                        x:Name="ValueSlider"
+                        Grid.Row="2"
+                        Margin="4"
+                        IsSnapToTickEnabled="True"
+                        SmallChange="1"
+                        ValueChanged="Slider_ValueChanged" />
+                    <TextBox
+                        x:Name="ValueTextBox"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Margin="4"
+                        Text="{Binding Value, ElementName=ValueSlider}" />
+                    <Border Grid.Row="2" Grid.Column="2">
+                        <TextBlock
+                            x:Name="ValueTextBlock"
+                            Margin="4"
+                            VerticalAlignment="Center"
+                            Text="Value" />
+                    </Border>
+
+                </Grid>
                 <Separator Margin="0,20,0,0" />
                 <TextBlock
                     Margin="4"
@@ -60,7 +150,7 @@
                     FontSize="14"
                     Text="Mod Selection" />
                 <ComboBox
-                    Name="ModSelComboBox"
+                    x:Name="ModSelComboBox"
                     Margin="4"
                     SelectionChanged="ModSelComboBox_SelectionChanged" />
                 <Grid>
@@ -70,12 +160,12 @@
                         <ColumnDefinition Width="20*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock
-                        Name="GameVerBlock"
+                        x:Name="GameVerBlock"
                         HorizontalAlignment="Center"
                         Text="Game"
                         TextWrapping="Wrap" />
                     <TextBlock
-                        Name="ModVerBlock"
+                        x:Name="ModVerBlock"
                         Grid.Column="2"
                         HorizontalAlignment="Center"
                         Text="Mod" />
@@ -103,27 +193,27 @@
                         HorizontalAlignment="Center"
                         Text="- Max -" />
                     <TextBlock
-                        Name="GameProvCountBlock"
+                        x:Name="GameProvCountBlock"
                         Margin="4"
                         HorizontalAlignment="Center"
                         FontFamily="Consolas"
                         Text="" />
                     <TextBlock
-                        Name="ModProvCountBlock"
+                        x:Name="ModProvCountBlock"
                         Grid.Column="2"
                         Margin="4"
                         HorizontalAlignment="Center"
                         FontFamily="Consolas"
                         Text="" />
                     <TextBlock
-                        Name="GameMaxProvBlock"
+                        x:Name="GameMaxProvBlock"
                         Grid.Row="1"
                         Margin="4"
                         HorizontalAlignment="Center"
                         FontFamily="Consolas"
                         Text="" />
                     <TextBlock
-                        Name="ModMaxProvBlock"
+                        x:Name="ModMaxProvBlock"
                         Grid.Row="1"
                         Grid.Column="2"
                         Margin="4"
@@ -135,7 +225,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="4" Text="Provinces in table:" />
                     <TextBlock
-                        Name="ProvShownBlock"
+                        x:Name="ProvShownBlock"
                         Margin="4"
                         VerticalAlignment="Bottom"
                         FontFamily="Consolas"
@@ -148,13 +238,13 @@
                     FontSize="14"
                     Text="Bookmark Selection" />
                 <ComboBox
-                    Name="BookmarkComboBox"
+                    x:Name="BookmarkComboBox"
                     Margin="4"
                     SelectionChanged="BookmarkComboBox_SelectionChanged" />
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="4" Text="Start Date:" />
                     <TextBlock
-                        Name="StartDateBlock"
+                        x:Name="StartDateBlock"
                         Margin="4"
                         VerticalAlignment="Bottom"
                         FontFamily="Consolas"

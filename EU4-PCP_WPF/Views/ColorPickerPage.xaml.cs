@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using static EU4_PCP_WPF.MainCode;
 using static EU4_PCP_WPF.PCP_Data;
 
@@ -17,12 +18,15 @@ namespace EU4_PCP_WPF.Views
         readonly Style GreenStyle = Application.Current.FindResource("GreenBackground") as Style;
         readonly Style RedStyle = Application.Current.FindResource("RedBackground") as Style;
 
+        private Color PickedColor;
+
         public ColorPickerPage()
         {
             InitializeComponent();
             DataContext = this;
 
             InitializeData();
+            PickedColor.A = 255;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -131,6 +135,47 @@ namespace EU4_PCP_WPF.Views
             if (Lockdown) return;
             SelectedBookmarkIndex = BookmarkComboBox.SelectedIndex;
             EnactChange(CriticalScope.Bookmark);
+        }
+
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (ColorModeSwitch.IsOn) // HSV
+            {
+
+            }
+            else // RGB
+            {
+                PickedColor.R = (byte)HueSlider.Value;
+                PickedColor.G = (byte)SaturationSlider.Value;
+                PickedColor.B = (byte)ValueSlider.Value;
+            }
+
+            ColorRectangle.Fill = new SolidColorBrush(PickedColor);
+        }
+
+        private void ColorModeSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (HueSlider is null) return;
+            if (ColorModeSwitch.IsOn) // HSV
+            {
+                HueSlider.Maximum = 359;
+                HueTextBlock.Text = "Hue";
+                SaturationSlider.Maximum = 100;
+                SaturationTextBlock.Text = "Saturation";
+                ValueSlider.Maximum = 100;
+                ValueTextBlock.Text = "Value";
+            }
+            else // RGB
+            {
+                HueSlider.Maximum = 255;
+                HueTextBlock.Text = "Red";
+                SaturationSlider.Maximum = 255;
+                SaturationTextBlock.Text = "Green";
+                ValueSlider.Maximum = 255;
+                ValueTextBlock.Text = "Blue";
+            }
+
+            ColorRectangle.Fill = new SolidColorBrush(PickedColor);
         }
     }
 }
