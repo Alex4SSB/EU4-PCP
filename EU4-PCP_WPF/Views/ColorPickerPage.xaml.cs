@@ -139,43 +139,12 @@ namespace EU4_PCP_WPF.Views
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (ColorModeSwitch.IsOn) // HSV
-            {
-
-            }
-            else // RGB
-            {
-                PickedColor.R = (byte)HueSlider.Value;
-                PickedColor.G = (byte)SaturationSlider.Value;
-                PickedColor.B = (byte)ValueSlider.Value;
-            }
+            PickedColor.R = (byte)RedSlider.Value;
+            PickedColor.G = (byte)GreenSlider.Value;
+            PickedColor.B = (byte)BlueSlider.Value;
 
             ColorRectangle.Fill = new SolidColorBrush(PickedColor);
         }
 
-        private void ColorModeSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (HueSlider is null) return;
-            if (ColorModeSwitch.IsOn) // HSV
-            {
-                HueSlider.Maximum = 359;
-                HueTextBlock.Text = "Hue";
-                SaturationSlider.Maximum = 100;
-                SaturationTextBlock.Text = "Saturation";
-                ValueSlider.Maximum = 100;
-                ValueTextBlock.Text = "Value";
-            }
-            else // RGB
-            {
-                HueSlider.Maximum = 255;
-                HueTextBlock.Text = "Red";
-                SaturationSlider.Maximum = 255;
-                SaturationTextBlock.Text = "Green";
-                ValueSlider.Maximum = 255;
-                ValueTextBlock.Text = "Blue";
-            }
-
-            ColorRectangle.Fill = new SolidColorBrush(PickedColor);
-        }
     }
 }

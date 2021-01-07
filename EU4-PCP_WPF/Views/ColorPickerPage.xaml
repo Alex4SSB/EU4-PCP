@@ -26,93 +26,84 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <mah:ToggleSwitch
-                        x:Name="ColorModeSwitch"
-                        Header="Mode"
-                        IsOn="true"
-                        OffContent="RGB"
-                        OnContent="HSV"
-                        Toggled="ColorModeSwitch_Toggled" />
-                    <Rectangle
-                        x:Name="ColorRectangle"
-                        Grid.Column="1"
-                        Fill="Black" ToolTip="{Binding Fill.Color, ElementName=ColorRectangle}" />
-                </Grid>
+                <Rectangle
+                    x:Name="ColorRectangle"
+                    Grid.Column="1"
+                    Height="40"
+                    Fill="Black"
+                    ToolTip="{Binding Fill.Color, ElementName=ColorRectangle}" />
 
-                <Grid>
+                <Grid Margin="0,4,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="7*" />
-                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="10*" />
+                        <ColumnDefinition Width="3*" />
                         <ColumnDefinition Width="2*" />
                     </Grid.ColumnDefinitions>
                     <Slider
-                        x:Name="HueSlider"
+                        x:Name="RedSlider"
                         Margin="4"
                         IsSnapToTickEnabled="True"
-                        Maximum="359"
+                        Maximum="255"
                         SmallChange="1"
                         ValueChanged="Slider_ValueChanged" />
                     <TextBox
-                        x:Name="HueTextBox"
+                        x:Name="RedTextBox"
                         Grid.Column="1"
                         Margin="4"
-                        Text="{Binding Value, ElementName=HueSlider}" />
+                        Text="{Binding Value, ElementName=RedSlider}" />
                     <Border Grid.Column="2">
                         <TextBlock
-                            x:Name="HueTextBlock"
+                            x:Name="RedTextBlock"
                             Margin="4"
                             VerticalAlignment="Center"
-                            Text="Hue" />
+                            Text="Red" />
                     </Border>
                     <Slider
-                        x:Name="SaturationSlider"
+                        x:Name="GreenSlider"
                         Grid.Row="1"
                         Margin="4"
                         IsSnapToTickEnabled="True"
+                        Maximum="255"
                         SmallChange="1"
                         ValueChanged="Slider_ValueChanged" />
                     <TextBox
-                        x:Name="SaturationTextBox"
+                        x:Name="GreenTextBox"
                         Grid.Row="1"
                         Grid.Column="1"
                         Margin="4"
-                        Text="{Binding Value, ElementName=SaturationSlider}" />
+                        Text="{Binding Value, ElementName=GreenSlider}" />
                     <Border Grid.Row="1" Grid.Column="2">
                         <TextBlock
-                            x:Name="SaturationTextBlock"
+                            x:Name="GreenTextBlock"
                             Margin="4"
                             VerticalAlignment="Center"
-                            Text="Saturation" />
+                            Text="Green" />
                     </Border>
                     <Slider
-                        x:Name="ValueSlider"
+                        x:Name="BlueSlider"
                         Grid.Row="2"
                         Margin="4"
-                        IsSnapToTickEnabled="True"
+                        IsSnapToTickEnabled="true"
+                        Maximum="255"
                         SmallChange="1"
                         ValueChanged="Slider_ValueChanged" />
                     <TextBox
-                        x:Name="ValueTextBox"
+                        x:Name="BlueTextBox"
                         Grid.Row="2"
                         Grid.Column="1"
                         Margin="4"
-                        Text="{Binding Value, ElementName=ValueSlider}" />
+                        Text="{Binding Value, ElementName=BlueSlider}" />
                     <Border Grid.Row="2" Grid.Column="2">
                         <TextBlock
-                            x:Name="ValueTextBlock"
+                            x:Name="BlueTextBlock"
                             Margin="4"
                             VerticalAlignment="Center"
-                            Text="Value" />
+                            Text="Blue" />
                     </Border>
 
                 </Grid>
