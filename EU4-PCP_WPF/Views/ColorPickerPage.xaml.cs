@@ -103,10 +103,15 @@ namespace EU4_PCP_WPF.Views
 
             if (!isMod)
             {
-                RedSlider.Value = 0;
-                GreenSlider.Value = 0;
+                RedSlider.Value = 
+                GreenSlider.Value = 
                 BlueSlider.Value = 0;
-                NextProvBlock.Text = "";
+
+                RedTextBox.Background = 
+                GreenTextBox.Background = 
+                BlueTextBox.Background = null;
+
+                NextProvBlock.Text = 
                 NewProvNameTextBox.Text = "";
             }
         }
@@ -120,6 +125,7 @@ namespace EU4_PCP_WPF.Views
             {
                 case CriticalScope.Mod:
                     ChangeMod();
+                    ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
                     if (SelectedModIndex > 0) Randomize();
                     break;
                 case CriticalScope.Bookmark:
@@ -175,6 +181,10 @@ namespace EU4_PCP_WPF.Views
             ColorRectangle.Fill = new SolidColorBrush(PickedColor);
             ColorRectangle.ToolTip = PickedColor.ToString().Replace("FF", "");
             ColorPickerPickedColor = PickedColor.Convert();
+
+            RedTextBox.Background =
+            GreenTextBox.Background =
+            BlueTextBox.Background = new SolidColorBrush(Provinces.Any(prov => prov.Color.Equals(PickedColor.Convert())) ? RedBackground : GreenBackground);
         }
 
         private void RandomizeButton_Click(object sender, RoutedEventArgs e)
@@ -214,6 +224,12 @@ namespace EU4_PCP_WPF.Views
                 BlueSlider.Value = blue;
 
             BlueTextBox.Text = BlueSlider.Value.ToString();
+        }
+
+        private void NewProvNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            AddProvButton.IsEnabled = !string.IsNullOrWhiteSpace(NewProvNameTextBox.Text)
+                && !NewProvNameTextBox.Text.Any(c => c > 127);
         }
     }
 }

@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using static EU4_PCP_WPF.PCP_Const;
 using static EU4_PCP_WPF.PCP_Data;
 using static EU4_PCP_WPF.PCP_Implementations;
@@ -18,6 +19,8 @@ namespace EU4_PCP_WPF
     public static class MainCode
 	{
 		public static List<TableProvince> ProvTableList = new List<TableProvince>();
+		public static readonly Color RedBackground = Color.FromRgb(0xDE, 25, 25);
+		public static readonly Color GreenBackground = Color.FromRgb(0x7C, 0xB6, 0x1A);
 
 		public static void PCP_Main()
 		{
