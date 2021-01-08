@@ -28,6 +28,11 @@
                 <Separator Margin="5" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
             </StackPanel>
             <StackPanel>
+                <StackPanel.Resources>
+                    <Style x:Key="{x:Type ToolTip}" TargetType="{x:Type ToolTip}">
+                        <Setter Property="FontFamily" Value="Consolas" />
+                    </Style>
+                </StackPanel.Resources>
                 <Rectangle
                     x:Name="ColorRectangle"
                     Grid.Column="1"
@@ -58,7 +63,8 @@
                         Grid.Column="1"
                         Margin="4"
                         FontFamily="Consolas"
-                        Text="{Binding Value, ElementName=RedSlider}" />
+                        Text="{Binding Value, ElementName=RedSlider}"
+                        TextChanged="RedTextBox_TextChanged" />
                     <Border Grid.Column="2">
                         <TextBlock
                             x:Name="RedTextBlock"
@@ -80,7 +86,8 @@
                         Grid.Column="1"
                         Margin="4"
                         FontFamily="Consolas"
-                        Text="{Binding Value, ElementName=GreenSlider}" />
+                        Text="{Binding Value, ElementName=GreenSlider}"
+                        TextChanged="GreenTextBox_TextChanged" />
                     <Border Grid.Row="1" Grid.Column="2">
                         <TextBlock
                             x:Name="GreenTextBlock"
@@ -102,7 +109,8 @@
                         Grid.Column="1"
                         Margin="4"
                         FontFamily="Consolas"
-                        Text="{Binding Value, ElementName=BlueSlider}" />
+                        Text="{Binding Value, ElementName=BlueSlider}"
+                        TextChanged="BlueTextBox_TextChanged" />
                     <Border Grid.Row="2" Grid.Column="2">
                         <TextBlock
                             x:Name="BlueTextBlock"
@@ -116,7 +124,7 @@
                     Margin="4"
                     HorizontalAlignment="Stretch"
                     Click="RandomizeButton_Click"
-                    Content="Randomize"
+                    Content="New color"
                     Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" />
                 <Separator Margin="0,10,0,0" />
                 <TextBlock
@@ -127,6 +135,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="4" Text="Province ID:" />
                     <TextBlock
+                        x:Name="NextProvBlock"
                         Margin="4"
                         VerticalAlignment="Bottom"
                         FontFamily="Consolas"
@@ -142,6 +151,7 @@
                         VerticalAlignment="Center"
                         Text="Province Name:" />
                     <TextBox
+                        x:Name="NewProvNameTextBox"
                         Grid.Column="1"
                         Margin="4"
                         VerticalContentAlignment="Bottom"
@@ -164,7 +174,8 @@
                 <ComboBox
                     x:Name="ModSelComboBox"
                     Margin="4"
-                    SelectionChanged="ModSelComboBox_SelectionChanged" />
+                    SelectionChanged="ModSelComboBox_SelectionChanged"
+                    ToolTip="{Binding Text, ElementName=ModSelComboBox}" />
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="20*" />
@@ -252,15 +263,15 @@
                 <ComboBox
                     x:Name="BookmarkComboBox"
                     Margin="4"
-                    SelectionChanged="BookmarkComboBox_SelectionChanged" />
+                    SelectionChanged="BookmarkComboBox_SelectionChanged"
+                    ToolTip="{Binding Text, ElementName=BookmarkComboBox}" />
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="4" Text="Start Date:" />
                     <TextBlock
                         x:Name="StartDateBlock"
                         Margin="4"
                         VerticalAlignment="Bottom"
-                        FontFamily="Consolas"
-                        Text="" />
+                        FontFamily="Consolas" />
                 </StackPanel>
             </StackPanel>
         </Grid>

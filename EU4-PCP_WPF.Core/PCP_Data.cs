@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace EU4_PCP_WPF
 {
@@ -50,5 +51,6 @@ namespace EU4_PCP_WPF
 		public static string ModMaxProvinces;
 		public static string ProvincesShown;
 		public static double ProvTableIndex = 0;
+		public static Color ColorPickerPickedColor;
 	}
 }
