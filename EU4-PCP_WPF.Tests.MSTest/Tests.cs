@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using EU4_PCP_WPF.Tests.MSTest.Properties;
@@ -288,7 +289,7 @@ namespace EU4_PCP_WPF.Tests.MSTest
         [TestMethod]
         public void RandomProvColorTest()
         {
-            var testProv = new Province[] {
+            var testProv = new List<Province>() {
                 new Province(color: Color.FromArgb(130, 12, 56)),
                 new Province(color: Color.FromArgb(1, 40, 100)),
                 new Province(color: Color.FromArgb(78, 32, 47)),

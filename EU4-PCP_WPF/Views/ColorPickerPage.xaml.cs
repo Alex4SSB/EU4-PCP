@@ -8,8 +8,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using static EU4_PCP_WPF.PCP_Implementations;
 using static EU4_PCP_WPF.MainCode;
 using static EU4_PCP_WPF.PCP_Data;
+using EU4_PCP_WPF.Converters;
 
 namespace EU4_PCP_WPF.Views
 {
@@ -72,6 +74,8 @@ namespace EU4_PCP_WPF.Views
             StartDateBlock.Text = StartDateStr;
 
             ProvCountColor();
+
+            RandomizeButton.IsEnabled = SelectedModIndex > 0;
 
             Lockdown = false;
         }
@@ -142,9 +146,17 @@ namespace EU4_PCP_WPF.Views
             PickedColor.R = (byte)RedSlider.Value;
             PickedColor.G = (byte)GreenSlider.Value;
             PickedColor.B = (byte)BlueSlider.Value;
-
+            
             ColorRectangle.Fill = new SolidColorBrush(PickedColor);
+            ColorRectangle.ToolTip = PickedColor.ToString().Replace("FF", "");
         }
 
+        private void RandomizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var tempColor = RandomProvColor(Provinces).Convert();
+            RedSlider.Value = tempColor.R;
+            GreenSlider.Value = tempColor.G;
+            BlueSlider.Value = tempColor.B;
+        }
     }
 }

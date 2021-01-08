@@ -194,20 +194,6 @@ namespace EU4_PCP_WPF
 				Scope.Game : Scope.Mod;
 		}
 
-		/// <summary>
-		/// Adds a <see cref="Province"/> to an array, resizing it when needed. <br /> <br />
-		/// MUST BE LOCKED WHEN CALLING FROM PARALLEL LOOP
-		/// </summary>
-		/// <param name="provArr">The array of provinces to be appended.</param>
-		/// <param name="prov">The <see cref="Province"/> to add.</param>
-		public static void Add(ref Province[] provArr, Province prov)
-		{
-			if (provArr.Length <= prov.Index)
-				Array.Resize(ref provArr, prov.Index + 1);
-
-			provArr[prov.Index] = prov;
-		}
-
 		#endregion
 
 		/// <summary>
@@ -1121,9 +1107,9 @@ namespace EU4_PCP_WPF
         /// <summary>
         /// Generates an exclusive random <see cref="Color"/>, that doesn't exist in the given <see cref="Province"/> array.
         /// </summary>
-        /// <param name="provArr">The <see cref="Province"/> array to be searched.</param>
+        /// <param name="provList">The <see cref="Province"/> array to be searched.</param>
         /// <returns>The generated <see cref="Color"/>.</returns>
-        public static Color RandomProvColor(Province[] provArr)
+        public static Color RandomProvColor(List<Province> provList)
 		{
 			var rnd = new Random();
 			int r, g, b;
@@ -1135,7 +1121,7 @@ namespace EU4_PCP_WPF
 				g = rnd.Next(0, 255);
 				b = rnd.Next(0, 255);
 				tempColor = Color.FromArgb(r, g, b);
-			} while (provArr.Any(p => p && p.Color == tempColor));
+			} while (provList.Any(p => p && p.Color == tempColor));
 
 			return tempColor;
 		}
