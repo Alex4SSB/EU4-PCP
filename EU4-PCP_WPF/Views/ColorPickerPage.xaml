@@ -68,7 +68,16 @@
                         FontFamily="Consolas"
                         Text="{Binding Value, ElementName=RedSlider}"
                         TextChanged="RedTextBox_TextChanged" />
-
+                    <Button
+                        x:Name="LockRedButton"
+                        Grid.Column="1"
+                        Margin="4"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Click="LockRedButton_Click"
+                        Content="&#xE785;"
+                        FontFamily="{StaticResource MahApps.Fonts.Family.SymbolTheme}"
+                        ToolTip="Lock red channel" />
                     <Border Grid.Column="2">
                         <TextBlock
                             x:Name="RedTextBlock"
@@ -92,6 +101,17 @@
                         FontFamily="Consolas"
                         Text="{Binding Value, ElementName=GreenSlider}"
                         TextChanged="GreenTextBox_TextChanged" />
+                    <Button
+                        x:Name="LockGreenButton"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="4"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Click="LockGreenButton_Click"
+                        Content="&#xE785;"
+                        FontFamily="{StaticResource MahApps.Fonts.Family.SymbolTheme}"
+                        ToolTip="Lock green channel" />
                     <Border Grid.Row="1" Grid.Column="2">
                         <TextBlock
                             x:Name="GreenTextBlock"
@@ -115,6 +135,17 @@
                         FontFamily="Consolas"
                         Text="{Binding Value, ElementName=BlueSlider}"
                         TextChanged="BlueTextBox_TextChanged" />
+                    <Button
+                        x:Name="LockBlueButton"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Margin="4"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Click="LockBlueButton_Click"
+                        Content="&#xE785;"
+                        FontFamily="{StaticResource MahApps.Fonts.Family.SymbolTheme}"
+                        ToolTip="Lock Blue channel" />
                     <Border Grid.Row="2" Grid.Column="2">
                         <TextBlock
                             x:Name="BlueTextBlock"

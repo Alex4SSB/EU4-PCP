@@ -1109,17 +1109,19 @@ namespace EU4_PCP_WPF
         /// </summary>
         /// <param name="provList">The <see cref="Province"/> array to be searched.</param>
         /// <returns>The generated <see cref="Color"/>.</returns>
-        public static Color RandomProvColor(List<Province> provList)
+        public static Color RandomProvColor(List<Province> provList, int red = -1, int green = -1, int blue = -1)
 		{
 			var rnd = new Random();
 			int r, g, b;
 			var tempColor = new Color();
+			if (red >= 0 && green >= 0 && blue >= 0)
+				return tempColor;
 
 			do
 			{
-				r = rnd.Next(0, 255);
-				g = rnd.Next(0, 255);
-				b = rnd.Next(0, 255);
+				r = red < 0 ? rnd.Next(0, 255) : red;
+				g = green < 0 ? rnd.Next(0, 255) : green;
+				b = blue < 0 ? rnd.Next(0, 255) : blue;
 				tempColor = Color.FromArgb(r, g, b);
 			} while (provList.Any(p => p && p.Color == tempColor));
 

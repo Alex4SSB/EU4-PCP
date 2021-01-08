@@ -94,10 +94,13 @@ namespace EU4_PCP_WPF.Views
 
             RedSlider.IsEnabled =
             RedTextBox.IsEnabled =
+            LockRedButton.IsEnabled =
             GreenSlider.IsEnabled =
             GreenTextBox.IsEnabled =
+            LockGreenButton.IsEnabled =
             BlueSlider.IsEnabled =
             BlueTextBox.IsEnabled =
+            LockBlueButton.IsEnabled =
             NewProvNameTextBox.IsEnabled =
             RandomizeButton.IsEnabled = isMod;
 
@@ -194,7 +197,11 @@ namespace EU4_PCP_WPF.Views
 
         private void Randomize()
         {
-            var tempColor = RandomProvColor(Provinces).Convert();
+            int r = RedSlider.IsEnabled ? -1 : (int)RedSlider.Value;
+            int g = GreenSlider.IsEnabled ? -1 : (int)GreenSlider.Value;
+            int b = BlueSlider.IsEnabled ? -1 : (int)BlueSlider.Value;
+
+            var tempColor = RandomProvColor(Provinces, r, g, b).Convert();
             RedSlider.Value = tempColor.R;
             GreenSlider.Value = tempColor.G;
             BlueSlider.Value = tempColor.B;
@@ -230,6 +237,38 @@ namespace EU4_PCP_WPF.Views
         {
             AddProvButton.IsEnabled = !string.IsNullOrWhiteSpace(NewProvNameTextBox.Text)
                 && !NewProvNameTextBox.Text.Any(c => c > 127);
+        }
+
+        private void LockRedButton_Click(object sender, RoutedEventArgs e)
+        {
+            RedSlider.IsEnabled = !RedSlider.IsEnabled;
+            RedTextBox.IsEnabled = RedSlider.IsEnabled;
+            LockRedButton.Content = RedSlider.IsEnabled ? "\uE785" : "\uE72E";
+
+            EnableRandomize();
+        }
+
+        private void LockGreenButton_Click(object sender, RoutedEventArgs e)
+        {
+            GreenSlider.IsEnabled = !GreenSlider.IsEnabled;
+            GreenTextBox.IsEnabled = GreenSlider.IsEnabled;
+            LockGreenButton.Content = GreenSlider.IsEnabled ? "\uE785" : "\uE72E";
+
+            EnableRandomize();
+        }
+
+        private void LockBlueButton_Click(object sender, RoutedEventArgs e)
+        {
+            BlueSlider.IsEnabled = !BlueSlider.IsEnabled;
+            BlueTextBox.IsEnabled = BlueSlider.IsEnabled;
+            LockBlueButton.Content = BlueSlider.IsEnabled ? "\uE785" : "\uE72E";
+
+            EnableRandomize();
+        }
+
+        private void EnableRandomize()
+        {
+            RandomizeButton.IsEnabled = RedSlider.IsEnabled || GreenSlider.IsEnabled || BlueSlider.IsEnabled;
         }
     }
 }
