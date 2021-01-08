@@ -300,6 +300,23 @@ namespace EU4_PCP_WPF.Tests.MSTest
             Color newColor = RandomProvColor(testProv);
 
             Assert.IsTrue(!testProv.Any(p => p.Color == newColor));
+
+            // Lock tests
+            int val1 = 10, val2 = 20;
+
+            newColor = RandomProvColor(testProv, val1); // lock red
+            Assert.IsTrue(!testProv.Any(p => p.Color == newColor));
+            Assert.IsTrue(newColor.R == val1);
+
+            newColor = RandomProvColor(testProv, val1, val2); // lock red & green
+            Assert.IsTrue(!testProv.Any(p => p.Color == newColor));
+            Assert.IsTrue(newColor.R == val1);
+            Assert.IsTrue(newColor.G == val2);
+
+            newColor = RandomProvColor(testProv, -1, val1, val2); // lock green & blue
+            Assert.IsTrue(!testProv.Any(p => p.Color == newColor));
+            Assert.IsTrue(newColor.G == val1);
+            Assert.IsTrue(newColor.B == val2);
         }
 
         [TestMethod]
