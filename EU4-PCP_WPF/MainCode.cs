@@ -511,5 +511,19 @@ namespace EU4_PCP_WPF
 
 			//Critical(CriticalType.Finish, true);
 		}
+
+		public static void UpdateProperties()
+        {
+			if (Security.RetrieveBool(General.ShowAllProvinces) is bool showRnw && showRnw != ShowRnw)
+            {
+				ShowRnw = showRnw;
+
+				foreach (var prov in Provinces.Where(prov => prov && prov.Name))
+				{
+					prov.Show = !prov.IsRNW() || (ShowRnw && !string.IsNullOrEmpty(prov.Name.ToString()));
+				}
+				ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
+			}
+		}
 	}
 }

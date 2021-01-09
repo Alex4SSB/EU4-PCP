@@ -13,6 +13,7 @@ using EU4_PCP_WPF.Models;
 using EU4_PCP_WPF.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
+using static EU4_PCP_WPF.MainCode;
 
 namespace EU4_PCP_WPF.Views
 {
@@ -221,6 +222,7 @@ namespace EU4_PCP_WPF.Views
             {
                 _isBusy = true;
                 ChangeBox((ToggleButton)sender);
+                UpdateProperties();
                 _isBusy = false;
             }
         }

@@ -142,6 +142,11 @@ namespace EU4_PCP_WPF
         {
 			return new CompositeName(name);
         }
+
+		public static implicit operator bool(CompositeName obj)
+        {
+			return obj is object;
+        }
 	}
 
 	public class Bookmark : IComparable<Bookmark>
