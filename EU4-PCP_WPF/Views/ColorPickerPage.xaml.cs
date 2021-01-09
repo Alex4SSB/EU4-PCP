@@ -29,7 +29,6 @@ namespace EU4_PCP_WPF.Views
             DataContext = this;
 
             InitializeData();
-            PickedColor.A = 255;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -47,7 +46,7 @@ namespace EU4_PCP_WPF.Views
 
         private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        public bool EnableBooks => Security.RetrieveBoolEnum(ProvinceNames.Dynamic)
+        private static bool EnableBooks => Security.RetrieveBoolEnum(ProvinceNames.Dynamic)
             && BookmarkList != null
             && BookmarkList.Any();
 
@@ -76,6 +75,7 @@ namespace EU4_PCP_WPF.Views
             StartDateBlock.ToolTip = DATE_FORMAT;
 
             ProvCountColor();
+            UpdatePicker();
 
             Lockdown = false;
         }
@@ -129,13 +129,7 @@ namespace EU4_PCP_WPF.Views
                 case CriticalScope.Mod:
                     ChangeMod();
                     ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
-                    if (SelectedModIndex > 0)
-                    {
-                        if (ChosenProv)
-                            OpenProv();
-                        else
-                            Randomize();
-                    }
+                    UpdatePicker();
                     break;
                 case CriticalScope.Bookmark:
                     EnactBook();
@@ -146,15 +140,39 @@ namespace EU4_PCP_WPF.Views
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
+        private void UpdatePicker()
+        {
+            if (SelectedModIndex < 1) return;
+
+            if (ChosenProv)
+            {
+                ClearButton.Visibility = Visibility.Visible;
+                NewProvNameTextBox.IsReadOnly = true;
+                NewProvBlock.Text = "Existing Province";
+                AddProvButton.Content = "Update Province";
+                OriginalColorBlock.Visibility = Visibility.Visible;
+                OriginalColorBlock.Text = $"Original color: ({ChosenProv.Color.R}, {ChosenProv.Color.G}, {ChosenProv.Color.B})";
+                OpenProv();
+            }
+            else
+            {
+                ClearButton.Visibility = Visibility.Collapsed;
+                NewProvNameTextBox.Text = "";
+                NewProvNameTextBox.IsReadOnly = false;
+                NewProvBlock.Text = "New Province";
+                AddProvButton.Content = "Add Province";
+                OriginalColorBlock.Visibility = Visibility.Collapsed;
+                Randomize();
+            }
+        }
+
         private void OpenProv()
         {
             NewProvNameTextBox.Text = ChosenProv.Name.Definition;
             if (string.IsNullOrEmpty(NewProvNameTextBox.Text))
                 NewProvNameTextBox.Text = ChosenProv.Name.ToString();
 
-            NewProvNameTextBox.IsReadOnly = true;
             NextProvBlock.Text = ChosenProv.Index.ToString();
-
             RedSlider.Value = ChosenProv.Red;
             GreenSlider.Value = ChosenProv.Green;
             BlueSlider.Value = ChosenProv.Blue;
@@ -208,6 +226,11 @@ namespace EU4_PCP_WPF.Views
             RedTextBox.Background =
             GreenTextBox.Background =
             BlueTextBox.Background = new SolidColorBrush(Provinces.Any(prov => prov.Color.Equals(PickedColor.Convert())) ? RedBackground : GreenBackground);
+
+            if (ChosenProv)
+            {
+                AddProvButton.IsEnabled = !ChosenProv.Color.Equals(PickedColor.Convert());
+            }
         }
 
         private void RandomizeButton_Click(object sender, RoutedEventArgs e)
@@ -289,6 +312,12 @@ namespace EU4_PCP_WPF.Views
         private void EnableRandomize()
         {
             RandomizeButton.IsEnabled = RedSlider.IsEnabled || GreenSlider.IsEnabled || BlueSlider.IsEnabled;
+        }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChosenProv = null;
+            InitializeData();
         }
     }
 }

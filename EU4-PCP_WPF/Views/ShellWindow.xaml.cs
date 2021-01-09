@@ -1,15 +1,15 @@
-﻿using System;
+﻿using EU4_PCP_WPF.Contracts.Services;
+using EU4_PCP_WPF.Contracts.Views;
+using MahApps.Metro.Controls;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-
-using EU4_PCP_WPF.Contracts.Services;
-using EU4_PCP_WPF.Contracts.Views;
-
-using MahApps.Metro.Controls;
+using System.Windows.Threading;
+using static EU4_PCP_WPF.PCP_Data;
 
 namespace EU4_PCP_WPF.Views
 {
@@ -19,6 +19,9 @@ namespace EU4_PCP_WPF.Views
         private bool _canGoBack;
         private HamburgerMenuItem _selectedMenuItem;
         private HamburgerMenuItem _selectedOptionsMenuItem;
+
+        private readonly DispatcherTimer NavigationTimer = new DispatcherTimer();
+
 
         public bool CanGoBack
         {
@@ -55,6 +58,18 @@ namespace EU4_PCP_WPF.Views
             _navigationService = navigationService;
             InitializeComponent();
             DataContext = this;
+
+            NavigationTimer.Tick += NavigationTimer_Tick;
+            NavigationTimer.Interval = TimeSpan.FromMilliseconds(10);
+            NavigationTimer.Start();
+        }
+
+        private void NavigationTimer_Tick(object sender, EventArgs e)
+        {
+            if (!NavigateToColorPicker) return;
+            NavigateToColorPicker = false;
+
+            NavigateTo(typeof(ColorPickerPage));
         }
 
         public Frame GetNavigationFrame()

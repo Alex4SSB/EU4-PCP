@@ -1,4 +1,6 @@
-﻿using EU4_PCP_WPF.Contracts.Views;
+﻿using EU4_PCP_WPF.Contracts.Services;
+using EU4_PCP_WPF.Contracts.Views;
+using EU4_PCP_WPF.Services;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -61,7 +63,7 @@ namespace EU4_PCP_WPF.Views
             if (e.Source is DataGridRow row && row.Item is TableProvince prov && SelectedModIndex > 0)
             {
                 ChosenProv = prov;
-                NavigationService.Navigate(typeof(ColorPickerPage));
+                NavigateToColorPicker = true;
             }
         }
     }
