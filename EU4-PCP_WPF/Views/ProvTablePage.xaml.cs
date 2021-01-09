@@ -22,6 +22,8 @@ namespace EU4_PCP_WPF.Views
                                     select new TableProvince(prov);
 
             ProvincesShown = ProvTable.Items.Count.ToString();
+
+            ((TableProvince)ProvTable.Items[5]).IsDupli = true;
         }
 
         public void OnNavigatedFrom()
@@ -56,7 +58,11 @@ namespace EU4_PCP_WPF.Views
 
         private void DataGridRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-
+            if (e.Source is DataGridRow row && row.Item is TableProvince prov && SelectedModIndex > 0)
+            {
+                ChosenProv = prov;
+                NavigationService.Navigate(typeof(ColorPickerPage));
+            }
         }
     }
 }

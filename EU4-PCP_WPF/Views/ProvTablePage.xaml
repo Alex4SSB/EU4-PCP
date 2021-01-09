@@ -19,6 +19,11 @@
             Style="{StaticResource PageTitleStyle}"
             Text="{x:Static properties:Resources.ProvTablePageTitle}" />
         <Grid Grid.Row="1">
+            <Rectangle
+                Width="12"
+                Height="4"
+                HorizontalAlignment="Right"
+                Fill="Crimson" />
             <DataGrid
                 x:Name="ProvTable"
                 Margin="{StaticResource SmallLeftRightMargin}"
@@ -29,12 +34,19 @@
                 ItemsSource="{Binding}"
                 KeyboardNavigation.TabNavigation="Once"
                 ScrollViewer.ScrollChanged="ProvTable_ScrollChanged"
+                SelectionMode="Single"
+                SelectionUnit="FullRow"
                 SizeChanged="ProvTable_SizeChanged">
-                <DataGrid.Resources>
-                    <Style TargetType="DataGridRow">
+                <DataGrid.RowStyle>
+                    <Style BasedOn="{StaticResource MahApps.Styles.DataGridRow}" TargetType="DataGridRow">
                         <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDupli}" Value="True">
+                                <Setter Property="Background" Value="#FFDE2525" />
+                            </DataTrigger>
+                        </Style.Triggers>
                     </Style>
-                </DataGrid.Resources>
+                </DataGrid.RowStyle>
                 <DataGrid.Columns>
                     <DataGridTextColumn x:Name="B_Color" Header="Color">
                         <DataGridTextColumn.ElementStyle>

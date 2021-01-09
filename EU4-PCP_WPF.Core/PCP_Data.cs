@@ -52,5 +52,6 @@ namespace EU4_PCP_WPF
 		public static string ProvincesShown;
 		public static double ProvTableIndex = 0;
 		public static Color ColorPickerPickedColor;
+		public static TableProvince ChosenProv;
 	}
 }

@@ -129,7 +129,13 @@ namespace EU4_PCP_WPF.Views
                 case CriticalScope.Mod:
                     ChangeMod();
                     ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
-                    if (SelectedModIndex > 0) Randomize();
+                    if (SelectedModIndex > 0)
+                    {
+                        if (ChosenProv)
+                            OpenProv();
+                        else
+                            Randomize();
+                    }
                     break;
                 case CriticalScope.Bookmark:
                     EnactBook();
@@ -138,6 +144,20 @@ namespace EU4_PCP_WPF.Views
             InitializeData();
 
             Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private void OpenProv()
+        {
+            NewProvNameTextBox.Text = ChosenProv.Name.Definition;
+            if (string.IsNullOrEmpty(NewProvNameTextBox.Text))
+                NewProvNameTextBox.Text = ChosenProv.Name.ToString();
+
+            NewProvNameTextBox.IsReadOnly = true;
+            NextProvBlock.Text = ChosenProv.Index.ToString();
+
+            RedSlider.Value = ChosenProv.Red;
+            GreenSlider.Value = ChosenProv.Green;
+            BlueSlider.Value = ChosenProv.Blue;
         }
 
         /// <summary>

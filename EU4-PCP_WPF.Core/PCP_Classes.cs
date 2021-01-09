@@ -77,6 +77,8 @@ namespace EU4_PCP_WPF
 		public byte Green { get { return Color.G; } }
 		public byte Blue { get { return Color.B; } }
 
+		public bool IsDupli { get; set; }
+
 		public TableProvince(Province prov) : base(prov) { }
 	}
 
