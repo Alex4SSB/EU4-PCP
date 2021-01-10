@@ -319,5 +319,10 @@ namespace EU4_PCP_WPF.Views
             ChosenProv = null;
             InitializeData();
         }
+
+        private void AddProvButton_Click(object sender, RoutedEventArgs e)
+        {
+            WriteProvinces();
+        }
     }
 }

@@ -1,10 +1,12 @@
-﻿using EU4_PCP_WPF.Models;
+﻿using EU4_PCP_WPF.Converters;
+using EU4_PCP_WPF.Models;
 using EU4_PCP_WPF.Services;
 using EU4_PCP_WPF.Views;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -302,7 +304,7 @@ namespace EU4_PCP_WPF
 		}
 
 		/// <summary>
-		/// A smart count of overall provinces and shown provinces. <br />
+		/// A smart count of overall Provinces and shown provinces. <br />
 		/// </summary>
 		/// <param name="scope"></param>
 		private static void CountProv(Scope scope)
@@ -418,7 +420,7 @@ namespace EU4_PCP_WPF
 			//{
 			//    ProvTable[0, prov].Style.BackColor = selProv[prov].Color;
 			//    ProvTable.Rows[prov].SetValues(selProv[prov].ToRow());
-			//    provinces[selProv[prov].Index].TableIndex = prov;
+			//    Provinces[selProv[prov].Index].TableIndex = prov;
 			//}
 			//ProvTableSB.Maximum = ProvTable.RowCount - ProvTable.DisplayedRowCount(false) + 1;
 			//ProvTable.ClearSelection();
@@ -525,5 +527,26 @@ namespace EU4_PCP_WPF
 				ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
 			}
 		}
+
+		public static bool WriteProvinces()
+        {
+			string stream = "province;red;green;blue;x;x\r\n";
+
+            foreach (var prov in Provinces.Where(p => p.Index >= 0))
+            {
+				stream += prov.ToCsv() + "\r\n";
+            }
+
+            try
+            {
+				File.WriteAllBytes(SteamModPath + DefinPath, stream.Select(c => (byte)c).ToArray());
+			}
+            catch (Exception)
+            {
+				return false;
+            }
+
+			return true;
+        }
 	}
 }
