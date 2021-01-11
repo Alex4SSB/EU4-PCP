@@ -543,8 +543,32 @@ namespace EU4_PCP_WPF
 			}
             catch (Exception)
             {
-				return false;
+				return ErrorMsg(ErrorType.DefinWrite);
             }
+
+			return true;
+        }
+
+		public static bool WriteDefines(string newMax)
+        {
+			string defMap;
+			try
+			{
+				defMap = File.ReadAllText(SteamModPath + DefMapPath);
+			}
+			catch (Exception)
+			{
+				return ErrorMsg(ErrorType.DefMapRead);
+			}
+			defMap = DefMapRE.Replace(defMap, $"max_provinces = {newMax}");
+			try
+			{
+				File.WriteAllText(SteamModPath + DefMapPath, defMap, UTF8);
+			}
+			catch (Exception)
+			{
+				return ErrorMsg(ErrorType.DefMapWrite);
+			}
 
 			return true;
         }

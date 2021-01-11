@@ -322,7 +322,36 @@ namespace EU4_PCP_WPF.Views
 
         private void AddProvButton_Click(object sender, RoutedEventArgs e)
         {
-            WriteProvinces();
+            AddProv();
+        }
+
+        private bool AddProv()
+        {
+            if (ChosenProv)
+            {
+                Provinces[ChosenProv.ID].Color = PickedColor.Convert();
+            }
+            else
+            {
+                var newProv = new Province(NextProvBlock.Text.ToInt(), new CompositeName(NewProvNameTextBox.Text), PickedColor.Convert());
+                newProv.IsRNW();
+                Provinces.Add(newProv);
+
+                ModMaxProvinces = Inc(ModMaxProvinces, 1);
+                if (!WriteDefines(ModMaxProvinces))
+                    return false;
+
+                ModProvinceCount = Inc(ModProvinceCount, 1);
+                ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
+            }
+
+            if (!WriteProvinces())
+                return false;
+
+            ChosenProv = null;
+            InitializeData();
+
+            return true;
         }
     }
 }

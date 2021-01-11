@@ -55,7 +55,9 @@ namespace EU4_PCP_WPF.Views
         private void ProvTable_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
             // -2 rows for scroll offset, +1 pixel for horizontal grid line width
-            ProvTable.ScrollIntoView(ProvTable.Items[(int)(ProvTableIndex - 2 + ProvTable.RenderSize.Height / (ProvTable.MinRowHeight + 1))]);
+            int index = (int)(ProvTableIndex - 2 + ProvTable.RenderSize.Height / (ProvTable.MinRowHeight + 1));
+            if (index >= ProvTable.Items.Count) index = ProvTable.Items.Count - 1;
+            ProvTable.ScrollIntoView(ProvTable.Items[index]);
         }
 
         private void DataGridRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)

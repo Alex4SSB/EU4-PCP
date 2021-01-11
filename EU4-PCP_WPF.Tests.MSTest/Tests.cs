@@ -130,52 +130,6 @@ namespace EU4_PCP_WPF.Tests.MSTest
         }
 
         [TestMethod()]
-        public void DefinProvNameTestPositive()
-        {
-            string[] defin = {
-                "1;128;34;64;Stockholm;x",
-                "4825;110;137;45;Badain Jaran",
-                "4826;10;167;55;Nayon",
-                "4138;219;23;134;x;RNW" };
-            string[] names = {
-                "Stockholm",
-                "Badain Jaran",
-                "Nayon",
-                "RNW"
-            };
-
-            for (int i = 0; i < defin.Length; i++)
-            {
-                Assert.AreEqual(names[i], DefinProvName(defin[i].Split(';')));
-            }
-        }
-
-        [TestMethod()]
-        public void DefinProvNameTestNegative()
-        {
-            string[] defin = {
-                "4843;30;47;75;;",
-                "4844;150;77;85;",
-                "4845;70;107;95;",
-                "4846;190;137;105;",
-                "4847;110;167;115;",
-                "4848;;197;125",
-                "4849;;;135",
-                "4850;;;145",
-                "4851;;",
-                "4852;",
-                "4853" };
-            var names = new string[defin.Length];
-
-            for (int i = 0; i < defin.Length; i++)
-            {
-                names[i] = DefinProvName(defin[i].Split(';'));
-            }
-
-            Assert.IsTrue(names.Count(s => string.IsNullOrEmpty(s)) == defin.Length);
-        }
-
-        [TestMethod()]
         public void NextLineTestPositive()
         {
             string[] lines =

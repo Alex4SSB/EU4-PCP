@@ -55,7 +55,7 @@ namespace EU4_PCP_WPF
 
         public string ToCsv()
 		{
-			return $"{Index};{Color.ToCsv()};{Name.Definition}" + (IsRNW(false) ? ";x" : "");
+			return $"{Index};{Color.ToCsv()};{Name.Definition}" + (IsRNW(false) ? "" : ";x");
 		}
 
         public bool IsRNW(bool updateShow = true)

@@ -138,33 +138,6 @@ namespace EU4_PCP_WPF
 		}
 
 		/// <summary>
-		/// Gets the <see cref="Color"/> of a <see cref="Province"/> represented in a ProvTable row.
-		/// </summary>
-		/// <param name="row">The row containing the <see cref="Province"/> to parse.</param>
-		/// <returns>a <see cref="Color"/> object representing the <see cref="Province"/> colors.</returns>
-		//public static Color FromRow(DataGridViewRow row)
-		//{
-		//	// Uses the province index (ID column in the table), as the array index.
-		//	return provinces[row.Cells[0].Value.ToString().ToInt()].Color;
-		//}
-
-		/// <summary>
-		/// Parses the <see cref="Province"/> name from the CSV string.
-		/// </summary>
-		/// <param name="list">Separated CSV line.</param>
-		/// <returns>Parsed <see cref="Province"/> name.</returns>
-		public static string DefinProvName(string[] list)
-		{
-			return list.Length switch
-			{
-				6 when list[5].Length > 1 => list[5].Trim(),
-				6 when list[4].Length > 1 => list[4].Trim(),
-				5 when list[4].Length > 1 => list[4].Trim(),
-				_ => ""
-			};
-		}
-
-		/// <summary>
 		/// Converts LocScope to FileType.
 		/// </summary>
 		/// <param name="scope"><see cref="LocScope"/> enum.</param>
@@ -230,7 +203,7 @@ namespace EU4_PCP_WPF
 				(
 					index: i,
 					color: provColor.ToColor(),
-					name: DefinProvName(list)
+					name: list[4].Trim()
 				);
 
                 lock (definLock)
