@@ -12,6 +12,7 @@ namespace EU4_PCP_WPF
 		public static bool EnDyn;
 		public static bool UpdateCountries;
 		public static bool Lockdown = false;
+		public static bool CheckDupli;
 
 		// GLOBAL OBJECTS
 		public static ModObj SelectedMod;
@@ -35,7 +36,6 @@ namespace EU4_PCP_WPF
 		public static List<FileObj> BookFiles = new List<FileObj>();
 		public static List<FileObj> ProvFiles = new List<FileObj>();
 		public static List<FileObj> ProvNameFiles = new List<FileObj>();
-		public static List<Dupli> Duplicates = new List<Dupli>();
 
 		// Control public data sources
 		public static List<string> ModList = new List<string>();

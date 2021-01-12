@@ -1064,7 +1064,6 @@ namespace EU4_PCP_WPF
 			BookFiles.Clear();
 			Bookmarks.Clear();
 			ProvFiles.Clear();
-			Duplicates.Clear();
 			ProvNameFiles.Clear();
 		}
 

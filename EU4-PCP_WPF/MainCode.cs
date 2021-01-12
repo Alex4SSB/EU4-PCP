@@ -1,12 +1,9 @@
-﻿using EU4_PCP_WPF.Converters;
-using EU4_PCP_WPF.Models;
+﻿using EU4_PCP_WPF.Models;
 using EU4_PCP_WPF.Services;
-using EU4_PCP_WPF.Views;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -20,7 +17,6 @@ namespace EU4_PCP_WPF
 {
     public static class MainCode
 	{
-		public static List<TableProvince> ProvTableList = new List<TableProvince>();
 		public static readonly Color RedBackground = Color.FromRgb(0xDE, 25, 25);
 		public static readonly Color GreenBackground = Color.FromRgb(0x7C, 0xB6, 0x1A);
 
@@ -75,12 +71,10 @@ namespace EU4_PCP_WPF
 				EnLoc = true;
 				EnDyn = Security.RetrieveBoolEnum(ProvinceNames.Dynamic);
 			}
-
-			ShowRnw = Security.RetrieveBool(General.ShowAllProvinces);
+			CheckDupli = Security.RetrieveBool(General.CheckDupli);
+            ShowRnw = Security.RetrieveBool(General.ShowAllProvinces);
 			UpdateCountries = false;
 
-            //// Repaint duplicate rows before clearing the list
-            //PaintDupli(true);
             ClearArrays();
 			StartDate = DateTime.MinValue;
 
@@ -96,7 +90,6 @@ namespace EU4_PCP_WPF
 
 			if (!LocalisationSequence()) return false;
 			if (!EnDyn) DynamicSetup();
-			PopulateTable();
 			GameVer();
 
 			StartDateStr = StartDate.ToString(DATE_FORMAT);
@@ -115,11 +108,9 @@ namespace EU4_PCP_WPF
 				(SelectedMod && !MaxProvinces(Scope.Mod)))
 				return false;
 
-			//ClearCP(); // Clear the color picker, and call the randomizer
+            DupliPrep();
 
-			//DupliPrep();
-
-			return true;
+            return true;
 		}
 
 		/// <summary>
@@ -397,36 +388,6 @@ namespace EU4_PCP_WPF
 			return true;
 		}
 
-		
-
-		/// <summary>
-		/// Writes all provinces to the ProvTable and paints it accordingly.
-		/// </summary>
-		private static void PopulateTable()
-		{
-			//ProvTableList = Provinces.Where(prov => prov && prov.Show).Select(prov => (TableProvince)prov).ToList();
-
-			//ProvTableList = (from prov in Provinces
-			//				where prov && prov.Show
-			//				select (TableProvince)prov).ToList();
-
-			//Province[] selProv = Provinces.Where(prov => prov && prov.Show).ToArray();
-			//var oldCount = ProvTable.RowCount;
-			//ProvTable.RowCount = selProv.Length;
-
-			//PaintTable(selProv.Length, oldCount);
-
-			//for (int prov = 0; prov < selProv.Length; prov++)
-			//{
-			//    ProvTable[0, prov].Style.BackColor = selProv[prov].Color;
-			//    ProvTable.Rows[prov].SetValues(selProv[prov].ToRow());
-			//    Provinces[selProv[prov].Index].TableIndex = prov;
-			//}
-			//ProvTableSB.Maximum = ProvTable.RowCount - ProvTable.DisplayedRowCount(false) + 1;
-			//ProvTable.ClearSelection();
-			//ProvTableSB.Visible = ProvTableSB.Maximum >= 1;
-		}
-
 		/// <summary>
 		/// Handles mod changing.
 		/// </summary>
@@ -437,32 +398,13 @@ namespace EU4_PCP_WPF
 			//else
 			//	Critical(CriticalType.Begin, CriticalScope.Mod);
 
-			//ModStartDateTB.Text = "";
 			if (SelectedModIndex < 1)
 			{
 				SelectedMod = null;
 				SteamModPath = "";
-				//ColorPickerGB.Enabled =
-				//ModInfoGB.Visible = false;
-				//SelectedBookmarkIndex = -1;
 			}
 			else
 			{
-				//if (!ModInfoGB.Visible)
-				//{
-				//	if (GameBookmarkCB.Items.Count > 0)
-				//	{
-				//		GameBookmarkCB.SelectedIndex = 0;
-				//		if (!selectedMod)
-				//		{
-				//			//GameBookmarkCB.Enabled = false;
-				//			StartDate = Bookmarks[GameBookmarkCB.SelectedIndex].StartDate;
-				//			GameStartDateTB.Text = StartDate.ToString(DATE_FORMAT);
-				//		}
-				//	}
-				//	//ColorPickerGB.Enabled =
-				//	//ModInfoGB.Visible = true;
-				//}
 				SelectedMod = Mods[SelectedModIndex - 1];
 				SteamModPath = SelectedMod.Path;
 			}
@@ -509,7 +451,6 @@ namespace EU4_PCP_WPF
 			OwnerSetup(true);
 			ProvNameSetup();
 			DynamicSetup();
-			PopulateTable();
 
 			//Critical(CriticalType.Finish, true);
 		}
@@ -525,7 +466,15 @@ namespace EU4_PCP_WPF
 					prov.Show = !prov.IsRNW() || (ShowRnw && !string.IsNullOrEmpty(prov.Name.ToString()));
 				}
 				ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
+
+				DupliPrep();
 			}
+			if (Security.RetrieveBool(General.CheckDupli) is bool checkDupli && checkDupli != CheckDupli)
+            {
+				CheckDupli = checkDupli;
+
+				DupliPrep();
+            }
 		}
 
 		public static bool WriteProvinces()
@@ -571,6 +520,30 @@ namespace EU4_PCP_WPF
 			}
 
 			return true;
+        }
+
+		public static void DupliPrep()
+        {
+            if (!CheckDupli || !SelectedMod)
+            {
+				return;
+            }
+
+			var dupliGroups = (from prov in Provinces
+							  where prov && prov.Show
+							  group prov by prov.Color)
+							  .Where(g => g.Count() > 1);
+							  
+            foreach (var group in dupliGroups)
+            {
+                for (int i = 0; i < group.Count(); i++)
+                {
+					var nextIndex = (i == group.Count() - 1) ? 0 : i + 1;
+
+					group.ElementAt(i).NextDupli = group.ElementAt(nextIndex);
+                }
+            }
+
         }
 	}
 }

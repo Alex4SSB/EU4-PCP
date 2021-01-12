@@ -5,6 +5,7 @@
         ShowAllProvinces,
         GamePath,
         ModPath,
-        LastSelMod
+        LastSelMod,
+        CheckDupli
     }
 }

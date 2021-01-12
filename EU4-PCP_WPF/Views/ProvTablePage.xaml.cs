@@ -25,7 +25,7 @@ namespace EU4_PCP_WPF.Views
 
             ProvincesShown = ProvTable.Items.Count.ToString();
 
-            ((TableProvince)ProvTable.Items[5]).IsDupli = true;
+            //((TableProvince)ProvTable.Items[5]).IsDupli = true;
         }
 
         public void OnNavigatedFrom()

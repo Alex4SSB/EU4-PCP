@@ -40,6 +40,7 @@ namespace EU4_PCP_WPF
 		public Color Color;
 		public Country Owner;
 		public bool Show = true;
+		public Province NextDupli = null;
 
         public Province(int index = -1, CompositeName name = null, Color color = new Color()) : base (index, name)
         {
@@ -51,6 +52,7 @@ namespace EU4_PCP_WPF
 			Color = prov.Color;
 			Owner = prov.Owner;
 			Show = prov.Show;
+			NextDupli = prov.NextDupli;
 		}
 
         public string ToCsv()
@@ -77,7 +79,7 @@ namespace EU4_PCP_WPF
 		public byte Green { get { return Color.G; } }
 		public byte Blue { get { return Color.B; } }
 
-		public bool IsDupli { get; set; }
+		public bool IsDupli { get { return NextDupli; } }
 
 		public TableProvince(Province prov) : base(prov) { }
 	}
@@ -311,44 +313,6 @@ namespace EU4_PCP_WPF
 		public override string ToString()
 		{
 			return Path;
-		}
-	}
-
-	public class DupliProv
-	{
-		public Province Prov;
-		//public Label DupliLabel;
-
-		public static implicit operator bool(DupliProv obj)
-		{
-			return obj is object;
-		}
-
-		public DupliProv(Province prov)
-		{
-			Prov = prov;
-		}
-
-		public override string ToString()
-		{
-			return Prov.ToString();
-		}
-	}
-
-	public class Dupli
-	{
-		public DupliProv Dupli1;
-		public DupliProv Dupli2;
-
-		public Dupli(Province prov1, Province prov2)
-		{
-			Dupli1 = new DupliProv(prov1);
-			Dupli2 = new DupliProv(prov2);
-		}
-
-		public override string ToString()
-		{
-			return $"{Dupli1} | {Dupli2}";
 		}
 	}
 }

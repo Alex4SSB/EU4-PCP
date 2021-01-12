@@ -279,7 +279,7 @@ namespace EU4_PCP_WPF.Views
         private void NewProvNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             AddProvButton.IsEnabled = !string.IsNullOrWhiteSpace(NewProvNameTextBox.Text)
-                && !NewProvNameTextBox.Text.Any(c => c > 127);
+                && !NewProvNameTextBox.Text.Any(c => c > 255);
         }
 
         private void LockRedButton_Click(object sender, RoutedEventArgs e)
