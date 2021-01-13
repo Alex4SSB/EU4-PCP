@@ -1,15 +1,19 @@
-﻿using EU4_PCP_WPF.Contracts.Services;
-using EU4_PCP_WPF.Contracts.Views;
-using EU4_PCP_WPF.Models;
-using EU4_PCP_WPF.Services;
-using EU4_PCP_WPF.Views;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
+
+using EU4_PCP_WPF.Contracts.Services;
+using EU4_PCP_WPF.Contracts.Views;
+using EU4_PCP_WPF.Core.Contracts.Services;
+using EU4_PCP_WPF.Core.Services;
+using EU4_PCP_WPF.Models;
+using EU4_PCP_WPF.Services;
+using EU4_PCP_WPF.Views;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace EU4_PCP_WPF
 {
@@ -54,6 +58,9 @@ namespace EU4_PCP_WPF
 
             // App Host
             services.AddHostedService<ApplicationHostService>();
+
+            // Core Services
+            services.AddSingleton<IFileService, FileService>();
 
             // Services
             services.AddSingleton<IApplicationInfoService, ApplicationInfoService>();
