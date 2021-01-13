@@ -20,7 +20,7 @@ namespace EU4_PCP_WPF
 		public static readonly Regex ProvEventRE = new Regex(@"^\s*[\d.]* *= *{[^{]*owner[^{]*}", RegexOptions.Multiline);
 		public static readonly Regex CulEventRE = new Regex(@"^\s*[\d.]* *= *{[^{]*primary_culture[^{]*}", RegexOptions.Multiline);
 		public static readonly Regex PriCulRE = new Regex(@"(?<=^\s*primary_culture *= *)\w+", RegexOptions.Multiline);
-		public static readonly Regex LocProvRE = new Regex(@"(?<=^[ \t]*PROV)([0-9])+(:.*)", RegexOptions.Multiline);
+		public static readonly Regex LocProvRE = new Regex(@"(?<=^\s*PROV)\d+:[^#\r\n]+", RegexOptions.Multiline);
 		public static readonly Regex LocFileRE = new Regex(@"\w+(english)\.yml$");
 		public static readonly Regex MaxProvRE = new Regex(@"(?<=^max_provinces *= *)\d+", RegexOptions.Multiline);
 		public static readonly Regex DefMapRE = new Regex(@"max_provinces.*");

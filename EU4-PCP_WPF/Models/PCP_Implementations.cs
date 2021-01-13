@@ -251,7 +251,7 @@ namespace EU4_PCP_WPF
 				}
 
 				// If members were recovered successfully 
-				if ((!abort && filesList.Any()) && NameSetup(filesList, scope, out readSuccess))
+				if (!abort && filesList.Any() && NameSetup(filesList, scope, out readSuccess))
 					return readSuccess;
 			}
 
