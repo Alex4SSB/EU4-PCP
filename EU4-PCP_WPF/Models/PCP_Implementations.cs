@@ -330,7 +330,7 @@ namespace EU4_PCP_WPF
 
 				foreach (Match prov in collection)
 				{
-					NameSelect(prov.Value, locFile.Path, scope);
+					NameSelect(prov.Value, IsGameDirectory(locFile.Path), scope);
 				}
 			});
 
@@ -347,13 +347,12 @@ namespace EU4_PCP_WPF
 		/// Calls a function to write the name of either a <see cref="Province"/> or a <see cref="Bookmark"/>.
 		/// </summary>
 		/// <param name="match">The RegEx match result.</param>
-		/// <param name="path">Localisation file path.</param>
 		/// <param name="scope">Province or Bookmark.</param>
 		/// <returns><see langword="true"/> if the name was written.</returns>
-		private static bool NameSelect(string match, string path, LocScope scope) => scope switch
+		private static bool NameSelect(string match, bool gameDir, LocScope scope) => scope switch
 		{
-			LocScope.ProvLoc => NameProv(match, path),
-			LocScope.BookLoc => NameBook(match, path),
+			LocScope.ProvLoc => NameProv(match, gameDir),
+			LocScope.BookLoc => NameBook(match, gameDir),
 			_ => false
 		};
 
@@ -361,9 +360,8 @@ namespace EU4_PCP_WPF
 		/// Writes the localisation name to the matching <see cref="Province"/>.
 		/// </summary>
 		/// <param name="match">The RegEx match result. (Localisation file line)</param>
-		/// <param name="path">Localisation file path.</param>
 		/// <returns><see langword="true"/> if the name was written.</returns>
-		private static bool NameProv(string match, string path)
+		private static bool NameProv(string match, bool gameDir)
 		{
 			string name = match.Split('"')[1].Trim();
 			var provId = match.Split(':')[0].ToInt();
@@ -371,7 +369,7 @@ namespace EU4_PCP_WPF
 			if (string.IsNullOrWhiteSpace(name)
                 || (Provinces.Where(prov => prov.Index == provId) is var tempProv && !tempProv.Any())
                 || tempProv.First() is not Province prov
-                || (!string.IsNullOrEmpty(prov.Name.Localisation) && path.Contains(GamePath))) return false;
+                || (!string.IsNullOrEmpty(prov.Name.Localisation) && gameDir)) return false;
             prov.Name.Localisation = name;
 			return true;
 		}
@@ -380,25 +378,28 @@ namespace EU4_PCP_WPF
 		/// Writes the name to the matching <see cref="Bookmark"/>.
 		/// </summary>
 		/// <param name="match">The RegEx match result. (Bookmark name)</param>
-		/// <param name="path">Localisation file path.</param>
 		/// <returns><see langword="true"/> if the name was written.</returns>
-		private static bool NameBook(string match, string path)
-		{
-			var tempBook = Bookmarks.First(book => book.Code == BookLocCodeRE.Match(match).Value);
-			if (SelectedMod && tempBook.Name != null &&
-			path.Contains(Directory.GetParent(GamePath + LocPath).FullName))
-				return false;
-			tempBook.Name = LocNameRE.Match(match).Value;
+		private static bool NameBook(string match, bool gameDir)
+        {
+            var tempBook = Bookmarks.First(book => book.Code == BookLocCodeRE.Match(match).Value);
+            if (SelectedMod && tempBook.Name != null && gameDir)
+                return false;
+            tempBook.Name = LocNameRE.Match(match).Value;
 
-			return true;
-		}
+            return true;
+        }
 
-		/// <summary>
-		/// A link between LocFiles <see cref="Settings"/> and <see cref="Members"/> list.
-		/// </summary>
-		/// <param name="mode">Read from the <see cref="Settings"/>, or Write to the <see cref="Settings"/></param>
-		/// <param name="scope">Province or Bookmark</param>
-		public static void LocMembers(Mode mode, LocScope scope)
+        private static bool IsGameDirectory(string path)
+        {
+            return path.Contains(Directory.GetParent(GamePath + LocPath).FullName);
+        }
+
+        /// <summary>
+        /// A link between LocFiles <see cref="Settings"/> and <see cref="Members"/> list.
+        /// </summary>
+        /// <param name="mode">Read from the <see cref="Settings"/>, or Write to the <see cref="Settings"/></param>
+        /// <param name="scope">Province or Bookmark</param>
+        public static void LocMembers(Mode mode, LocScope scope)
 		{
 			switch (mode)
 			{
