@@ -16,6 +16,7 @@ namespace EU4_PCP_WPF.Services
             return App.Current.Properties[keyName];
         }
 
+        public static void StoreValue(string value, Enum keyName) => StoreValue((object)value, keyName.ToString());
         public static void StoreValue(string value, object tag) => StoreValue((object)value, (string)tag);
 
         public static void StoreValue(string value, string keyName) => StoreValue((object)value, keyName);

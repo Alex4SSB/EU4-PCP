@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EU4_PCP_WPF.Services;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -144,8 +145,8 @@ namespace EU4_PCP_WPF
 		/// <returns><see cref="FileType"/> enum.</returns>
 		public static FileType FromLoc(LocScope scope) => scope switch
 		{
-			LocScope.Province => FileType.Province,
-			LocScope.Bookmark => FileType.Bookmark,
+			LocScope.ProvLoc => FileType.Province,
+			LocScope.BookLoc => FileType.Bookmark,
 			_ => throw new NotImplementedException()
 		};
 
@@ -188,7 +189,6 @@ namespace EU4_PCP_WPF
 			{ return false; }
 
 			Provinces.Clear();
-			Provinces.Add(new Province());
 
             Parallel.ForEach(dFile, p =>
             {
@@ -209,7 +209,6 @@ namespace EU4_PCP_WPF
                 lock (definLock)
                 {
 					Provinces.Add(prov);
-                    //Add(ref Provinces, prov);
                 }
             });
 			Provinces.Sort();
@@ -224,17 +223,9 @@ namespace EU4_PCP_WPF
 		{
 			bool readSuccess;
 
-			var setting = "";
-			//string setting = scope switch
-			//{
-			//	LocScope.Province => Settings.Default.ProvLocFiles,
-			//	LocScope.Bookmark => Settings.Default.BookLocFiles,
-			//	_ => "",
-			//};
-
-			if (setting.Length > 0)
+			LocMembers(Mode.Read, scope);
+			if (Members.Any(m => m.Type == scope))
 			{
-				LocMembers(Mode.Read, scope);
 				List<FileObj> filesList = new List<FileObj>();
 				foreach (var member in Members.Where(m => m.Type == scope))
 				{
@@ -288,10 +279,10 @@ namespace EU4_PCP_WPF
 
 			Regex locRE = scope switch // Select province or bookmark RegEx
 			{
-				LocScope.Province => LocProvRE,
+				LocScope.ProvLoc => LocProvRE,
 
 				// bookRE is a dynamic RegEx so it is local.
-				LocScope.Bookmark => new Regex($@"^ *({BookPattern()}):\d* *"".+""", RegexOptions.Multiline),
+				LocScope.BookLoc => new Regex($@"^ *({BookPattern()}):\d* *"".+""", RegexOptions.Multiline),
 				_ => throw new NotImplementedException()
 			};
 
@@ -343,9 +334,9 @@ namespace EU4_PCP_WPF
 				}
 			});
 
-			if (scope == LocScope.Bookmark &&
+			if (scope == LocScope.BookLoc &&
 				!success &&
-				Bookmarks.Count(book => book.Name == null) == 0)
+                !Bookmarks.Any(book => book.Name == null))
 			{ success = true; }
 
 			readSuccess = locSuccess;
@@ -361,8 +352,8 @@ namespace EU4_PCP_WPF
 		/// <returns><see langword="true"/> if the name was written.</returns>
 		private static bool NameSelect(string match, string path, LocScope scope) => scope switch
 		{
-			LocScope.Province => NameProv(match, path),
-			LocScope.Bookmark => NameBook(match, path),
+			LocScope.ProvLoc => NameProv(match, path),
+			LocScope.BookLoc => NameBook(match, path),
 			_ => false
 		};
 
@@ -377,11 +368,11 @@ namespace EU4_PCP_WPF
 			string name = match.Split('"')[1].Trim();
 			var provId = match.Split(':')[0].ToInt();
 
-			if (name.Length < 1 || provId >= Provinces.Count) return false;
-			if (!Provinces[provId]) return false;
-			if (Provinces[provId].Name.Localisation != "" && path.Contains(GamePath)) return false;
-
-			Provinces[provId].Name.Localisation = name;
+			if (string.IsNullOrWhiteSpace(name)
+                || (Provinces.Where(prov => prov.Index == provId) is var tempProv && !tempProv.Any())
+                || tempProv.First() is not Province prov
+                || (!string.IsNullOrEmpty(prov.Name.Localisation) && path.Contains(GamePath))) return false;
+            prov.Name.Localisation = name;
 			return true;
 		}
 
@@ -412,14 +403,7 @@ namespace EU4_PCP_WPF
 			switch (mode)
 			{
 				case Mode.Read:
-					string[] lines = { };
-					
-					//lines = scope switch
-					//{
-					//	LocScope.Province => Settings.Default.ProvLocFiles.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries),
-					//	LocScope.Bookmark => Settings.Default.BookLocFiles.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries),
-					//	_ => throw new NotImplementedException()
-					//};
+					string[] lines = Security.RetrieveValue(scope).Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
 
 					foreach (var member in lines.Where(l => l.Length > 5))
 					{
@@ -428,23 +412,7 @@ namespace EU4_PCP_WPF
 					}
 					break;
 				case Mode.Write:
-					string join = "";
-					foreach (var member in Members.Where(m => m.Type == scope))
-					{
-						join += $"{member}\r\n";
-					}
-					join = join[..^2];
-					//switch (scope)
-					//{
-					//	case LocScope.Province:
-					//		Settings.Default.ProvLocFiles = join;
-					//		break;
-					//	case LocScope.Bookmark:
-					//		Settings.Default.BookLocFiles = join;
-					//		break;
-					//	default:
-					//		break;
-					//}
+					Security.StoreValue(string.Join("\r\n", Members.Where(m => m.Type == scope)), scope);
 					break;
 			}
 		}
@@ -462,7 +430,7 @@ namespace EU4_PCP_WPF
 				if (!match.Success) return;
 				int i = match.Value.ToInt();
 				if (i >= Provinces.Count) return;
-				if (!updateOwner && Provinces[i].Owner) return;
+				if (!updateOwner && Provinces.First(prov => prov.Index == i).Owner) return;
 
 				string provFile = File.ReadAllText(p_file.Path);
 				var currentOwner = LastEvent(provFile, EventType.Province, StartDate);
@@ -478,7 +446,7 @@ namespace EU4_PCP_WPF
 
 				var owner = Countries.Where(c => c.Name == currentOwner);
 				if (owner.Any())
-					Provinces[i].Owner = owner.First();
+					Provinces.First(prov => prov.Index == i).Owner = owner.First();
 			});
 		}
 
@@ -841,7 +809,7 @@ namespace EU4_PCP_WPF
 				});
 			}
 			if (!Bookmarks.Any()) return; 
-			LocPrep(LocScope.Bookmark);
+			LocPrep(LocScope.BookLoc);
 			SortBooks();
 		}
 

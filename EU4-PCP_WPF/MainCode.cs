@@ -219,7 +219,7 @@ namespace EU4_PCP_WPF
 			if (!FetchFiles(FileType.Localisation))
 				return ErrorMsg(ErrorType.LocFolder);
 
-			if (!LocPrep(LocScope.Province))
+			if (!LocPrep(LocScope.ProvLoc))
 				return ErrorMsg(ErrorType.LocRead);
 
 			return DynamicSequence();

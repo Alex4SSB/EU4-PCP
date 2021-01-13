@@ -228,9 +228,10 @@
                         Grid.Column="1"
                         Margin="4"
                         HorizontalAlignment="Stretch"
+                        Click="AddProvButton_Click"
                         Content="Add Province"
                         IsEnabled="False"
-                        Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" Click="AddProvButton_Click" />
+                        Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" />
                 </Grid>
             </StackPanel>
             <StackPanel Grid.Column="2">

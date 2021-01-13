@@ -2,8 +2,8 @@
 {
     public enum LocScope
     {
-        Province,
-        Bookmark
+        ProvLoc,
+        BookLoc
     }
 
     public enum Mode
