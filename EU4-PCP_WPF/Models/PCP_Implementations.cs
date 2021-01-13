@@ -188,7 +188,7 @@ namespace EU4_PCP_WPF
 			{ return false; }
 
 			Provinces.Clear();
-			Provinces.Add(new Province());
+			//Provinces.Add(new Province());
 
             Parallel.ForEach(dFile, p =>
             {
@@ -209,7 +209,6 @@ namespace EU4_PCP_WPF
                 lock (definLock)
                 {
 					Provinces.Add(prov);
-                    //Add(ref Provinces, prov);
                 }
             });
 			Provinces.Sort();
