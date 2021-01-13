@@ -328,10 +328,10 @@ namespace EU4_PCP_WPF
 					}
 				}
 
-				foreach (Match prov in collection)
+				Parallel.ForEach(collection, (prov) =>
 				{
 					NameSelect(prov.Value, IsGameDirectory(locFile.Path), scope);
-				}
+				});
 			});
 
 			if (scope == LocScope.BookLoc &&
