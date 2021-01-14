@@ -745,23 +745,23 @@ namespace EU4_PCP_WPF
 		/// </summary>
 		public static void DynamicSetup()
 		{
-			foreach (var prov in Provinces)
+			foreach (var prov in Provinces.Where(p => p))
 			{
-				if (!prov) { continue; }
 				prov.Name.Dynamic = "";
-				if (!ShowRnw) { prov.IsRNW(); }
+				if (!ShowRnw) prov.IsRNW();
 				if (!prov.Owner)
 				{
-					if (prov.Show
-						&& prov.Name.Definition.Length < 1
-						&& prov.Name.Localisation.Length < 1)
-					{ prov.Show = false; }
+					if (prov.Name.ToString() == "")
+						prov.Show = false;
 					continue;
 				}
-				if (DynamicName(prov, NameType.Country)) { continue; }
-				if (!prov.Owner.Culture) { continue; }
-				if (DynamicName(prov, NameType.Culture)) { continue; }
-				if (prov.Owner.Culture.Group) { DynamicName(prov, NameType.Group); }
+				if (DynamicName(prov, NameType.Country)
+                    || !prov.Owner.Culture
+                    || DynamicName(prov, NameType.Culture)) 
+					continue;
+
+                if (prov.Owner.Culture.Group)
+					DynamicName(prov, NameType.Group);
 			}
 		}
 
@@ -799,7 +799,7 @@ namespace EU4_PCP_WPF
 				string bFile = File.ReadAllText(bookFile.Path);
 				var codeMatch = BookmarkCodeRE.Match(bFile);
 				var dateMatch = BookmarkDateRE.Match(bFile);
-				if (!codeMatch.Success || !dateMatch.Success) { continue; }
+				if (!codeMatch.Success || !dateMatch.Success) continue;
 
 				DateTime tempDate = DateParser(dateMatch.Value, StartDate.Year < 1000);
 				if (tempDate == DateTime.MinValue) { continue; }
@@ -811,45 +811,30 @@ namespace EU4_PCP_WPF
 			}
 			if (!Bookmarks.Any()) return; 
 			LocPrep(LocScope.BookLoc);
-			SortBooks();
+			Bookmarks = SortBooks(Bookmarks);
 		}
 
-		/// <summary>
-		/// Sorts the <see cref="Bookmarks"/> by date and removes bookmarks of the same date as the default one.
-		/// </summary>
-		private static void SortBooks()
-		{
-			Bookmarks.Sort();
-			StartDate = Bookmarks[0].BookDate;
-			if (Bookmarks.Count(book => book.DefBook) != 1) return;
+        /// <summary>
+        /// Removes bookmarks of the same date as the default one, and sorts them by date.
+        /// </summary>
+        private static List<Bookmark> SortBooks(List<Bookmark> bookmarks)
+        {
+			var sortedBooks = new List<Bookmark>();
+            foreach (var item in bookmarks.GroupBy(book => book.BookDate).OrderBy(books => books.Key))
+            {
+				if (item.Count() == 1)
+					sortedBooks.Add(item.Single());
+				else if (item.Count(b => b.DefBook) == 1)
+					sortedBooks.Add(item.First(book => book.DefBook));
+            };
 
-			var tempBooks = Bookmarks.ToArray();
-			Bookmarks.Clear();
-			Bookmarks.Add(new Bookmark());
-			int counter = 1;
-
-			for (int i = 1; i < tempBooks.Length; i++)
-			{
-				if (tempBooks[i] == tempBooks[i - 1])
-					counter++;
-				else
-				{
-					if (counter > 1)
-					{
-						Bookmarks[0] = tempBooks.First(b => b.DefBook);
-						counter = 1;
-					}
-					Bookmarks.Add(tempBooks[i]);
-				}
-			}
-			if (counter > 1)
-				Bookmarks[0] = tempBooks.First(b => b.DefBook);
+			return sortedBooks;
 		}
 
-		/// <summary>
-		/// Prepares mod defines files.
-		/// </summary>
-		public static void FetchDefines()
+        /// <summary>
+        /// Prepares mod defines files.
+        /// </summary>
+        public static void FetchDefines()
 		{
 			if (!SelectedMod) return;
 
