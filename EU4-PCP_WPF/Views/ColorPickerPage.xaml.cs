@@ -329,7 +329,7 @@ namespace EU4_PCP_WPF.Views
         {
             if (ChosenProv)
             {
-                Provinces[ChosenProv.ID].Color = PickedColor.Convert();
+                Provinces.Find(prov => prov.Index == ChosenProv.ID).Color = PickedColor.Convert();
             }
             else
             {
@@ -350,6 +350,7 @@ namespace EU4_PCP_WPF.Views
 
             ChosenProv = null;
             InitializeData();
+            DupliPrep();
 
             return true;
         }

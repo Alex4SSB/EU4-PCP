@@ -1199,9 +1199,7 @@ namespace EU4_PCP_WPF
 			return scope switch
 			{
 				FileType.Localisation => RepLocCheck(query),
-				FileType.Country when query.Any() => true,
-				FileType.Bookmark when query.Any() => true,
-				FileType.Province when query.Any() => true,
+				FileType.Country or FileType.Bookmark or FileType.Province when query.Any() => true,
 				FileType.ProvName => false,
 				_ => false,
 			};

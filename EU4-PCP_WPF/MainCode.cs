@@ -524,10 +524,8 @@ namespace EU4_PCP_WPF
 
 		public static void DupliPrep()
         {
-            if (!CheckDupli || !SelectedMod)
-            {
-				return;
-            }
+            Provinces.ForEach(prov => prov.NextDupli = null);
+            if (!CheckDupli || !SelectedMod) return;
 
 			var dupliGroups = (from prov in Provinces
 							  where prov && prov.Show

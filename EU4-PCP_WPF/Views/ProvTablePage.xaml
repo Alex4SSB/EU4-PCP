@@ -19,11 +19,11 @@
             Style="{StaticResource PageTitleStyle}"
             Text="{x:Static properties:Resources.ProvTablePageTitle}" />
         <Grid Grid.Row="1">
-            <Rectangle
+            <Grid
+                x:Name="MarkerGrid"
                 Width="12"
-                Height="4"
-                HorizontalAlignment="Right"
-                Fill="Crimson" />
+                Margin="0,41,0,16"
+                HorizontalAlignment="Right" />
             <DataGrid
                 x:Name="ProvTable"
                 Margin="{StaticResource SmallLeftRightMargin}"

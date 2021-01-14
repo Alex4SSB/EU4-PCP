@@ -1,10 +1,12 @@
-﻿using EU4_PCP_WPF.Contracts.Services;
-using EU4_PCP_WPF.Contracts.Views;
-using EU4_PCP_WPF.Services;
+﻿using EU4_PCP_WPF.Contracts.Views;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Shapes;
 using static EU4_PCP_WPF.PCP_Data;
 
 namespace EU4_PCP_WPF.Views
@@ -25,7 +27,22 @@ namespace EU4_PCP_WPF.Views
 
             ProvincesShown = ProvTable.Items.Count.ToString();
 
-            //((TableProvince)ProvTable.Items[5]).IsDupli = true;
+            PaintMarkers();
+        }
+
+        private void PaintMarkers()
+        {
+            foreach (var dupliProv in Provinces.Where(prov => prov.NextDupli))
+            {
+                var marker = new Rectangle() { Height = 4, VerticalAlignment = System.Windows.VerticalAlignment.Bottom, Margin = new System.Windows.Thickness(0, 0, 0, 0), Fill = new SolidColorBrush(Colors.Crimson) };
+                marker.MouseLeftButtonUp += new MouseButtonEventHandler(Rectangle_MouseLeftButtonUp);
+                marker.Tag = dupliProv;
+                var shownProvs = Provinces.Where(p => p && p.Show).ToList();
+                double ratio = shownProvs.IndexOf(dupliProv) / (double)shownProvs.Count;
+
+                var grid = new Grid() { Children = { marker }, RowDefinitions = { new RowDefinition() { Height = new System.Windows.GridLength(ratio, System.Windows.GridUnitType.Star), MinHeight = 4 }, new RowDefinition() { Height = new System.Windows.GridLength(1 - ratio, System.Windows.GridUnitType.Star) } } };
+                MarkerGrid.Children.Add(grid);
+            }
         }
 
         public void OnNavigatedFrom()
@@ -54,19 +71,36 @@ namespace EU4_PCP_WPF.Views
 
         private void ProvTable_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
+            MoveTableToIndex(ProvTableIndex);
+        }
+
+        private void MoveTableToIndex(double tableIndex)
+        {
             // -2 rows for scroll offset, +1 pixel for horizontal grid line width
-            int index = (int)(ProvTableIndex - 2 + ProvTable.RenderSize.Height / (ProvTable.MinRowHeight + 1));
+            int index = (int)(tableIndex - 2 + (ProvTable.RenderSize.Height / (ProvTable.MinRowHeight + 1)));
             if (index >= ProvTable.Items.Count) index = ProvTable.Items.Count - 1;
             ProvTable.ScrollIntoView(ProvTable.Items[index]);
         }
 
-        private void DataGridRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (e.Source is DataGridRow row && row.Item is TableProvince prov && SelectedModIndex > 0)
             {
                 ChosenProv = prov;
                 NavigateToColorPicker = true;
             }
+        }
+
+        private void Rectangle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var marker = sender as Rectangle;
+            var prov = marker.Tag as Province;
+            var provIndex = Provinces.Where(p => p && p.Show).ToList().IndexOf(prov);
+            var offset = provIndex + (int)(ProvTable.RenderSize.Height / (ProvTable.MinRowHeight + 1) / 2) - 1;
+            if (offset >= ProvTable.Items.Count) offset = ProvTable.Items.Count - 1;
+            
+            ProvTable.ScrollIntoView(ProvTable.Items[0]);
+            ProvTable.ScrollIntoView(ProvTable.Items[offset]);
         }
     }
 }
