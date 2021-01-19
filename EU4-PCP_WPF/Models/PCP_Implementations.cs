@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using static EU4_PCP_WPF.PCP_Const;
 using static EU4_PCP_WPF.PCP_Data;
 using static EU4_PCP_WPF.PCP_Paths;
@@ -1219,43 +1220,43 @@ namespace EU4_PCP_WPF
 
 		public static bool ErrorMsg(ErrorType type, bool returnVal = false)
         {
-			//Error_Msg(type);
-			return returnVal;
+            Error_Msg(type);
+            return returnVal;
         }
 
         /// <summary>
         /// Handles all error messages.
         /// </summary>
         /// <param name="type">The error type</param>
-        //private static void Error_Msg(ErrorType type) => _ = (type switch
-        //{
-        //    ErrorType.DefinRead => MessageBox.Show("The definition.csv file is missing or corrupt",
-        //        "Unable to parse definition file", MessageBoxButton.OK, MessageBoxImage.Error),
-        //    ErrorType.DefinWrite => MessageBox.Show("The definition.csv file is inaccessible for writing",
-        //        "Unable to access definition file", MessageBoxButton.OK, MessageBoxImage.Error),
-        //    ErrorType.DefMapRead => MessageBox.Show("The default.map file is missing or corrupt",
-        //        "Unable to parse default file", MessageBoxButton.OK, MessageBoxImage.Error),
-        //    ErrorType.DefMapWrite => MessageBox.Show("The default.map file is inaccessible for writing",
-        //        "Unable to access default file", MessageBoxButton.OK, MessageBoxImage.Error),
-        //    ErrorType.DefMapMaxProv => MessageBox.Show("The 'default.map' file has no max_provinces definition!",
-        //        "Missing max_provinces", MessageBoxButton.OK, MessageBoxImage.Error),
-        //    ErrorType.LocFolder => MessageBox.Show("The localisation folder is missing or inaccessible",
-        //        "Unable to access localisation files", MessageBoxButton.OK, MessageBoxImage.Error),
-        //    ErrorType.LocRead => MessageBox.Show("One or more of the localisation files are missing or corrupt",
-        //        "Unable to parse localisation file(s)", MessageBoxButton.OK, MessageBoxImage.Error),
-        //    ErrorType.HistoryProvFolder => MessageBox.Show($"The {histProvPath} folder is missing or inaccessible",
-        //        "Unable to access province history files", MessageBoxButton.OK, MessageBoxImage.Error),
-        //    ErrorType.ValDate => MessageBox.Show("At least one bookmark, or a defines entry are required to determine the start date",
-        //        "Unable to determine start date", MessageBoxButton.OK, MessageBoxImage.Error),
-        //    ErrorType.GameExe => MessageBox.Show("Cannot find the game executable!",
-        //        "Missing EXE", MessageBoxButton.OK, MessageBoxImage.Error),
-        //    ErrorType.NoCultures => MessageBox.Show("Unable to find any cultures in the culture file(s), or the file(s) / folder are inaccessible",
-        //        "Missing cultures", MessageBoxButton.OK, MessageBoxImage.Error),
-        //    ErrorType.NoCulGroups => MessageBox.Show("Unable to find any culture groups in the culture file(s)",
-        //        "No culture groups", MessageBoxButton.OK, MessageBoxImage.Error),
-        //    ErrorType.NoCountries => MessageBox.Show("Unable to find the countries folder, or the files are inaccessible",
-        //        "Missing countries", MessageBoxButton.OK, MessageBoxImage.Error),
-        //    _ => throw new NotImplementedException(),
-        //});
+        private static void Error_Msg(ErrorType type) => _ = (type switch
+        {
+            ErrorType.DefinRead => MessageBox.Show("The definition.csv file is missing or corrupt",
+                "Unable to parse definition file", MessageBoxButton.OK, MessageBoxImage.Error),
+            ErrorType.DefinWrite => MessageBox.Show("The definition.csv file is inaccessible for writing",
+                "Unable to access definition file", MessageBoxButton.OK, MessageBoxImage.Error),
+            ErrorType.DefMapRead => MessageBox.Show("The default.map file is missing or corrupt",
+                "Unable to parse default file", MessageBoxButton.OK, MessageBoxImage.Error),
+            ErrorType.DefMapWrite => MessageBox.Show("The default.map file is inaccessible for writing",
+                "Unable to access default file", MessageBoxButton.OK, MessageBoxImage.Error),
+            ErrorType.DefMapMaxProv => MessageBox.Show("The 'default.map' file has no max_provinces definition!",
+                "Missing max_provinces", MessageBoxButton.OK, MessageBoxImage.Error),
+            ErrorType.LocFolder => MessageBox.Show("The localisation folder is missing or inaccessible",
+                "Unable to access localisation files", MessageBoxButton.OK, MessageBoxImage.Error),
+            ErrorType.LocRead => MessageBox.Show("One or more of the localisation files are missing or corrupt",
+                "Unable to parse localisation file(s)", MessageBoxButton.OK, MessageBoxImage.Error),
+            ErrorType.HistoryProvFolder => MessageBox.Show($"The {HistProvPath} folder is missing or inaccessible",
+                "Unable to access province history files", MessageBoxButton.OK, MessageBoxImage.Error),
+            ErrorType.ValDate => MessageBox.Show("At least one bookmark, or a defines entry are required to determine the start date",
+                "Unable to determine start date", MessageBoxButton.OK, MessageBoxImage.Error),
+            ErrorType.GameExe => MessageBox.Show("Cannot find the game executable!",
+                "Missing EXE", MessageBoxButton.OK, MessageBoxImage.Error),
+            ErrorType.NoCultures => MessageBox.Show("Unable to find any cultures in the culture file(s), or the file(s) / folder are inaccessible",
+                "Missing cultures", MessageBoxButton.OK, MessageBoxImage.Error),
+            ErrorType.NoCulGroups => MessageBox.Show("Unable to find any culture groups in the culture file(s)",
+                "No culture groups", MessageBoxButton.OK, MessageBoxImage.Error),
+            ErrorType.NoCountries => MessageBox.Show("Unable to find the countries folder, or the files are inaccessible",
+                "Missing countries", MessageBoxButton.OK, MessageBoxImage.Error),
+            _ => throw new NotImplementedException(),
+        });
     }
 }
