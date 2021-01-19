@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -94,13 +95,25 @@ namespace EU4_PCP_WPF.Views
         private void Rectangle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var marker = sender as Rectangle;
-            var prov = marker.Tag as Province;
+            ScrollToProv(marker.Tag as Province);
+        }
+
+        private void ScrollToProv(Province prov)
+        {
             var provIndex = Provinces.Where(p => p && p.Show).ToList().IndexOf(prov);
             var offset = provIndex + (int)(ProvTable.RenderSize.Height / (ProvTable.MinRowHeight + 1) / 2) - 1;
             if (offset >= ProvTable.Items.Count) offset = ProvTable.Items.Count - 1;
-            
+
             ProvTable.ScrollIntoView(ProvTable.Items[0]);
             ProvTable.ScrollIntoView(ProvTable.Items[offset]);
+        }
+
+        private void DataGridRow_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.Source is DataGridCellsPresenter row && row.DataContext is TableProvince prov && prov.IsDupli)
+            {
+                ScrollToProv(prov.NextDupli);
+            }
         }
     }
 }
