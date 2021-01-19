@@ -894,38 +894,6 @@ namespace EU4_PCP_WPF
 			}
 			catch (Exception) { return; }
 
-            //         foreach (var modFile in files)
-            //         {
-            //	string mFile = File.ReadAllText(modFile);
-            //	var nameMatch = modNameRE.Match(mFile);
-            //	var pathMatch = modPathRE.Match(mFile);
-            //	var verMatch = modVerRE.Match(mFile);
-
-            //	if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) return;
-
-            //	var modPath = pathMatch.Value;
-
-            //	if (!Directory.Exists(modPath))
-            //	{
-            //		var tempPath = $@"{Directory.GetParent(paradoxModPath).FullName}\{modPath.TrimStart('/', '\\')}";
-            //		if (Directory.Exists(tempPath))
-            //			modPath = tempPath;
-            //		else return;
-            //	}
-
-            //	// With many mods in the folder, a context switch that will cause an OutOfRange exception is more likely
-            //	//lock (modLock)
-            //	//{
-            //		mods.Add(new ModObj
-            //		{
-            //			Name = nameMatch.Value,
-            //			Path = modPath,
-            //			Ver = verMatch.Value,
-            //			Replace = ReplacePrep(mFile)
-            //		});
-            //	//}
-            //}
-
             Parallel.ForEach(files, modFile =>
             {
                 string mFile = File.ReadAllText(modFile);
