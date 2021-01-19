@@ -22,6 +22,10 @@ namespace EU4_PCP_WPF.Views
 
         public void OnNavigatedTo(object parameter)
         {
+            PageTitle.Text = "Provinces Table";
+            if (SelectedMod)
+                PageTitle.Text += $" - {SelectedMod}";
+
             ProvTable.ItemsSource = from prov in Provinces
                                     where prov && prov.Show
                                     select new TableProvince(prov);

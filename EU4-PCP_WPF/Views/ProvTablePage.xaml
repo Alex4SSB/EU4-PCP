@@ -15,6 +15,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <TextBlock
+            x:Name="PageTitle"
             Margin="{StaticResource MediumLeftMargin}"
             Style="{StaticResource PageTitleStyle}"
             Text="{x:Static properties:Resources.ProvTablePageTitle}" />
