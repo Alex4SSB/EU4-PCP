@@ -49,12 +49,9 @@ namespace EU4_PCP_WPF
 			{
                 if (!MainSequence()) return false;
 
-                //lockdown = false;
-
                 SelectedModIndex = index;
 				ChangeMod();
 
-				//lockdown = true;
 				return true;
 			}
 			else SelectedModIndex = 0;
@@ -153,7 +150,6 @@ namespace EU4_PCP_WPF
 			switch (scope)
 			{
 				case Scope.Game when !File.Exists(setting + GameFile):
-					//SettingsWrite(scope);
 					return ErrorMsg(ErrorType.GameExe);
 				case Scope.Mod:
 					if (string.IsNullOrEmpty(setting))
@@ -166,7 +162,8 @@ namespace EU4_PCP_WPF
 						}
 						else return false;
 					}
-					else ParadoxModPath = setting;
+					else 
+						ParadoxModPath = setting;
 					break;
 				default:
 					break;
@@ -394,11 +391,6 @@ namespace EU4_PCP_WPF
 		/// </summary>
 		public static void ChangeMod()
 		{
-			//if (SelectedModIndex < 1)
-			//	Critical(CriticalType.Begin);
-			//else
-			//	Critical(CriticalType.Begin, CriticalScope.Mod);
-
 			if (SelectedModIndex < 1)
 			{
 				SelectedMod = null;
@@ -409,23 +401,15 @@ namespace EU4_PCP_WPF
 				SelectedMod = Mods[SelectedModIndex - 1];
 				SteamModPath = SelectedMod.Path;
 			}
-
 			SelectedBookmarkIndex = BookmarkList != null && BookmarkList.Any() ? 0 : -1;
 
-			//var success = MainSequence();
-			if (!MainSequence())
+            if (MainSequence())
+                Security.StoreValue(SelectedMod ? SelectedMod.Name : "-1", General.LastSelMod.ToString());
+            else if (SelectedMod)
 			{
-				if (SelectedMod)
-				{
-					SelectedModIndex = 0;
-					ChangeMod();
-				}
-				//else ClearScreen();
+				SelectedModIndex = 0;
+				ChangeMod();
 			}
-			else
-				Security.StoreValue(SelectedMod ? SelectedMod.Name : "-1", General.LastSelMod.ToString());
-
-			//Critical(CriticalType.Finish, success);
 		}
 
 		/// <summary>
@@ -434,8 +418,6 @@ namespace EU4_PCP_WPF
 		public static void EnactBook()
 		{
 			if (Lockdown) return;
-			//Critical(CriticalType.Begin, CriticalScope.Bookmark);
-
 			if (SelectedBookmarkIndex < 0)
             {
 				if (BookmarkList.Any())
@@ -452,10 +434,11 @@ namespace EU4_PCP_WPF
 			OwnerSetup(true);
 			ProvNameSetup();
 			DynamicSetup();
-
-			//Critical(CriticalType.Finish, true);
 		}
 
+		/// <summary>
+		/// Invokes the relevant procedures if the corresponding properties were changed.
+		/// </summary>
 		public static void UpdateProperties()
         {
 			if (Security.RetrieveBool(General.ShowAllProvinces) is bool showRnw && showRnw != ShowRnw)
@@ -478,6 +461,10 @@ namespace EU4_PCP_WPF
             }
 		}
 
+		/// <summary>
+		/// Updates the definition.csv file by writing all current provinces.
+		/// </summary>
+		/// <returns><see langword="false"/> if the operation was not successful.</returns>
 		public static bool WriteProvinces()
         {
 			string stream = "province;red;green;blue;x;x\r\n";
@@ -499,6 +486,11 @@ namespace EU4_PCP_WPF
 			return true;
         }
 
+		/// <summary>
+		/// Updates the defines.map file.
+		/// </summary>
+		/// <param name="newMax">The new max_provinces value</param>
+		/// <returns></returns>
 		public static bool WriteDefines(string newMax)
         {
 			string defMap;
@@ -523,6 +515,9 @@ namespace EU4_PCP_WPF
 			return true;
         }
 
+		/// <summary>
+		/// Handles duplicate provinces - sets for each province its next duplicate.
+		/// </summary>
 		public static void DupliPrep()
         {
             Provinces.ForEach(prov => prov.NextDupli = null);
@@ -542,7 +537,7 @@ namespace EU4_PCP_WPF
 					group.ElementAt(i).NextDupli = group.ElementAt(nextIndex);
                 }
             }
-
         }
+
 	}
 }
