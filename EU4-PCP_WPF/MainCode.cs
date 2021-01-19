@@ -47,11 +47,13 @@ namespace EU4_PCP_WPF
 				&& modNames.IndexOf(lastSelMod) is int index
 				&& index > -1)
 			{
-				if (!MainSequence()) return false;
+                if (!MainSequence()) return false;
 
-				//lockdown = false;
-				SelectedModIndex = index;
-				// TODO: Activate selected index changed
+                //lockdown = false;
+
+                SelectedModIndex = index;
+				ChangeMod();
+
 				//lockdown = true;
 				return true;
 			}
@@ -295,12 +297,12 @@ namespace EU4_PCP_WPF
 		}
 
 		/// <summary>
-		/// A smart count of overall Provinces and shown provinces. <br />
+		/// A smart count of overall Provinces.
 		/// </summary>
 		/// <param name="scope"></param>
 		private static void CountProv(Scope scope)
 		{
-			var provCount = Provinces.Count(p => p && p.ToString().Length > 0).ToString();
+			var provCount = Provinces.Count(p => p && !string.IsNullOrWhiteSpace(p.ToString())).ToString();
 
 			switch (scope)
 			{
@@ -314,7 +316,6 @@ namespace EU4_PCP_WPF
 				default:
 					break;
 			}
-            //ProvincesShown = ProvTable.Rows.Count.ToString();
         }
 
 		/// <summary>
@@ -421,8 +422,8 @@ namespace EU4_PCP_WPF
 				}
 				//else ClearScreen();
 			}
-			else if (SelectedModIndex > 0)
-				Security.StoreValue(SelectedMod.Name, General.LastSelMod.ToString());
+			else
+				Security.StoreValue(SelectedMod ? SelectedMod.Name : "-1", General.LastSelMod.ToString());
 
 			//Critical(CriticalType.Finish, success);
 		}
