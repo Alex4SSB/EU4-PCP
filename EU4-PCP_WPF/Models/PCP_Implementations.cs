@@ -953,17 +953,6 @@ namespace EU4_PCP_WPF
 		}
 
 		/// <summary>
-		/// Checks presence of OneDrive and selects the correct Documents folder
-		/// </summary>
-		public static void DocsPrep()
-		{
-			if (Directory.Exists(OneDrivePath) && Directory.EnumerateFileSystemEntries(OneDrivePath).Any())
-				SelectedDocsPath = OneDrivePath;
-			else
-				SelectedDocsPath = DocsPath;
-		}
-
-		/// <summary>
 		/// Selects mod path if a mod is selected, or game path if not.
 		/// </summary>
 		/// <returns>SteamModPath or GamePath.</returns>

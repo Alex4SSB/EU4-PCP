@@ -4,14 +4,11 @@ namespace EU4_PCP_WPF
     public static class PCP_Paths
     {
 		// DOCS FOLDERS
-		public static readonly string UserFolder = $@"C:\Users\{Environment.UserName}";
-		public static readonly string DocsFolder = @"\Documents\Paradox Interactive\Europa Universalis IV";
-		public static readonly string DocsPath = $@"{UserFolder}{DocsFolder}";
-		public static readonly string OneDrivePath = $@"{UserFolder}\OneDrive{DocsFolder}";
+		public static readonly string DocsFolder = @"\Paradox Interactive\Europa Universalis IV";
 		public static readonly string ModPath = @"\mod";
 		public static string ParadoxModPath = ""; // The folder that contains the .mod files
 		public static string SteamModPath = ""; // Current Mod - parsed from the .mod file
-		public static string SelectedDocsPath = ""; // OneDrive / Offline
+		public static readonly string SelectedDocsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + DocsFolder; // OneDrive / Offline
 		public static readonly string GameLogPath = @"\logs\game.log";
 
 		// MAIN FOLDERS

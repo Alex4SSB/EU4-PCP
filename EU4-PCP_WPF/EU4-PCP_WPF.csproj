@@ -9,6 +9,9 @@
     <AssemblyName>EU4-PCP</AssemblyName>
     <StartupObject>EU4_PCP_WPF.App</StartupObject>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MahApps.Metro" Version="2.4.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />

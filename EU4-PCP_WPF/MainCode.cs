@@ -124,7 +124,6 @@ namespace EU4_PCP_WPF
 				string.IsNullOrEmpty(tempGamePath) ||
 				!PathHandler(Scope.Game)) return false;
 			GamePath = tempGamePath;
-			DocsPrep();
 
 			return true;
 		}
