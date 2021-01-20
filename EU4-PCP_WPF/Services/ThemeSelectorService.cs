@@ -57,7 +57,7 @@ namespace EU4_PCP_WPF.Services
                 return theme;
             }
 
-            return AppTheme.Default;
+            return AppTheme.Light;
         }
     }
 }
