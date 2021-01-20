@@ -75,8 +75,9 @@ namespace EU4_PCP_WPF.Views
             StartDateBlock.ToolTip = DATE_FORMAT;
 
             ProvCountColor();
+            EnablePicker();
             UpdatePicker();
-
+            
             Lockdown = false;
         }
 

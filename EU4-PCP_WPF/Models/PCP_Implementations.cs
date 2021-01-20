@@ -405,7 +405,10 @@ namespace EU4_PCP_WPF
 			switch (mode)
 			{
 				case Mode.Read:
-					string[] lines = Security.RetrieveValue(scope).Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
+                    string setting = Security.RetrieveValue(scope);
+					if (string.IsNullOrEmpty(setting)) return;
+
+                    string[] lines = setting.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
 
 					foreach (var member in lines.Where(l => l.Length > 5))
 					{

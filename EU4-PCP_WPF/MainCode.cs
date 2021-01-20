@@ -22,7 +22,8 @@ namespace EU4_PCP_WPF
 
 		public static void PCP_Main()
 		{
-			LaunchSequence();
+			if (!LaunchSequence())
+				NavigateToSettings = true;
 		}
 
 		/// <summary>
@@ -70,6 +71,12 @@ namespace EU4_PCP_WPF
 				EnLoc = true;
 				EnDyn = Security.RetrieveBoolEnum(ProvinceNames.Dynamic);
 			}
+			else
+			{
+				EnLoc =
+				EnDyn = false;
+			}
+
 			CheckDupli = Security.RetrieveBool(General.CheckDupli);
             ShowRnw = Security.RetrieveBool(General.ShowAllProvinces);
 			UpdateCountries = false;
@@ -133,7 +140,7 @@ namespace EU4_PCP_WPF
 		/// </summary>
 		/// <param name="scope">Game / Mod.</param>
 		/// <returns><see langword="true"/> if the validation was successful.</returns>
-		private static bool PathHandler(Scope scope) => PathHandler(scope, PathRead(scope));
+		public static bool PathHandler(Scope scope) => PathHandler(scope, PathRead(scope));
 
 		/// <summary>
 		/// Handles path validation for game and mod.
@@ -179,7 +186,10 @@ namespace EU4_PCP_WPF
 		/// <returns>The path as string.</returns>
 		private static string PathRead(Scope scope)
 		{
-			return Security.RetrieveValue(Enum.GetName(typeof(Scope), scope) + "Path").ToString();
+			if (Security.RetrieveValue(Enum.GetName(typeof(Scope), scope) + "Path") is string str)
+				return str;
+			else
+				return "";
 		}
 
 		private static void PathWrite(Scope scope, string path)
@@ -458,6 +468,8 @@ namespace EU4_PCP_WPF
 
 				DupliPrep();
             }
+			if (Security.RetrieveBoolEnum(ProvinceNames.Dynamic) != EnDyn || Security.RetrieveBoolEnum(ProvinceNames.Localisation) != EnLoc)
+				MainSequence();
 		}
 
 		/// <summary>

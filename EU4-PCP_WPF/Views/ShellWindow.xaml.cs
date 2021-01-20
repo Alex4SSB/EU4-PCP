@@ -66,10 +66,18 @@ namespace EU4_PCP_WPF.Views
 
         private void NavigationTimer_Tick(object sender, EventArgs e)
         {
-            if (!NavigateToColorPicker) return;
-            NavigateToColorPicker = false;
+            if (NavigateToColorPicker)
+            {
+                NavigateToColorPicker = false;
 
-            NavigateTo(typeof(ColorPickerPage));
+                NavigateTo(typeof(ColorPickerPage));
+            }
+            else if (NavigateToSettings)
+            {
+                NavigateToSettings = false;
+
+                NavigateTo(typeof(SettingsPage));
+            }
         }
 
         public Frame GetNavigationFrame()

@@ -81,6 +81,8 @@ namespace EU4_PCP_WPF.Views
 
         private void MoveTableToIndex(double tableIndex)
         {
+            if (ProvTable.Items.Count < 1) return;
+
             // -2 rows for scroll offset, +1 pixel for horizontal grid line width
             int index = (int)(tableIndex - 2 + (ProvTable.RenderSize.Height / (ProvTable.MinRowHeight + 1)));
             if (index >= ProvTable.Items.Count) index = ProvTable.Items.Count - 1;

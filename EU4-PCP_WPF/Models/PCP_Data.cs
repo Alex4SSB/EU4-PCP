@@ -54,5 +54,6 @@ namespace EU4_PCP_WPF
 		public static Color ColorPickerPickedColor;
 		public static TableProvince ChosenProv;
 		public static bool NavigateToColorPicker = false;
+		public static bool NavigateToSettings = false;
 	}
 }

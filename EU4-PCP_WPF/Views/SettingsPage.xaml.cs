@@ -14,6 +14,7 @@ using EU4_PCP_WPF.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using static EU4_PCP_WPF.MainCode;
+using static EU4_PCP_WPF.PCP_Paths;
 
 namespace EU4_PCP_WPF.Views
 {
@@ -136,10 +137,11 @@ namespace EU4_PCP_WPF.Views
         private void ChangeSettings(Control control)
         {
             string blockText = "";
+            var tag = control.Tag.ToString();
 
             var dialog = new OpenFileDialog
             {
-                Filter = Names.GlobalNames[control.Tag + "Filter"],
+                Filter = Names.GlobalNames[tag + "Filter"],
             };
 
             if (dialog.ShowDialog() != true ||
@@ -147,9 +149,16 @@ namespace EU4_PCP_WPF.Views
                 return;
 
             blockText = System.IO.Directory.GetParent(dialog.FileName).ToString();
-            Security.StoreValue(blockText, control.Tag);
+            Security.StoreValue(blockText, tag);
 
-            ((TextBlock)Controls.First(c => c.Tag.ToString() == control.Tag.ToString() && c is TextBlock)).Text = blockText;
+            ((TextBlock)Controls.First(c => c.Tag.ToString() == tag && c is TextBlock)).Text = blockText;
+
+            if (tag == General.GamePath.ToString())
+            {
+                PathHandler(Scope.Mod);
+                if (!string.IsNullOrEmpty(ParadoxModPath))
+                    ModPathBlock.Text = ParadoxModPath;
+            }
         }
 
         private void RetrieveGroups()
