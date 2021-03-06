@@ -221,7 +221,7 @@ namespace EU4_PCP_WPF.Views
             PickedColor.B = (byte)BlueSlider.Value;
             
             ColorRectangle.Fill = new SolidColorBrush(PickedColor);
-            ColorRectangle.ToolTip = PickedColor.ToString().Replace("FF", "");
+            HxValueBlock.Text = PickedColor.ToString().Replace("#FF", "#");
             ColorPickerPickedColor = PickedColor.Convert();
 
             RedTextBox.Background =

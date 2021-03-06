@@ -70,7 +70,7 @@ namespace EU4_PCP_WPF.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.5.3.
+        ///   Looks up a localized string similar to 1.5.4.
         /// </summary>
         public static string AppVersion {
             get {

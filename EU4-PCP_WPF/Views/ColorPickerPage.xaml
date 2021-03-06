@@ -41,10 +41,14 @@
                         x:Name="ColorRectangle"
                         Grid.Column="1"
                         Height="40"
-                        Fill="Black"
-                        ToolTip="#000000" />
+                        Fill="Black" />
                 </StackPanel>
-
+                <TextBlock
+                    x:Name="HxValueBlock"
+                    Margin="4"
+                    HorizontalAlignment="Center"
+                    FontFamily="Consolas"
+                    Text="#000000" />
                 <Grid Margin="0,4,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -63,23 +67,29 @@
                         Maximum="255"
                         SmallChange="1"
                         ValueChanged="Slider_ValueChanged" />
-                    <TextBox
-                        x:Name="RedTextBox"
-                        Grid.Column="1"
-                        Margin="4"
-                        FontFamily="Consolas"
-                        Text="{Binding Value, ElementName=RedSlider}"
-                        TextChanged="RedTextBox_TextChanged" />
-                    <Button
-                        x:Name="LockRedButton"
-                        Grid.Column="1"
-                        Margin="4"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Click="LockRedButton_Click"
-                        Content="&#xE785;"
-                        FontFamily="{StaticResource MahApps.Fonts.Family.SymbolTheme}"
-                        ToolTip="Lock red channel" />
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox
+                            x:Name="RedTextBox"
+                            Margin="4,4,0,4"
+                            FontFamily="Consolas"
+                            Text="{Binding Value, ElementName=RedSlider}"
+                            TextChanged="RedTextBox_TextChanged" />
+                        <Button
+                            x:Name="LockRedButton"
+                            Grid.Column="1"
+                            Margin="4"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Click="LockRedButton_Click"
+                            Content="&#xE785;"
+                            FontFamily="{StaticResource MahApps.Fonts.Family.SymbolTheme}"
+                            Style="{StaticResource MahApps.Styles.Button.Square}"
+                            ToolTip="Lock red channel" />
+                    </Grid>
                     <Border Grid.Column="2">
                         <TextBlock
                             x:Name="RedTextBlock"
@@ -95,25 +105,29 @@
                         Maximum="255"
                         SmallChange="1"
                         ValueChanged="Slider_ValueChanged" />
-                    <TextBox
-                        x:Name="GreenTextBox"
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Margin="4"
-                        FontFamily="Consolas"
-                        Text="{Binding Value, ElementName=GreenSlider}"
-                        TextChanged="GreenTextBox_TextChanged" />
-                    <Button
-                        x:Name="LockGreenButton"
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Margin="4"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Click="LockGreenButton_Click"
-                        Content="&#xE785;"
-                        FontFamily="{StaticResource MahApps.Fonts.Family.SymbolTheme}"
-                        ToolTip="Lock green channel" />
+                    <Grid Grid.Row="1" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox
+                            x:Name="GreenTextBox"
+                            Margin="4,4,0,4"
+                            FontFamily="Consolas"
+                            Text="{Binding Value, ElementName=GreenSlider}"
+                            TextChanged="GreenTextBox_TextChanged" />
+                        <Button
+                            x:Name="LockGreenButton"
+                            Grid.Column="1"
+                            Margin="4"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Click="LockGreenButton_Click"
+                            Content="&#xE785;"
+                            FontFamily="{StaticResource MahApps.Fonts.Family.SymbolTheme}"
+                            Style="{StaticResource MahApps.Styles.Button.Square}"
+                            ToolTip="Lock green channel" />
+                    </Grid>
                     <Border Grid.Row="1" Grid.Column="2">
                         <TextBlock
                             x:Name="GreenTextBlock"
@@ -129,25 +143,29 @@
                         Maximum="255"
                         SmallChange="1"
                         ValueChanged="Slider_ValueChanged" />
-                    <TextBox
-                        x:Name="BlueTextBox"
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Margin="4"
-                        FontFamily="Consolas"
-                        Text="{Binding Value, ElementName=BlueSlider}"
-                        TextChanged="BlueTextBox_TextChanged" />
-                    <Button
-                        x:Name="LockBlueButton"
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Margin="4"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Click="LockBlueButton_Click"
-                        Content="&#xE785;"
-                        FontFamily="{StaticResource MahApps.Fonts.Family.SymbolTheme}"
-                        ToolTip="Lock Blue channel" />
+                    <Grid Grid.Row="2" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox
+                            x:Name="BlueTextBox"
+                            Margin="4,4,0,4"
+                            FontFamily="Consolas"
+                            Text="{Binding Value, ElementName=BlueSlider}"
+                            TextChanged="BlueTextBox_TextChanged" />
+                        <Button
+                            x:Name="LockBlueButton"
+                            Grid.Column="1"
+                            Margin="4"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Click="LockBlueButton_Click"
+                            Content="&#xE785;"
+                            FontFamily="{StaticResource MahApps.Fonts.Family.SymbolTheme}"
+                            Style="{StaticResource MahApps.Styles.Button.Square}"
+                            ToolTip="Lock Blue channel" />
+                    </Grid>
                     <Border Grid.Row="2" Grid.Column="2">
                         <TextBlock
                             x:Name="BlueTextBlock"

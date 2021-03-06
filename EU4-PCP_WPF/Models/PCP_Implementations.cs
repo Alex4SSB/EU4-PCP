@@ -15,7 +15,7 @@ using static EU4_PCP_WPF.PCP_RegEx;
 
 namespace EU4_PCP_WPF
 {
-    public static class PCP_Implementations
+	public static class PCP_Implementations
 	{
 		#region Overrides and Helper Functions
 
@@ -25,7 +25,7 @@ namespace EU4_PCP_WPF
 		/// <param name="color"></param>
 		/// <returns></returns>
 		public static string ToCsv(this Color color)
-        {
+		{
 			return $"{color.R};{color.G};{color.B}";
 		}
 
@@ -100,9 +100,9 @@ namespace EU4_PCP_WPF
 		}
 
 		public static Color ToColor(this byte[] color)
-        {
+		{
 			return Color.FromArgb(color[0], color[1], color[2]);
-        }
+		}
 
 		/// <summary>
 		/// Trims and then compares two numeric strings using > (greater than) operator
@@ -122,17 +122,17 @@ namespace EU4_PCP_WPF
 		/// <param name="other">The right hand string.</param>
 		/// <returns></returns>
 		public static bool Ge(this string s, string other)
-        {
+		{
 			return s.Trim().ToInt() >= other.Trim().ToInt();
-        }
+		}
 
-        /// <summary>
-        /// Increments the numeric value of a <see cref="string"/> by a given value.
-        /// </summary>
-        /// <param name="s">The <see cref="string"/> to increment.</param>
-        /// <param name="val">The value by which to increment.</param>
-        /// <returns>The incremented <see cref="string"/>.</returns>
-        public static string Inc(string s, int val)
+		/// <summary>
+		/// Increments the numeric value of a <see cref="string"/> by a given value.
+		/// </summary>
+		/// <param name="s">The <see cref="string"/> to increment.</param>
+		/// <param name="val">The value by which to increment.</param>
+		/// <returns>The incremented <see cref="string"/>.</returns>
+		public static string Inc(string s, int val)
 		{
 			int temp = s.ToInt();
 			temp += val;
@@ -191,29 +191,29 @@ namespace EU4_PCP_WPF
 
 			Provinces.Clear();
 
-            Parallel.ForEach(dFile, p =>
-            {
-                string[] list = p.Split(';');
-                int i = -1;
-                byte[] provColor = new byte[3];
-                if (!(int.TryParse(list[0], out i) &&
-                    list[1..].ToByte(out provColor)))
-                    return;
+			Parallel.ForEach(dFile, p =>
+			{
+				string[] list = p.Split(';');
+				int i = -1;
+				byte[] provColor = new byte[3];
+				if (!(int.TryParse(list[0], out i) &&
+					list[1..].ToByte(out provColor)))
+					return;
 
-                Province prov = new Province
+				Province prov = new Province
 				(
 					index: i,
 					color: provColor.ToColor(),
 					name: list[4].Trim()
 				);
 
-                lock (definLock)
-                {
+				lock (definLock)
+				{
 					Provinces.Add(prov);
-                }
-            });
+				}
+			});
 			Provinces.Sort();
-            return true;
+			return true;
 		}
 
 		/// <summary>
@@ -337,7 +337,7 @@ namespace EU4_PCP_WPF
 
 			if (scope == LocScope.BookLoc &&
 				!success &&
-                !Bookmarks.Any(book => book.Name == null))
+				!Bookmarks.Any(book => book.Name == null))
 			{ success = true; }
 
 			readSuccess = locSuccess;
@@ -368,10 +368,10 @@ namespace EU4_PCP_WPF
 			var provId = match.Split(':')[0].ToInt();
 
 			if (string.IsNullOrWhiteSpace(name)
-                || (Provinces.Where(prov => prov.Index == provId) is var tempProv && !tempProv.Any())
-                || tempProv.First() is not Province prov
-                || (!string.IsNullOrEmpty(prov.Name.Localisation) && gameDir)) return false;
-            prov.Name.Localisation = name;
+				|| (Provinces.Where(prov => prov.Index == provId) is var tempProv && !tempProv.Any())
+				|| tempProv.First() is not Province prov
+				|| (!string.IsNullOrEmpty(prov.Name.Localisation) && gameDir)) return false;
+			prov.Name.Localisation = name;
 			return true;
 		}
 
@@ -381,34 +381,34 @@ namespace EU4_PCP_WPF
 		/// <param name="match">The RegEx match result. (Bookmark name)</param>
 		/// <returns><see langword="true"/> if the name was written.</returns>
 		private static bool NameBook(string match, bool gameDir)
-        {
-            var tempBook = Bookmarks.First(book => book.Code == BookLocCodeRE.Match(match).Value);
-            if (SelectedMod && tempBook.Name != null && gameDir)
-                return false;
-            tempBook.Name = LocNameRE.Match(match).Value;
+		{
+			var tempBook = Bookmarks.First(book => book.Code == BookLocCodeRE.Match(match).Value);
+			if (SelectedMod && tempBook.Name != null && gameDir)
+				return false;
+			tempBook.Name = LocNameRE.Match(match).Value;
 
-            return true;
-        }
+			return true;
+		}
 
-        private static bool IsGameDirectory(string path)
-        {
-            return path.Contains(Directory.GetParent(GamePath + LocPath).FullName);
-        }
+		private static bool IsGameDirectory(string path)
+		{
+			return path.Contains(Directory.GetParent(GamePath + LocPath).FullName);
+		}
 
-        /// <summary>
-        /// A link between LocFiles <see cref="Settings"/> and <see cref="Members"/> list.
-        /// </summary>
-        /// <param name="mode">Read from the <see cref="Settings"/>, or Write to the <see cref="Settings"/></param>
-        /// <param name="scope">Province or Bookmark</param>
-        public static void LocMembers(Mode mode, LocScope scope)
+		/// <summary>
+		/// A link between LocFiles <see cref="Settings"/> and <see cref="Members"/> list.
+		/// </summary>
+		/// <param name="mode">Read from the <see cref="Settings"/>, or Write to the <see cref="Settings"/></param>
+		/// <param name="scope">Province or Bookmark</param>
+		public static void LocMembers(Mode mode, LocScope scope)
 		{
 			switch (mode)
 			{
 				case Mode.Read:
-                    string setting = Security.RetrieveValue(scope);
+					string setting = Security.RetrieveValue(scope);
 					if (string.IsNullOrEmpty(setting)) return;
 
-                    string[] lines = setting.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
+					string[] lines = setting.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
 
 					foreach (var member in lines.Where(l => l.Length > 5))
 					{
@@ -539,13 +539,13 @@ namespace EU4_PCP_WPF
 		/// Otherwise - an empty <see cref="string"/>.
 		/// </returns>
 		private static string DateBooster(string str)
-        {
+		{
 			var arr = str.Split('.');
 			if (arr.Length != 3) return "";
 
 			if (!int.TryParse(arr[0], out int year)) return "";
 			return $"{year + 1000}.{arr[1]}.{arr[2]}";
-        }
+		}
 
 		/// <summary>
 		/// Creates the pattern for the multi-bookmark search <see cref="Regex"/>.
@@ -760,11 +760,11 @@ namespace EU4_PCP_WPF
 					continue;
 				}
 				if (DynamicName(prov, NameType.Country)
-                    || !prov.Owner.Culture
-                    || DynamicName(prov, NameType.Culture)) 
+					|| !prov.Owner.Culture
+					|| DynamicName(prov, NameType.Culture)) 
 					continue;
 
-                if (prov.Owner.Culture.Group)
+				if (prov.Owner.Culture.Group)
 					DynamicName(prov, NameType.Group);
 			}
 		}
@@ -818,27 +818,27 @@ namespace EU4_PCP_WPF
 			Bookmarks = SortBooks(Bookmarks);
 		}
 
-        /// <summary>
-        /// Removes bookmarks of the same date as the default one, and sorts them by date.
-        /// </summary>
-        private static List<Bookmark> SortBooks(List<Bookmark> bookmarks)
-        {
+		/// <summary>
+		/// Removes bookmarks of the same date as the default one, and sorts them by date.
+		/// </summary>
+		private static List<Bookmark> SortBooks(List<Bookmark> bookmarks)
+		{
 			var sortedBooks = new List<Bookmark>();
-            foreach (var item in bookmarks.GroupBy(book => book.BookDate).OrderBy(books => books.Key))
-            {
+			foreach (var item in bookmarks.GroupBy(book => book.BookDate).OrderBy(books => books.Key))
+			{
 				if (item.Count() == 1)
 					sortedBooks.Add(item.Single());
 				else if (item.Count(b => b.DefBook) == 1)
 					sortedBooks.Add(item.First(book => book.DefBook));
-            };
+			};
 
 			return sortedBooks;
 		}
 
-        /// <summary>
-        /// Prepares mod defines files.
-        /// </summary>
-        public static void FetchDefines()
+		/// <summary>
+		/// Prepares mod defines files.
+		/// </summary>
+		public static void FetchDefines()
 		{
 			if (!SelectedMod) return;
 
@@ -897,39 +897,39 @@ namespace EU4_PCP_WPF
 			}
 			catch (Exception) { return; }
 
-            Parallel.ForEach(files, modFile =>
-            {
-                string mFile = File.ReadAllText(modFile);
-                var nameMatch = ModNameRE.Match(mFile);
-                var pathMatch = ModPathRE.Match(mFile);
-                var verMatch = ModVerRE.Match(mFile);
+			Parallel.ForEach(files, modFile =>
+			{
+				string mFile = File.ReadAllText(modFile);
+				var nameMatch = ModNameRE.Match(mFile);
+				var pathMatch = ModPathRE.Match(mFile);
+				var verMatch = ModVerRE.Match(mFile);
 
-                if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) return;
+				if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) return;
 
-                var modPath = pathMatch.Value;
+				var modPath = pathMatch.Value;
 
-                if (!Directory.Exists(modPath))
-                {
-                    var tempPath = $@"{Directory.GetParent(ParadoxModPath).FullName}\{modPath.TrimStart('/', '\\')}";
-                    if (Directory.Exists(tempPath))
-                        modPath = tempPath;
-                    else return;
-                }
+				if (!Directory.Exists(modPath))
+				{
+					var tempPath = $@"{Directory.GetParent(ParadoxModPath).FullName}\{modPath.TrimStart('/', '\\')}";
+					if (Directory.Exists(tempPath))
+						modPath = tempPath;
+					else return;
+				}
 
-                // With many mods in the folder, a context switch that will cause an OutOfRange exception is more likely
-                lock (modLock)
-                {
-                    Mods.Add(new ModObj
-                    {
-                        Name = nameMatch.Value,
-                        Path = modPath,
-                        Ver = verMatch.Value,
-                        Replace = ReplacePrep(mFile)
-                    });
-                }
-            });
+				// With many mods in the folder, a context switch that will cause an OutOfRange exception is more likely
+				lock (modLock)
+				{
+					Mods.Add(new ModObj
+					{
+						Name = nameMatch.Value,
+						Path = modPath,
+						Ver = verMatch.Value,
+						Replace = ReplacePrep(mFile)
+					});
+				}
+			});
 
-            Mods.Sort();
+			Mods.Sort();
 		}
 
 		/// <summary>
@@ -988,15 +988,15 @@ namespace EU4_PCP_WPF
 		/// <returns><see langword="true"/> if the date is valid.</returns>
 		public static bool ValDate()
 		{
-            return StartDate > DateTime.MinValue || ErrorMsg(ErrorType.ValDate);
-        }
+			return StartDate > DateTime.MinValue || ErrorMsg(ErrorType.ValDate);
+		}
 
-        /// <summary>
-        /// Generates an exclusive random <see cref="Color"/>, that doesn't exist in the given <see cref="Province"/> array.
-        /// </summary>
-        /// <param name="provList">The <see cref="Province"/> array to be searched.</param>
-        /// <returns>The generated <see cref="Color"/>.</returns>
-        public static Color RandomProvColor(List<Province> provList, int red = -1, int green = -1, int blue = -1)
+		/// <summary>
+		/// Generates an exclusive random <see cref="Color"/>, that doesn't exist in the given <see cref="Province"/> array.
+		/// </summary>
+		/// <param name="provList">The <see cref="Province"/> array to be searched.</param>
+		/// <returns>The generated <see cref="Color"/>.</returns>
+		public static Color RandomProvColor(List<Province> provList, int red = -1, int green = -1, int blue = -1)
 		{
 			var rnd = new Random();
 			int r, g, b;
@@ -1179,44 +1179,44 @@ namespace EU4_PCP_WPF
 		#endregion
 
 		public static bool ErrorMsg(ErrorType type, bool returnVal = false)
-        {
-            Error_Msg(type);
-            return returnVal;
-        }
+		{
+			Error_Msg(type);
+			return returnVal;
+		}
 
-        /// <summary>
-        /// Handles all error messages.
-        /// </summary>
-        /// <param name="type">The error type</param>
-        private static void Error_Msg(ErrorType type) => _ = (type switch
-        {
-            ErrorType.DefinRead => MessageBox.Show("The definition.csv file is missing or corrupt",
-                "Unable to parse definition file", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.DefinWrite => MessageBox.Show("The definition.csv file is inaccessible for writing",
-                "Unable to access definition file", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.DefMapRead => MessageBox.Show("The default.map file is missing or corrupt",
-                "Unable to parse default file", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.DefMapWrite => MessageBox.Show("The default.map file is inaccessible for writing",
-                "Unable to access default file", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.DefMapMaxProv => MessageBox.Show("The 'default.map' file has no max_provinces definition!",
-                "Missing max_provinces", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.LocFolder => MessageBox.Show("The localisation folder is missing or inaccessible",
-                "Unable to access localisation files", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.LocRead => MessageBox.Show("One or more of the localisation files are missing or corrupt",
-                "Unable to parse localisation file(s)", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.HistoryProvFolder => MessageBox.Show($"The {HistProvPath} folder is missing or inaccessible",
-                "Unable to access province history files", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.ValDate => MessageBox.Show("At least one bookmark, or a defines entry are required to determine the start date",
-                "Unable to determine start date", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.GameExe => MessageBox.Show("Cannot find the game executable!",
-                "Missing EXE", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.NoCultures => MessageBox.Show("Unable to find any cultures in the culture file(s), or the file(s) / folder are inaccessible",
-                "Missing cultures", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.NoCulGroups => MessageBox.Show("Unable to find any culture groups in the culture file(s)",
-                "No culture groups", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.NoCountries => MessageBox.Show("Unable to find the countries folder, or the files are inaccessible",
-                "Missing countries", MessageBoxButton.OK, MessageBoxImage.Error),
-            _ => throw new NotImplementedException(),
-        });
-    }
+		/// <summary>
+		/// Handles all error messages.
+		/// </summary>
+		/// <param name="type">The error type</param>
+		private static void Error_Msg(ErrorType type) => _ = (type switch
+		{
+			ErrorType.DefinRead => MessageBox.Show("The definition.csv file is missing or corrupt",
+				"Unable to parse definition file", MessageBoxButton.OK, MessageBoxImage.Error),
+			ErrorType.DefinWrite => MessageBox.Show("The definition.csv file is inaccessible for writing",
+				"Unable to access definition file", MessageBoxButton.OK, MessageBoxImage.Error),
+			ErrorType.DefMapRead => MessageBox.Show("The default.map file is missing or corrupt",
+				"Unable to parse default file", MessageBoxButton.OK, MessageBoxImage.Error),
+			ErrorType.DefMapWrite => MessageBox.Show("The default.map file is inaccessible for writing",
+				"Unable to access default file", MessageBoxButton.OK, MessageBoxImage.Error),
+			ErrorType.DefMapMaxProv => MessageBox.Show("The 'default.map' file has no max_provinces definition!",
+				"Missing max_provinces", MessageBoxButton.OK, MessageBoxImage.Error),
+			ErrorType.LocFolder => MessageBox.Show("The localisation folder is missing or inaccessible",
+				"Unable to access localisation files", MessageBoxButton.OK, MessageBoxImage.Error),
+			ErrorType.LocRead => MessageBox.Show("One or more of the localisation files are missing or corrupt",
+				"Unable to parse localisation file(s)", MessageBoxButton.OK, MessageBoxImage.Error),
+			ErrorType.HistoryProvFolder => MessageBox.Show($"The {HistProvPath} folder is missing or inaccessible",
+				"Unable to access province history files", MessageBoxButton.OK, MessageBoxImage.Error),
+			ErrorType.ValDate => MessageBox.Show("At least one bookmark, or a defines entry are required to determine the start date",
+				"Unable to determine start date", MessageBoxButton.OK, MessageBoxImage.Error),
+			ErrorType.GameExe => MessageBox.Show("Cannot find the game executable!",
+				"Missing EXE", MessageBoxButton.OK, MessageBoxImage.Error),
+			ErrorType.NoCultures => MessageBox.Show("Unable to find any cultures in the culture file(s), or the file(s) / folder are inaccessible",
+				"Missing cultures", MessageBoxButton.OK, MessageBoxImage.Error),
+			ErrorType.NoCulGroups => MessageBox.Show("Unable to find any culture groups in the culture file(s)",
+				"No culture groups", MessageBoxButton.OK, MessageBoxImage.Error),
+			ErrorType.NoCountries => MessageBox.Show("Unable to find the countries folder, or the files are inaccessible",
+				"Missing countries", MessageBoxButton.OK, MessageBoxImage.Error),
+			_ => throw new NotImplementedException(),
+		});
+	}
 }
