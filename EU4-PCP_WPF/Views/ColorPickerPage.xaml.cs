@@ -355,5 +355,26 @@ namespace EU4_PCP_WPF.Views
 
             return true;
         }
+
+        private void HxValueBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            HxValueBlock.FontWeight = FontWeights.Bold;
+            Clipboard.SetText(HxValueBlock.Text);
+        }
+
+        private void HxValueBlock_MouseEnter(object sender, MouseEventArgs e)
+        {
+            HxValueBlock.TextDecorations.Add(TextDecorations.Underline);
+        }
+
+        private void HxValueBlock_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            HxValueBlock.FontWeight = FontWeights.Normal;
+        }
+
+        private void HxValueBlock_MouseLeave(object sender, MouseEventArgs e)
+        {
+            HxValueBlock.TextDecorations.Clear();
+        }
     }
 }
