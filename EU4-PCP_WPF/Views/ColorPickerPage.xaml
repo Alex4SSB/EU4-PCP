@@ -47,11 +47,12 @@
                     x:Name="HxValueBlock"
                     Margin="4"
                     HorizontalAlignment="Center"
-                    Cursor="Hand"
                     FontFamily="Consolas"
                     MouseDown="HxValueBlock_MouseDown"
                     MouseEnter="HxValueBlock_MouseEnter"
-                    Text="#000000" MouseUp="HxValueBlock_MouseUp" MouseLeave="HxValueBlock_MouseLeave" />
+                    MouseLeave="HxValueBlock_MouseLeave"
+                    MouseUp="HxValueBlock_MouseUp"
+                    Text="#000000" />
                 <Grid Margin="0,4,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition />

@@ -93,6 +93,7 @@ namespace EU4_PCP_WPF.Views
         {
             bool isMod = ModSelComboBox.SelectedIndex > 0;
 
+            HxValueBlock.IsEnabled =
             RedSlider.IsEnabled =
             RedTextBox.IsEnabled =
             LockRedButton.IsEnabled =
@@ -186,24 +187,53 @@ namespace EU4_PCP_WPF.Views
         {
             if (!string.IsNullOrWhiteSpace(GameMaxProvBlock.Text))
             {
-                GameMaxProvBlock.Style = GameMaxProvBlock.Text.Gt(GameProvCountBlock.Text)
-                    ? GreenStyle : RedStyle;
+                if (GameMaxProvBlock.Text.Gt(GameProvCountBlock.Text))
+                {
+                    GameMaxProvBlock.Style = GreenStyle;
+                    GameMaxProvBlock.ToolTip = Names.GlobalNames["MaxProvPositive"];
+                }
+                else
+                {
+                    GameMaxProvBlock.Style = RedStyle;
+                    GameMaxProvBlock.ToolTip = Names.GlobalNames["MaxProvNegative"];
+                }
             }
             else
+            {
                 GameMaxProvBlock.Style = null;
+                GameMaxProvBlock.ToolTip = null;
+            }
 
             if (!string.IsNullOrWhiteSpace(ModMaxProvBlock.Text))
             {
-                ModMaxProvBlock.Style = ModMaxProvBlock.Text.Gt(ModProvCountBlock.Text)
-                    ? GreenStyle : RedStyle;
+                if (ModMaxProvBlock.Text.Gt(ModProvCountBlock.Text))
+                {
+                    ModMaxProvBlock.Style = GreenStyle;
+                    ModMaxProvBlock.ToolTip = Names.GlobalNames["MaxProvPositive"];
+                }
+                else
+                {
+                    ModMaxProvBlock.Style = RedStyle;
+                    ModMaxProvBlock.ToolTip = Names.GlobalNames["MaxProvNegative"];
+                }
 
-                ModProvCountBlock.Style = ModProvCountBlock.Text.Ge(GameProvCountBlock.Text)
-                    ? null : RedStyle;
+                if (ModProvCountBlock.Text.Ge(GameProvCountBlock.Text))
+                {
+                    ModProvCountBlock.Style = null;
+                    ModProvCountBlock.ToolTip = null;
+                }
+                else
+                {
+                    ModProvCountBlock.Style = RedStyle;
+                    ModProvCountBlock.ToolTip = Names.GlobalNames["ModProvNegative"];
+                }
             }
             else
             {
                 ModMaxProvBlock.Style = null;
                 ModProvCountBlock.Style = null;
+                ModMaxProvBlock.ToolTip = null;
+                ModProvCountBlock.ToolTip = null;
             }
         }
 
