@@ -568,7 +568,7 @@ namespace EU4_PCP
 		/// </summary>
 		public static void CountryCulSetup()
 		{
-			object countryLock = new object();
+			object countryLock = new();
 			Parallel.ForEach(CountryFiles, cFile =>
 			{
 				string code = cFile.File[..3];

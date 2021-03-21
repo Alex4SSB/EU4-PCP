@@ -305,5 +305,32 @@ namespace EU4_PCP_Test
                 Assert.IsTrue(item.Scope == Scope.Mod);
             }
         }
+
+        [TestMethod]
+        public void ToCsvTest()
+        {
+            // Also tests IsRNW
+
+            var colors = new List<Color>() {
+                Color.FromArgb(130, 12, 56),
+                Color.FromArgb(1, 40, 100),
+                Color.FromArgb(78, 32, 47),
+                Color.FromArgb(23, 190, 200),
+                Color.FromArgb(90, 212, 231)
+            };
+            var testProv = new List<Province>() {
+                new Province(index: 1, color: colors[0], name: "prov1"),
+                new Province(index: 2000, color: colors[1], name: "prov2000"),
+                new Province(index: 3, color: colors[2], name: "Unused1"),
+                new Province(index: 4, color: colors[3], name: "UnusedLand1"),
+                new Province(index: 5, color: colors[4], name: "RNW")
+            };
+
+            Assert.IsTrue(testProv[0].ToCsv() == "1;130;12;56;prov1;x");
+            Assert.IsTrue(testProv[1].ToCsv() == "2000;1;40;100;prov2000;x");
+            Assert.IsTrue(testProv[2].ToCsv() == "3;78;32;47;Unused1");
+            Assert.IsTrue(testProv[3].ToCsv() == "4;23;190;200;UnusedLand1");
+            Assert.IsTrue(testProv[4].ToCsv() == "5;90;212;231;RNW");
+        }
     }
 }
