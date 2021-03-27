@@ -172,47 +172,78 @@ namespace EU4_PCP
 		#endregion
 
 		/// <summary>
-		/// Creates the <see cref="Province"/> objects in the <see cref="Provinces"/> array. <br />
-		/// Initializes with index, color, and name from definition file.
+		/// Updates the Provinces list with provinces from the selected definition file.
 		/// </summary>
 		/// <param name="path">Root folder to work on.</param>
 		/// <returns><see langword="false"/> if an exception occurs while trying to read from the definition file.</returns>
 		public static bool DefinSetup(string path)
 		{
-			var definLock = new object();
-			string[] dFile;
-			try
+			if (DefinRead(path + DefinPath) is List<Province> provList)
 			{
-				dFile = File.ReadAllText(path + DefinPath, UTF7).Split(
+				Provinces.Clear();
+				Provinces = provList;
+				Provinces.Sort();
+				return true;
+			}
+			else return false;
+		}
+
+		/// <summary>
+		/// Parses one line of a definition file to a <see cref="Province"/>.
+		/// </summary>
+		/// <param name="definLine">A line from definition.csv</param>
+		/// <returns><see cref="Province"/> object if the parsing was successful, <see langword="null"/> otherwise.</returns>
+		public static Province DefinParse(string definLine)
+        {
+			var list = definLine.Split(';');
+            if (!(int.TryParse(list[0], out int i)
+                && list[1..].ToByte(out byte[] ProvColor)))
+                return null;
+
+            return new Province(i, list[4].Trim(), ProvColor.ToColor());
+        }
+
+		/// <summary>
+		/// Converts the given definition.csv file to a <see cref="Province"/> list.
+		/// </summary>
+		/// <param name="path">Full path to definition.csv</param>
+		/// <param name="parallel"><see langword="false"/> to disable parallelism</param>
+		/// <returns><see cref="Province"/> list containing the provinces from the file.</returns>
+		public static List<Province> DefinRead(string path, bool parallel = true)
+        {
+            string[] dFile;
+            try
+			{
+				dFile = File.ReadAllText(path, UTF7).Split(
 					SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
 			}
 			catch (Exception)
-			{ return false; }
+			{ return null; }
 
-			Provinces.Clear();
+            List<Province> provList = new();
+            if (parallel)
+            {
+                var definLock = new object();
+                Parallel.ForEach(dFile, line =>
+                {
+                    var prov = DefinParse(line);
+                    if (!prov) return;
 
-			Parallel.ForEach(dFile, p =>
-			{
-				string[] list = p.Split(';');
-				int i = -1;
-				byte[] provColor = new byte[3];
-				if (!(int.TryParse(list[0], out i) &&
-					list[1..].ToByte(out provColor)))
-					return;
+                    lock (definLock)
+                    {
+                        provList.Add(prov);
+                    }
+                });
+            }
+            else
+            {
+                provList.AddRange(from line in dFile
+                                  let prov = DefinParse(line)
+                                  where prov
+                                  select prov);
+            }
 
-				Province prov = new(
-					index: i,
-					color: provColor.ToColor(),
-					name: list[4].Trim()
-				);
-
-				lock (definLock)
-				{
-					Provinces.Add(prov);
-				}
-			});
-			Provinces.Sort();
-			return true;
+            return provList;
 		}
 
 		/// <summary>

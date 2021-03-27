@@ -61,6 +61,40 @@ namespace EU4_PCP_Test.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to province;red;green;blue;x;x
+        ///2;0;36;128;Östergötland;x
+        ///1609;104;252;252;Southern Atlantic #4;x
+        ///2905;227;31;59;Rio Das Mortes;x
+        ///2941;12;149;188;Choquechaca (Caracaras);x
+        ///2963;85;232;161;Notec/Bydgoszcz;x
+        ///3130;207;110;79;Unused117
+        ///3217;219;32;27;UnusedLand27
+        ///3959;100;13;159;RNW
+        ///.
+        /// </summary>
+        internal static string definition {
+            get {
+                return ResourceManager.GetString("definition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to province;red;green;blue;x;x
+        ///-2;0;36;128;Östergötland;x
+        ///1609;600;252;252;Southern Atlantic #4;x
+        ///2905;227;-31;59;Rio Das Mortes;x
+        ///2941;12;q;188;Choquechaca (Caracaras);x
+        ///2963;85;232;161;;x
+        ///3130;207;110;79;
+        ///.
+        /// </summary>
+        internal static string definition_negative {
+            get {
+                return ResourceManager.GetString("definition_negative", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to #151 - Constantinople
         ///
         ///owner = ROM

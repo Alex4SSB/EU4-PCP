@@ -12,6 +12,8 @@ namespace EU4_PCP_Test
     [TestClass]
     public class Tests
     {
+        readonly string TestFiles = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\TestFiles\"));
+
         [TestMethod()]
         public void AddTest()
         {
@@ -279,13 +281,13 @@ namespace EU4_PCP_Test
         {
             // Also tests both C-tors
 
-            string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\TestFiles\"));
+            
 
             var gameMembers = new MembersCount[] {
-                new MembersCount($@"{path}\gamePath\localisation\aow_l_english.yml", "3", "1"),
-                new MembersCount($@"{path}\gamePath\localisation\manchu_l_english.yml", "43", "0"),
-                new MembersCount($@"{path}\gamePath\localisation\EU4_l_english.yml", "1", "1"),
-                new MembersCount($@"{path}\gamePath\localisation\emperor_map_l_english.yml", "91", "0")
+                new MembersCount($@"{TestFiles}\gamePath\localisation\aow_l_english.yml", "3", "1"),
+                new MembersCount($@"{TestFiles}\gamePath\localisation\manchu_l_english.yml", "43", "0"),
+                new MembersCount($@"{TestFiles}\gamePath\localisation\EU4_l_english.yml", "1", "1"),
+                new MembersCount($@"{TestFiles}\gamePath\localisation\emperor_map_l_english.yml", "91", "0")
             };
 
             var modMembers = new MembersCount[] {
@@ -295,13 +297,13 @@ namespace EU4_PCP_Test
 
             foreach (var item in gameMembers)
             {
-                item.MemberScope(path);
+                item.MemberScope(TestFiles);
                 Assert.IsTrue(item.Scope == Scope.Game);
             }
 
             foreach (var item in modMembers)
             {
-                item.MemberScope(path);
+                item.MemberScope(TestFiles);
                 Assert.IsTrue(item.Scope == Scope.Mod);
             }
         }
@@ -331,6 +333,25 @@ namespace EU4_PCP_Test
             Assert.IsTrue(testProv[2].ToCsv() == "3;78;32;47;Unused1");
             Assert.IsTrue(testProv[3].ToCsv() == "4;23;190;200;UnusedLand1");
             Assert.IsTrue(testProv[4].ToCsv() == "5;90;212;231;RNW");
+        }
+
+        [TestMethod]
+        public void DefinReadPositiveTest()
+        {
+            var list = DefinRead($@"{TestFiles}\definition.csv");
+
+            Assert.IsTrue(list.Count(prov => prov) == 8);
+            Assert.IsTrue(list.Single(prov => prov.Index == 2905).Name.ToString() == "Rio Das Mortes");
+            Assert.IsTrue(list.Count(prov => prov.IsRNW()) == 3);
+            Assert.IsTrue(list.Single(prov => prov.Index == 2).Color == Color.FromArgb(0, 36, 128));
+        }
+
+        [TestMethod]
+        public void DefinReadNegativeTest()
+        {
+            var list = DefinRead($@"{TestFiles}\definition_negative.csv");
+
+            Assert.IsTrue(list.Count == 0);
         }
     }
 }
