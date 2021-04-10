@@ -138,6 +138,9 @@
   <data name="ColorPickerPageTitle" xml:space="preserve">
     <value>Color Picker</value>
   </data>
+  <data name="ColorPickerSettings" xml:space="preserve">
+    <value>Color Picker Preferences</value>
+  </data>
   <data name="Definition" xml:space="preserve">
     <value>From Definition</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="Localisation" xml:space="preserve">
     <value>From Localisation</value>
+  </data>
+  <data name="MaxProv" xml:space="preserve">
+    <value>Max Provinces</value>
   </data>
   <data name="ModPath" xml:space="preserve">
     <value>Mod Path</value>
@@ -224,6 +230,9 @@
   </data>
   <data name="ShowAllProvinces" xml:space="preserve">
     <value>Show RNW and Unused Provinces</value>
+  </data>
+  <data name="UpdateMaxProv" xml:space="preserve">
+    <value>Update default.map file</value>
   </data>
   <data name="WorkingDirectories" xml:space="preserve">
     <value>Working Directories</value>

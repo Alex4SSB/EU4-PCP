@@ -369,7 +369,7 @@ namespace EU4_PCP.Views
                 Provinces.Add(newProv);
 
                 ModMaxProvinces = Inc(ModMaxProvinces, 1);
-                if (!WriteDefines(ModMaxProvinces))
+                if (Security.RetrieveBool(General.UpdateMaxProv) && !WriteDefines(ModMaxProvinces))
                     return false;
 
                 ModProvinceCount = Inc(ModProvinceCount, 1);

@@ -171,6 +171,21 @@
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
                     Style="{StaticResource SubtitleTextStyle}"
+                    Text="{x:Static properties:Resources.ColorPickerSettings}" />
+                <StackPanel Margin="{StaticResource SmallTopMargin}">
+                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.MaxProv}" />
+                    <CheckBox
+                        x:Name="UpdateMaxProvBox"
+                        Margin="{StaticResource XSmallTopMargin}"
+                        Checked="Box_Checked"
+                        Content="{x:Static properties:Resources.UpdateMaxProv}"
+                        FontSize="{StaticResource MediumFontSize}"
+                        Tag="UpdateMaxProv"
+                        Unchecked="Box_Checked" />
+                </StackPanel>
+                <TextBlock
+                    Margin="{StaticResource SmallTopMargin}"
+                    Style="{StaticResource SubtitleTextStyle}"
                     Text="{x:Static properties:Resources.SettingsPagePersonalizationTitle}" />
                 <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
                     <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.SettingsPageChooseThemeText}" />

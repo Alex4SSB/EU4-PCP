@@ -6,6 +6,7 @@
         GamePath,
         ModPath,
         LastSelMod,
-        CheckDupli
+        CheckDupli,
+        UpdateMaxProv
     }
 }

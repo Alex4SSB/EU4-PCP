@@ -125,7 +125,8 @@ namespace EU4_PCP.Views
                 LocalisationNamesBox,
                 DynamicNamesBox,
                 ShowAllBox,
-                CheckDupliBox
+                CheckDupliBox,
+                UpdateMaxProvBox
             });
         }
 

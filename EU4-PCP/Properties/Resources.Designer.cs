@@ -124,6 +124,15 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color Picker Preferences.
+        /// </summary>
+        public static string ColorPickerSettings {
+            get {
+                return ResourceManager.GetString("ColorPickerSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to From Definition.
         /// </summary>
         public static string Definition {
@@ -174,6 +183,15 @@ namespace EU4_PCP.Properties {
         public static string Localisation {
             get {
                 return ResourceManager.GetString("Localisation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max Provinces.
+        /// </summary>
+        public static string MaxProv {
+            get {
+                return ResourceManager.GetString("MaxProv", resourceCulture);
             }
         }
         
@@ -381,6 +399,15 @@ namespace EU4_PCP.Properties {
         public static string ShowAllProvinces {
             get {
                 return ResourceManager.GetString("ShowAllProvinces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update default.map file.
+        /// </summary>
+        public static string UpdateMaxProv {
+            get {
+                return ResourceManager.GetString("UpdateMaxProv", resourceCulture);
             }
         }
         

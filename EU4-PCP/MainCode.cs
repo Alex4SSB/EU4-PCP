@@ -498,7 +498,7 @@ namespace EU4_PCP
         }
 
 		/// <summary>
-		/// Updates the defines.map file.
+		/// Updates the default.map file.
 		/// </summary>
 		/// <param name="newMax">The new max_provinces value</param>
 		/// <returns></returns>
