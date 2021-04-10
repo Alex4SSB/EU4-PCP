@@ -235,5 +235,8 @@ namespace EU4_PCP.Views
                 _isBusy = false;
             }
         }
+
+        private void UserManual_Click(object sender, RoutedEventArgs e)
+            => _systemService.OpenInWebBrowser(_appConfig.UserManual);
     }
 }

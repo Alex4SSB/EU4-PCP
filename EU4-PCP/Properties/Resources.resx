@@ -204,6 +204,9 @@
   <data name="SettingsPageTitle" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="SettingsPageUserManualText" xml:space="preserve">
+    <value>User Manual</value>
+  </data>
   <data name="ShellColorPickerPage" xml:space="preserve">
     <value>Color Picker</value>
   </data>

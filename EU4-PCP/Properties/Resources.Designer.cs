@@ -322,6 +322,15 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User Manual.
+        /// </summary>
+        public static string SettingsPageUserManualText {
+            get {
+                return ResourceManager.GetString("SettingsPageUserManualText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color Picker.
         /// </summary>
         public static string ShellColorPickerPage {
