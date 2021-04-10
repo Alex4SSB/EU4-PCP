@@ -178,6 +178,15 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Always iterate max__provinces value.
+        /// </summary>
+        public static string IterateMaxProv {
+            get {
+                return ResourceManager.GetString("IterateMaxProv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to From Localisation.
         /// </summary>
         public static string Localisation {

@@ -182,6 +182,14 @@
                         FontSize="{StaticResource MediumFontSize}"
                         Tag="UpdateMaxProv"
                         Unchecked="Box_Checked" />
+                    <CheckBox
+                        x:Name="IterateMaxProvBox"
+                        Margin="{StaticResource XSmallTopMargin}"
+                        Checked="Box_Checked"
+                        Content="{x:Static properties:Resources.IterateMaxProv}"
+                        FontSize="{StaticResource MediumFontSize}"
+                        Tag="IterateMaxProv"
+                        Unchecked="Box_Checked" />
                 </StackPanel>
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"

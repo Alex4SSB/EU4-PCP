@@ -7,6 +7,7 @@
         ModPath,
         LastSelMod,
         CheckDupli,
-        UpdateMaxProv
+        UpdateMaxProv,
+        IterateMaxProv
     }
 }

@@ -156,6 +156,9 @@
   <data name="GamePath" xml:space="preserve">
     <value>Game Path</value>
   </data>
+  <data name="IterateMaxProv" xml:space="preserve">
+    <value>Always iterate max__provinces value</value>
+  </data>
   <data name="Localisation" xml:space="preserve">
     <value>From Localisation</value>
   </data>

@@ -368,7 +368,10 @@ namespace EU4_PCP.Views
                 newProv.IsRNW();
                 Provinces.Add(newProv);
 
-                ModMaxProvinces = Inc(ModMaxProvinces, 1);
+                ModMaxProvinces = Security.RetrieveBool(General.IterateMaxProv) 
+                    ? Inc(ModMaxProvinces, 1) 
+                    : Inc(ModProvinceCount, 2);
+
                 if (Security.RetrieveBool(General.UpdateMaxProv) && !WriteDefines(ModMaxProvinces))
                     return false;
 
