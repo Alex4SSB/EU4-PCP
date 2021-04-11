@@ -353,40 +353,11 @@ namespace EU4_PCP.Views
 
         private void AddProvButton_Click(object sender, RoutedEventArgs e)
         {
-            AddProv();
-        }
-
-        private bool AddProv()
-        {
-            if (ChosenProv)
+            if (AddProv(new Province(NextProvBlock.Text.ToInt(), new CompositeName(NewProvNameTextBox.Text), PickedColor.Convert())))
             {
-                Provinces.Find(prov => prov.Index == ChosenProv.ID).Color = PickedColor.Convert();
+                InitializeData();
+                DupliPrep();
             }
-            else
-            {
-                var newProv = new Province(NextProvBlock.Text.ToInt(), new CompositeName(NewProvNameTextBox.Text), PickedColor.Convert());
-                newProv.IsRNW();
-                Provinces.Add(newProv);
-
-                ModMaxProvinces = Security.RetrieveBool(General.IterateMaxProv) 
-                    ? Inc(ModMaxProvinces, 1) 
-                    : Inc(ModProvinceCount, 2);
-
-                if (Security.RetrieveBool(General.UpdateMaxProv) && !WriteDefines(ModMaxProvinces))
-                    return false;
-
-                ModProvinceCount = Inc(ModProvinceCount, 1);
-                ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
-            }
-
-            if (!WriteProvinces())
-                return false;
-
-            ChosenProv = null;
-            InitializeData();
-            DupliPrep();
-
-            return true;
         }
 
         private void HxValueBlock_MouseDown(object sender, MouseButtonEventArgs e)

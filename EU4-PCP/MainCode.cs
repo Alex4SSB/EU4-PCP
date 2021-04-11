@@ -550,5 +550,36 @@ namespace EU4_PCP
             }
         }
 
+		public static bool AddProv(Province newProv)
+		{
+			if (ChosenProv)
+			{
+				var prov = Provinces.Find(prov => prov.Index == ChosenProv.ID);
+				prov.Color = newProv.Color;
+				prov.Name = newProv.Name;
+			}
+			else
+			{
+				newProv.IsRNW();
+				Provinces.Add(newProv);
+
+				ModMaxProvinces = Security.RetrieveBool(General.IterateMaxProv)
+					? Inc(ModMaxProvinces, 1)
+					: Inc(ModProvinceCount, 2);
+
+				if (Security.RetrieveBool(General.UpdateMaxProv) && !WriteDefines(ModMaxProvinces))
+					return false;
+
+				ModProvinceCount = Inc(ModProvinceCount, 1);
+				ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
+			}
+
+			if (!WriteProvinces())
+				return false;
+
+			ChosenProv = null;
+			
+			return true;
+		}
 	}
 }
