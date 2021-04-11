@@ -149,7 +149,7 @@ namespace EU4_PCP.Views
             if (ChosenProv)
             {
                 ClearButton.Visibility = Visibility.Visible;
-                NewProvNameTextBox.IsReadOnly = true;
+                //NewProvNameTextBox.IsReadOnly = true;
                 NewProvBlock.Text = "Existing Province";
                 AddProvButton.Content = "Update Province";
                 OriginalColorBlock.Visibility = Visibility.Visible;
@@ -160,7 +160,7 @@ namespace EU4_PCP.Views
             {
                 ClearButton.Visibility = Visibility.Collapsed;
                 NewProvNameTextBox.Text = "";
-                NewProvNameTextBox.IsReadOnly = false;
+                //NewProvNameTextBox.IsReadOnly = false;
                 NewProvBlock.Text = "New Province";
                 AddProvButton.Content = "Add Province";
                 OriginalColorBlock.Visibility = Visibility.Collapsed;
@@ -258,10 +258,20 @@ namespace EU4_PCP.Views
             GreenTextBox.Background =
             BlueTextBox.Background = new SolidColorBrush(Provinces.Any(prov => prov.Color.Equals(PickedColor.Convert())) ? RedBackground : GreenBackground);
 
-            if (ChosenProv)
-            {
-                AddProvButton.IsEnabled = !ChosenProv.Color.Equals(PickedColor.Convert());
-            }
+            AddProvButton.IsEnabled = EnableAddProv();
+        }
+
+        private bool EnableAddProv()
+        {
+            if (string.IsNullOrWhiteSpace(NewProvNameTextBox.Text)) return false;
+
+            if (NewProvNameTextBox.Text.Any(c => c > 255)) return false;
+
+            if (ChosenProv && (ChosenProv.Color.Equals(PickedColor.Convert())
+                    && (ChosenProv.Name.Definition == NewProvNameTextBox.Text)))
+                return false;
+
+            return true;
         }
 
         private void RandomizeButton_Click(object sender, RoutedEventArgs e)
@@ -309,8 +319,7 @@ namespace EU4_PCP.Views
 
         private void NewProvNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            AddProvButton.IsEnabled = !string.IsNullOrWhiteSpace(NewProvNameTextBox.Text)
-                && !NewProvNameTextBox.Text.Any(c => c > 255);
+            AddProvButton.IsEnabled = EnableAddProv();
         }
 
         private void LockRedButton_Click(object sender, RoutedEventArgs e)

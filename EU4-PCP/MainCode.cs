@@ -550,13 +550,18 @@ namespace EU4_PCP
             }
         }
 
+		/// <summary>
+		/// Adds the given <see cref="Province"/> to the list if it doesn't exist. Otherwise, updates its color and definition name.
+		/// </summary>
+		/// <param name="newProv">The province to add / update</param>
+		/// <returns></returns>
 		public static bool AddProv(Province newProv)
 		{
 			if (ChosenProv)
 			{
 				var prov = Provinces.Find(prov => prov.Index == ChosenProv.ID);
 				prov.Color = newProv.Color;
-				prov.Name = newProv.Name;
+				prov.Name.Definition = newProv.Name.Definition;
 			}
 			else
 			{
