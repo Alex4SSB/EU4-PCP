@@ -61,8 +61,8 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="10*" />
-                        <ColumnDefinition Width="3*" />
-                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="70" />
+                        <ColumnDefinition Width="50" />
                     </Grid.ColumnDefinitions>
                     <Slider
                         x:Name="RedSlider"
