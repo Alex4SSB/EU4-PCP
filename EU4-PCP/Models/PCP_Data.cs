@@ -46,8 +46,10 @@ namespace EU4_PCP
 		public static List<string> BookmarkList = new();
 		public static int SelectedBookmarkIndex = -1;
 		public static string GameProvinceCount;
+		public static string GameIllegalProvinceCount;
 		public static string GameMaxProvinces;
 		public static string ModProvinceCount;
+		public static string ModIllegalProvinceCount;
 		public static string ModMaxProvinces;
 		public static string ProvincesShown;
 		public static double ProvTableIndex = 0;

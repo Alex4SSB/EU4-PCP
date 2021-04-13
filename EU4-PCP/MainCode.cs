@@ -309,15 +309,22 @@ namespace EU4_PCP
 		private static void CountProv(Scope scope)
 		{
 			var provCount = Provinces.Count(p => p && !string.IsNullOrWhiteSpace(p.ToString())).ToString();
+			var illegalCount = "";
+
+			if (Security.RetrieveBool(General.ShowIllegalProv))
+				illegalCount = Provinces.Count(p => p && string.IsNullOrWhiteSpace(p.ToString())).ToString();
 
 			switch (scope)
 			{
 				case Scope.Game:
 					GameProvinceCount = provCount;
-					ModProvinceCount = "";
+					GameIllegalProvinceCount = illegalCount;
+					ModProvinceCount =
+					ModIllegalProvinceCount = "";
 					break;
 				case Scope.Mod:
 					ModProvinceCount = provCount;
+					ModIllegalProvinceCount = illegalCount;
 					break;
 				default:
 					break;

@@ -65,6 +65,16 @@ namespace EU4_PCP.Views
             ModProvCountBlock.Text = $" {ModProvinceCount} ";
             GameMaxProvBlock.Text = $" {GameMaxProvinces} ";
             ModMaxProvBlock.Text = $" {ModMaxProvinces} ";
+
+            if (Security.RetrieveBool(General.ShowIllegalProv))
+            {
+                IllegalProvCountGrid.Visibility = Visibility.Visible;
+                GameIllegalProvCount.Text = $" {GameIllegalProvinceCount} ";
+                ModIllegalProvCount.Text = $" {ModIllegalProvinceCount} ";
+            }
+            else
+                IllegalProvCountGrid.Visibility = Visibility.Collapsed;
+
             ProvShownBlock.Text = ProvincesShown;
 
             BookmarkComboBox.IsEnabled = EnableBooks;

@@ -285,10 +285,6 @@
                         Text="Mod" />
                 </Grid>
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="20*" />
                         <ColumnDefinition Width="12*" />
@@ -298,13 +294,7 @@
                         Grid.Column="1"
                         Margin="4"
                         HorizontalAlignment="Center"
-                        Text="- Provinces -" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Margin="4"
-                        HorizontalAlignment="Center"
-                        Text="- Max -" />
+                        Text="- provinces -" />
                     <TextBlock
                         x:Name="GameProvCountBlock"
                         Margin="4"
@@ -318,16 +308,51 @@
                         HorizontalAlignment="Center"
                         FontFamily="Consolas"
                         Text="" />
+                </Grid>
+                <Grid x:Name="IllegalProvCountGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20*" />
+                        <ColumnDefinition Width="12*" />
+                        <ColumnDefinition Width="20*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="4"
+                        HorizontalAlignment="Center"
+                        Text="- illegal -" />
+                    <TextBlock
+                        x:Name="GameIllegalProvCount"
+                        Margin="4"
+                        HorizontalAlignment="Center"
+                        FontFamily="Consolas"
+                        Text="" />
+                    <TextBlock
+                        x:Name="ModIllegalProvCount"
+                        Grid.Column="2"
+                        Margin="4"
+                        HorizontalAlignment="Center"
+                        FontFamily="Consolas"
+                        Text="" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20*" />
+                        <ColumnDefinition Width="12*" />
+                        <ColumnDefinition Width="20*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="4"
+                        HorizontalAlignment="Center"
+                        Text="- max -" />
                     <TextBlock
                         x:Name="GameMaxProvBlock"
-                        Grid.Row="1"
                         Margin="4"
                         HorizontalAlignment="Center"
                         FontFamily="Consolas"
                         Text="" />
                     <TextBlock
                         x:Name="ModMaxProvBlock"
-                        Grid.Row="1"
                         Grid.Column="2"
                         Margin="4"
                         HorizontalAlignment="Center"
