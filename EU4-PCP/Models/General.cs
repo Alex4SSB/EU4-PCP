@@ -8,6 +8,7 @@
         LastSelMod,
         CheckDupli,
         UpdateMaxProv,
-        IterateMaxProv
+        IterateMaxProv,
+        ShowIllegalProv
     }
 }

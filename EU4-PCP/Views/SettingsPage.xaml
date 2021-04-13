@@ -156,6 +156,14 @@
                         FontSize="{StaticResource MediumFontSize}"
                         Tag="ShowAllProvinces"
                         Unchecked="Box_Checked" />
+                    <CheckBox
+                        x:Name="ShowIllegalProvBox"
+                        Margin="{StaticResource XSmallTopMargin}"
+                        Checked="Box_Checked"
+                        Content="{x:Static properties:Resources.ShowIllegalProv}"
+                        FontSize="{StaticResource MediumFontSize}"
+                        Tag="ShowIllegalProv"
+                        Unchecked="Box_Checked"/>
                 </StackPanel>
                 <StackPanel Margin="{StaticResource SmallTopMargin}">
                     <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.ColorDupli}" />

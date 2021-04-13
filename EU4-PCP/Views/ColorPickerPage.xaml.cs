@@ -149,7 +149,6 @@ namespace EU4_PCP.Views
             if (ChosenProv)
             {
                 ClearButton.Visibility = Visibility.Visible;
-                //NewProvNameTextBox.IsReadOnly = true;
                 NewProvBlock.Text = "Existing Province";
                 AddProvButton.Content = "Update Province";
                 OriginalColorBlock.Visibility = Visibility.Visible;
@@ -160,7 +159,6 @@ namespace EU4_PCP.Views
             {
                 ClearButton.Visibility = Visibility.Collapsed;
                 NewProvNameTextBox.Text = "";
-                //NewProvNameTextBox.IsReadOnly = false;
                 NewProvBlock.Text = "New Province";
                 AddProvButton.Content = "Add Province";
                 OriginalColorBlock.Visibility = Visibility.Collapsed;

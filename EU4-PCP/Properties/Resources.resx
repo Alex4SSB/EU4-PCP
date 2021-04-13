@@ -157,7 +157,7 @@
     <value>Game Path</value>
   </data>
   <data name="IterateMaxProv" xml:space="preserve">
-    <value>Always iterate max__provinces value</value>
+    <value>Always Iterate max__provinces Value</value>
   </data>
   <data name="Localisation" xml:space="preserve">
     <value>From Localisation</value>
@@ -234,8 +234,11 @@
   <data name="ShowAllProvinces" xml:space="preserve">
     <value>Show RNW and Unused Provinces</value>
   </data>
+  <data name="ShowIllegalProv" xml:space="preserve">
+    <value>Show Illegal Provinces</value>
+  </data>
   <data name="UpdateMaxProv" xml:space="preserve">
-    <value>Update default.map file</value>
+    <value>Update default.map File</value>
   </data>
   <data name="WorkingDirectories" xml:space="preserve">
     <value>Working Directories</value>

@@ -127,7 +127,8 @@ namespace EU4_PCP.Views
                 ShowAllBox,
                 CheckDupliBox,
                 UpdateMaxProvBox,
-                IterateMaxProvBox
+                IterateMaxProvBox,
+                ShowIllegalProvBox
             });
         }
 

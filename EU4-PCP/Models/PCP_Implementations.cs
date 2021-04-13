@@ -1,4 +1,5 @@
-﻿using EU4_PCP.Services;
+﻿using EU4_PCP.Models;
+using EU4_PCP.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -779,15 +780,17 @@ namespace EU4_PCP
 		/// </summary>
 		public static void DynamicSetup()
 		{
+			var showIllegal = Security.RetrieveBool(General.ShowIllegalProv);
+
 			foreach (var prov in Provinces.Where(p => p))
 			{
 				prov.Name.Dynamic = "";
 				if (!ShowRnw) prov.IsRNW();
 				if (!prov.Owner)
 				{
-					if (prov.Name.ToString() == "")
-						prov.Show = false;
-					continue;
+                    if (!showIllegal && prov.Name.ToString() == "")
+                        prov.Show = false;
+                    continue;
 				}
 				if (DynamicName(prov, NameType.Country)
 					|| !prov.Owner.Culture

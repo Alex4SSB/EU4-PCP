@@ -178,7 +178,7 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Always iterate max__provinces value.
+        ///   Looks up a localized string similar to Always Iterate max__provinces Value.
         /// </summary>
         public static string IterateMaxProv {
             get {
@@ -412,7 +412,16 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update default.map file.
+        ///   Looks up a localized string similar to Show Illegal Provinces.
+        /// </summary>
+        public static string ShowIllegalProv {
+            get {
+                return ResourceManager.GetString("ShowIllegalProv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update default.map File.
         /// </summary>
         public static string UpdateMaxProv {
             get {
