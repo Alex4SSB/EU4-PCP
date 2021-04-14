@@ -56,6 +56,18 @@ namespace EU4_PCP
 		}
 
 		/// <summary>
+		/// Checks if a 16-bit integer is in a range.
+		/// </summary>
+		/// <param name="eval">The number to evaluate.</param>
+		/// <param name="lLimit">Lower limit of the range.</param>
+		/// <param name="uLimit">Upper limit of the range.</param>
+		/// <returns><see langword="true"/> if the number is in range.</returns>
+		public static bool Range(this short eval, short lLimit, short uLimit)
+		{
+			return eval >= lLimit && eval <= uLimit;
+		}
+
+		/// <summary>
 		/// Converts the <see cref="string"/> representation of a number to its 32-bit signed integer equivalent. 
 		/// <br />
 		/// [An alias to int.Parse()]
@@ -194,14 +206,31 @@ namespace EU4_PCP
 		/// </summary>
 		/// <param name="definLine">A line from definition.csv</param>
 		/// <returns><see cref="Province"/> object if the parsing was successful, <see langword="null"/> otherwise.</returns>
-		public static Province DefinParse(string definLine)
+		public static Province DefinParse(string definLine, bool validateColor = true)
         {
+			P_Color provColor;
 			var list = definLine.Split(';');
-            if (!(int.TryParse(list[0], out int i)
-                && list[1..].ToByte(out byte[] ProvColor)))
-                return null;
 
-            return new Province(i, list[4].Trim(), ProvColor.ToColor());
+			if (int.TryParse(list[0], out int i))
+			{
+				if (validateColor)
+				{
+					if (list[1..].ToByte(out byte[] byteArr))
+						provColor = new(byteArr);
+					else
+						return null;
+				}
+				else
+                {
+					provColor = new(list[1..]);
+				}
+			}
+			else
+				return null;
+
+			var provName = list.Length < 5 ? "" : list[4].Trim();
+
+            return new Province(i, provName, provColor);
         }
 
 		/// <summary>
@@ -212,6 +241,8 @@ namespace EU4_PCP
 		/// <returns><see cref="Province"/> list containing the provinces from the file.</returns>
 		public static List<Province> DefinRead(string path, bool parallel = true)
         {
+			var validateColor = !Security.RetrieveBool(General.ShowIllegalProv);
+
             string[] dFile;
             try
 			{
@@ -227,7 +258,7 @@ namespace EU4_PCP
                 var definLock = new object();
                 Parallel.ForEach(dFile, line =>
                 {
-                    var prov = DefinParse(line);
+                    var prov = DefinParse(line, validateColor);
                     if (!prov) return;
 
                     lock (definLock)

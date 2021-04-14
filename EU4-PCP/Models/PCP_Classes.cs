@@ -37,12 +37,12 @@ namespace EU4_PCP
 
 	public class Province : ProvinceAbstract
 	{
-		public Color Color;
+		public P_Color Color;
 		public Country Owner;
 		public bool Show = true;
 		public Province NextDupli = null;
 
-        public Province(int index = -1, CompositeName name = null, Color color = new Color()) : base (index, name)
+        public Province(int index = -1, CompositeName name = null, P_Color color = null) : base (index, name)
         {
 			Color = color;
 		}
@@ -75,9 +75,9 @@ namespace EU4_PCP
 		public string B_Color { get { return '#' + Color.Name; } }
 		public int ID { get { return Index; } }
 		public string P_Name { get { return Name.ToString(); } }
-		public byte Red { get { return Color.R; } }
-		public byte Green { get { return Color.G; } }
-		public byte Blue { get { return Color.B; } }
+		public short Red { get { return Color.R; } }
+		public short Green { get { return Color.G; } }
+		public short Blue { get { return Color.B; } }
 
 		public bool IsDupli { get { return NextDupli; } }
 
@@ -150,6 +150,81 @@ namespace EU4_PCP
 			return obj is object;
         }
 	}
+
+	public class P_Color
+    {
+		public short R, G, B;
+
+        /// <summary>
+        /// Gets the name of this <see cref="Color"/>.
+        /// </summary>
+        public string Name => ((Color)this).Name;
+
+        public P_Color(Color obj) : this (obj.R, obj.G, obj.B)
+        { }
+
+		public P_Color(params byte[] arr) : this(arr[0], arr[1], (short)arr[2]) // One cast is enough to call the other C-tor (otherwise, tries to call itself)
+		{ }
+
+		public P_Color(string[] str)
+        {
+			short[] s_arr = new short[3];
+            for (int i = 0; i < 3; i++)
+            {
+				if (!short.TryParse(str[i], out s_arr[i]))
+					s_arr[i] = -1;
+            }
+
+			R = s_arr[0];
+			G = s_arr[1];
+			B = s_arr[2];
+		}
+
+		public P_Color(short r, short g, short b)
+        {
+            R = r;
+            G = g;
+            B = b;
+        }
+
+        public byte R_()
+        {
+			return (byte)R;
+        }
+
+		public byte G_()
+		{
+			return (byte)G;
+		}
+
+		public byte B_()
+		{
+			return (byte)B;
+		}
+
+		public byte[] AsByteArr()
+        {
+			return new byte[] { R_(), G_(), B_() };
+        }
+
+        public bool IsLegal() => R.Range(0, 255) && G.Range(0, 255) && B.Range(0, 255);
+
+		public string ToCsv()
+        {
+			return ((Color)this).ToCsv();
+        }
+
+        public static implicit operator Color(P_Color obj)
+        {
+			return obj.AsByteArr().ToColor();
+		}
+
+		public static implicit operator P_Color(Color obj)
+        {
+			return new P_Color(obj);
+        }
+
+    }
 
 	public class Bookmark : IComparable<Bookmark>
 	{
