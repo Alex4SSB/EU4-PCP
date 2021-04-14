@@ -72,7 +72,7 @@ namespace EU4_PCP
 
 	public class TableProvince : Province
     {
-		public string B_Color { get { return '#' + Color.Name; } }
+		public string B_Color { get { return $"#{(Color.IsLegal() ? Color.Name : "00ffffff")}"; } }
 		public int ID { get { return Index; } }
 		public string P_Name { get { return Name.ToString(); } }
 		public short Red { get { return Color.R; } }
@@ -80,6 +80,7 @@ namespace EU4_PCP
 		public short Blue { get { return Color.B; } }
 
 		public bool IsDupli { get { return NextDupli; } }
+		public string IsLegal { get { return Color.IsLegal() ? "" : "\uE711"; } }
 
 		public TableProvince(Province prov) : base(prov) { }
 	}

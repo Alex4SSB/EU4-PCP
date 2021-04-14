@@ -54,6 +54,9 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Background" Value="{Binding B_Color}" />
+                                <Setter Property="Text" Value="{Binding IsLegal}" />
+                                <Setter Property="TextAlignment" Value="Center" />
+                                <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
