@@ -37,11 +37,21 @@
                             <Setter Property="FontFamily" Value="Consolas" />
                         </Style>
                     </StackPanel.Resources>
-                    <Rectangle
-                        x:Name="ColorRectangle"
-                        Grid.Column="1"
-                        Height="40"
-                        Fill="Black" />
+                    <Border BorderBrush="Gray" BorderThickness="1">
+                        <Grid>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="36"
+                                Text="&#xE711;" />
+                            <Rectangle
+                                x:Name="ColorRectangle"
+                                Height="40"
+                                Margin="1"
+                                Fill="#00000000" />
+                        </Grid>
+                    </Border>
                 </StackPanel>
                 <TextBlock
                     x:Name="HxValueBlock"
@@ -51,8 +61,7 @@
                     MouseDown="HxValueBlock_MouseDown"
                     MouseEnter="HxValueBlock_MouseEnter"
                     MouseLeave="HxValueBlock_MouseLeave"
-                    MouseUp="HxValueBlock_MouseUp"
-                    Text="#000000" />
+                    MouseUp="HxValueBlock_MouseUp" />
                 <Grid Margin="0,4,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -69,8 +78,10 @@
                         Margin="4"
                         IsSnapToTickEnabled="True"
                         Maximum="255"
+                        Minimum="-1"
                         SmallChange="1"
-                        ValueChanged="Slider_ValueChanged" />
+                        ValueChanged="Slider_ValueChanged"
+                        Value="-1" />
                     <Grid Grid.Column="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
@@ -107,8 +118,10 @@
                         Margin="4"
                         IsSnapToTickEnabled="True"
                         Maximum="255"
+                        Minimum="-1"
                         SmallChange="1"
-                        ValueChanged="Slider_ValueChanged" />
+                        ValueChanged="Slider_ValueChanged"
+                        Value="-1" />
                     <Grid Grid.Row="1" Grid.Column="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
@@ -145,8 +158,10 @@
                         Margin="4"
                         IsSnapToTickEnabled="true"
                         Maximum="255"
+                        Minimum="-1"
                         SmallChange="1"
-                        ValueChanged="Slider_ValueChanged" />
+                        ValueChanged="Slider_ValueChanged"
+                        Value="-1" />
                     <Grid Grid.Row="2" Grid.Column="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />

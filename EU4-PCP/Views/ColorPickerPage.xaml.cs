@@ -21,10 +21,12 @@ namespace EU4_PCP.Views
         readonly Style GreenStyle = Application.Current.FindResource("GreenBackground") as Style;
         readonly Style RedStyle = Application.Current.FindResource("RedBackground") as Style;
 
-        private Color PickedColor = ColorPickerPickedColor.Convert();
+        private P_Color PickedColor = ColorPickerPickedColor;
 
         public ColorPickerPage()
         {
+            Lockdown = true;
+
             InitializeComponent();
             DataContext = this;
 
@@ -120,7 +122,7 @@ namespace EU4_PCP.Views
             {
                 RedSlider.Value =
                 GreenSlider.Value =
-                BlueSlider.Value = 0;
+                BlueSlider.Value = -1;
 
                 RedTextBox.Background =
                 GreenTextBox.Background =
@@ -254,17 +256,29 @@ namespace EU4_PCP.Views
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            PickedColor.R = (byte)RedSlider.Value;
-            PickedColor.G = (byte)GreenSlider.Value;
-            PickedColor.B = (byte)BlueSlider.Value;
+            if (Lockdown) return;
 
-            ColorRectangle.Fill = new SolidColorBrush(PickedColor);
-            HxValueBlock.Text = PickedColor.ToString().Replace("#FF", "#");
-            ColorPickerPickedColor = PickedColor.Convert();
+            PickedColor.R = (short)RedSlider.Value;
+            PickedColor.G = (short)GreenSlider.Value;
+            PickedColor.B = (short)BlueSlider.Value;
 
-            RedTextBox.Background =
-            GreenTextBox.Background =
-            BlueTextBox.Background = new SolidColorBrush(Provinces.Any(prov => prov.Color.Equals(PickedColor.Convert())) ? RedBackground : GreenBackground);
+            HxValueBlock.Text = PickedColor.AsHex();
+            ColorPickerPickedColor = PickedColor;
+
+            if (PickedColor.IsLegal())
+            {
+                ColorRectangle.Fill = new SolidColorBrush(PickedColor);
+                RedTextBox.Background =
+                GreenTextBox.Background =
+                BlueTextBox.Background = new SolidColorBrush(Provinces.Any(prov => prov.Color.Equals(PickedColor)) ? RedBackground : GreenBackground);
+            }
+            else
+            {
+                ColorRectangle.Fill = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                RedTextBox.Background = new SolidColorBrush(PickedColor.R < 0 ? RedBackground : GreenBackground);
+                GreenTextBox.Background = new SolidColorBrush(PickedColor.G < 0 ? RedBackground : GreenBackground);
+                BlueTextBox.Background = new SolidColorBrush(PickedColor.B < 0 ? RedBackground : GreenBackground);
+            }
 
             AddProvButton.IsEnabled = EnableAddProv();
         }
@@ -275,7 +289,7 @@ namespace EU4_PCP.Views
 
             if (NewProvNameTextBox.Text.Any(c => c > 255)) return false;
 
-            if (ChosenProv && (ChosenProv.Color.Equals(PickedColor.Convert())
+            if (ChosenProv && (ChosenProv.Color.Equals(PickedColor)
                     && (ChosenProv.Name.Definition == NewProvNameTextBox.Text)))
                 return false;
 
@@ -370,7 +384,7 @@ namespace EU4_PCP.Views
 
         private void AddProvButton_Click(object sender, RoutedEventArgs e)
         {
-            if (AddProv(new Province(NextProvBlock.Text.ToInt(), new CompositeName(NewProvNameTextBox.Text), PickedColor.Convert())))
+            if (AddProv(new Province(NextProvBlock.Text.ToInt(), new CompositeName(NewProvNameTextBox.Text), PickedColor)))
             {
                 InitializeData();
                 DupliPrep();

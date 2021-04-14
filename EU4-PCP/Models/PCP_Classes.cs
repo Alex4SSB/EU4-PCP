@@ -210,14 +210,21 @@ namespace EU4_PCP
 
         public bool IsLegal() => R.Range(0, 255) && G.Range(0, 255) && B.Range(0, 255);
 
-		public string ToCsv()
+        public string ToCsv() => ((Color)this).ToCsv();
+
+        public string AsHex()
         {
-			return ((Color)this).ToCsv();
+            return IsLegal() ? $"#{R:x2}{G:x2}{B:x2}".ToUpper() : "";
         }
 
         public static implicit operator Color(P_Color obj)
         {
 			return obj.AsByteArr().ToColor();
+		}
+
+		public static implicit operator System.Windows.Media.Color(P_Color obj)
+        {
+			return System.Windows.Media.Color.FromRgb(obj.R_(), obj.G_(), obj.B_());
 		}
 
 		public static implicit operator P_Color(Color obj)
