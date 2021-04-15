@@ -191,7 +191,7 @@ namespace EU4_PCP
 		/// <returns><see langword="false"/> if an exception occurs while trying to read from the definition file.</returns>
 		public static bool DefinSetup(string path)
 		{
-			if (DefinRead(path + DefinPath) is List<Province> provList)
+			if (DefinRead(path + DefinPath, true, !Security.RetrieveBool(General.ShowIllegalProv)) is List<Province> provList)
 			{
 				Provinces.Clear();
 				Provinces = provList;
@@ -239,10 +239,8 @@ namespace EU4_PCP
 		/// <param name="path">Full path to definition.csv</param>
 		/// <param name="parallel"><see langword="false"/> to disable parallelism</param>
 		/// <returns><see cref="Province"/> list containing the provinces from the file.</returns>
-		public static List<Province> DefinRead(string path, bool parallel = true)
+		public static List<Province> DefinRead(string path, bool parallel = true, bool validateColor = true)
         {
-			var validateColor = !Security.RetrieveBool(General.ShowIllegalProv);
-
             string[] dFile;
             try
 			{
