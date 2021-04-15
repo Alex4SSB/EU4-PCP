@@ -274,7 +274,7 @@ namespace EU4_PCP.Views
             }
             else
             {
-                ColorRectangle.Fill = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                ColorRectangle.Fill = new SolidColorBrush(Colors.Transparent);
                 RedTextBox.Background = new SolidColorBrush(PickedColor.R < 0 ? RedBackground : GreenBackground);
                 GreenTextBox.Background = new SolidColorBrush(PickedColor.G < 0 ? RedBackground : GreenBackground);
                 BlueTextBox.Background = new SolidColorBrush(PickedColor.B < 0 ? RedBackground : GreenBackground);

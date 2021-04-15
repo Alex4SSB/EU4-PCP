@@ -543,7 +543,7 @@ namespace EU4_PCP
 
 			var dupliGroups = (from prov in Provinces
 							  where prov && prov.Show
-							  group prov by prov.Color)
+							  group prov by (Color)prov.Color)
 							  .Where(g => g.Count() > 1);
 							  
             foreach (var group in dupliGroups)

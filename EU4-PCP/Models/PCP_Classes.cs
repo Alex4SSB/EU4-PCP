@@ -153,28 +153,28 @@ namespace EU4_PCP
 	}
 
 	public class P_Color
-    {
+	{
 		public short R, G, B;
 
-        /// <summary>
-        /// Gets the name of this <see cref="Color"/>.
-        /// </summary>
-        public string Name => ((Color)this).Name;
+		/// <summary>
+		/// Gets the name of this <see cref="Color"/>.
+		/// </summary>
+		public string Name => ((Color)this).Name;
 
-        public P_Color(Color obj) : this (obj.R, obj.G, obj.B)
-        { }
+		public P_Color(Color obj) : this(obj.R, obj.G, obj.B)
+		{ }
 
 		public P_Color(params byte[] arr) : this(arr[0], arr[1], (short)arr[2]) // One cast is enough to call the other C-tor (otherwise, tries to call itself)
 		{ }
 
 		public P_Color(string[] str)
-        {
+		{
 			short[] s_arr = new short[3];
-            for (int i = 0; i < 3; i++)
-            {
+			for (int i = 0; i < 3; i++)
+			{
 				if (!short.TryParse(str[i], out s_arr[i]))
 					s_arr[i] = -1;
-            }
+			}
 
 			R = s_arr[0];
 			G = s_arr[1];
@@ -182,16 +182,16 @@ namespace EU4_PCP
 		}
 
 		public P_Color(short r, short g, short b)
-        {
-            R = r;
-            G = g;
-            B = b;
-        }
+		{
+			R = r;
+			G = g;
+			B = b;
+		}
 
-        public byte R_()
-        {
+		public byte R_()
+		{
 			return (byte)R;
-        }
+		}
 
 		public byte G_()
 		{
@@ -204,32 +204,50 @@ namespace EU4_PCP
 		}
 
 		public byte[] AsByteArr()
-        {
+		{
 			return new byte[] { R_(), G_(), B_() };
-        }
+		}
 
-        public bool IsLegal() => R.Range(0, 255) && G.Range(0, 255) && B.Range(0, 255);
+		public bool IsLegal() => R.Range(0, 255) && G.Range(0, 255) && B.Range(0, 255);
 
-        public string ToCsv() => ((Color)this).ToCsv();
+		public string ToCsv() => ((Color)this).ToCsv();
 
-        public string AsHex()
-        {
-            return IsLegal() ? $"#{R:x2}{G:x2}{B:x2}".ToUpper() : "";
-        }
+		public string AsHex()
+		{
+			return IsLegal() ? $"#{R:x2}{G:x2}{B:x2}".ToUpper() : "";
+		}
 
-        public static implicit operator Color(P_Color obj)
-        {
+		public override bool Equals(object obj)
+		{
+			return obj is P_Color color &&
+				   R == color.R &&
+				   G == color.G &&
+				   B == color.B;
+		}
+
+		public static implicit operator Color(P_Color obj)
+		{
 			return obj.AsByteArr().ToColor();
 		}
 
 		public static implicit operator System.Windows.Media.Color(P_Color obj)
-        {
+		{
 			return System.Windows.Media.Color.FromRgb(obj.R_(), obj.G_(), obj.B_());
 		}
 
 		public static implicit operator P_Color(Color obj)
-        {
+		{
 			return new P_Color(obj);
+		}
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return AsHex();
         }
 
     }
