@@ -381,6 +381,7 @@ namespace EU4_PCP.Views
         {
             if (AddProv(new Province(NextProvBlock.Text.ToInt(), new CompositeName(NewProvNameTextBox.Text), PickedColor)))
             {
+                CountProv(Scope.Mod);
                 InitializeData();
                 DupliPrep();
             }

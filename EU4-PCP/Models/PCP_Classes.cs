@@ -16,6 +16,11 @@ namespace EU4_PCP
 			Name = name;
         }
 
+		public bool IsNameLegal()
+        {
+			return !string.IsNullOrWhiteSpace(ToString());
+        }
+
         public int CompareTo(ProvinceAbstract other)
         {
 			return Index.CompareTo(other.Index);
@@ -44,7 +49,7 @@ namespace EU4_PCP
 
         public Province(int index = -1, CompositeName name = null, P_Color color = null) : base (index, name)
         {
-			Color = color;
+			Color = new (color);
 		}
 
         public Province(Province prov) : base(prov.Index, prov.Name)
@@ -161,6 +166,9 @@ namespace EU4_PCP
 		/// </summary>
 		public string Name => ((Color)this).Name;
 
+		public P_Color(P_Color obj) : this(obj.R, obj.G, obj.B)
+		{ }
+
 		public P_Color(Color obj) : this(obj.R, obj.G, obj.B)
 		{ }
 
@@ -210,7 +218,10 @@ namespace EU4_PCP
 
 		public bool IsLegal() => R.Range(0, 255) && G.Range(0, 255) && B.Range(0, 255);
 
-		public string ToCsv() => ((Color)this).ToCsv();
+		public string ToCsv()
+        {
+			return $"{(R < 0 ? "" : R)};{(G < 0 ? "" : G)};{(B < 0 ? "" : B)}";
+		}
 
 		public string AsHex()
 		{

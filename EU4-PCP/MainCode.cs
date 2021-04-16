@@ -303,13 +303,13 @@ namespace EU4_PCP
 		/// A smart count of overall Provinces.
 		/// </summary>
 		/// <param name="scope"></param>
-		private static void CountProv(Scope scope)
+		public static void CountProv(Scope scope)
 		{
-			var provCount = Provinces.Count(p => p && !string.IsNullOrWhiteSpace(p.ToString())).ToString();
+			var provCount = Provinces.Count(p => p && p.IsNameLegal() && p.Color.IsLegal()).ToString();
 			var illegalCount = "";
 
 			if (Security.RetrieveBool(General.ShowIllegalProv))
-				illegalCount = Provinces.Count(p => p && string.IsNullOrWhiteSpace(p.ToString())).ToString();
+				illegalCount = Provinces.Count(p => p && !(p.IsNameLegal() && p.Color.IsLegal())).ToString();
 
 			switch (scope)
 			{
@@ -561,6 +561,8 @@ namespace EU4_PCP
 		/// <returns></returns>
 		public static bool AddProv(Province newProv)
 		{
+			var update = !(ChosenProv && ChosenProv.Color.IsLegal() && ChosenProv.IsNameLegal());
+
 			if (ChosenProv)
 			{
 				var prov = Provinces.Find(prov => prov.Index == ChosenProv.ID);
@@ -571,7 +573,10 @@ namespace EU4_PCP
 			{
 				newProv.IsRNW();
 				Provinces.Add(newProv);
+			}
 
+            if (update)
+            {
 				ModMaxProvinces = Security.RetrieveBool(General.IterateMaxProv)
 					? Inc(ModMaxProvinces, 1)
 					: Inc(ModProvinceCount, 2);
@@ -579,7 +584,6 @@ namespace EU4_PCP
 				if (Security.RetrieveBool(General.UpdateMaxProv) && !WriteDefines(ModMaxProvinces))
 					return false;
 
-				ModProvinceCount = Inc(ModProvinceCount, 1);
 				ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
 			}
 

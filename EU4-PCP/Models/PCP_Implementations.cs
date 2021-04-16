@@ -21,16 +21,6 @@ namespace EU4_PCP
 		#region Overrides and Helper Functions
 
 		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="color"></param>
-		/// <returns></returns>
-		public static string ToCsv(this Color color)
-		{
-			return $"{color.R};{color.G};{color.B}";
-		}
-
-		/// <summary>
 		/// Appends an array of strings with a new <see cref="string"/>, growing the array if the last cell isn't empty. <br />
 		/// [Emulates the List.Add() method for arrays.]
 		/// </summary>
