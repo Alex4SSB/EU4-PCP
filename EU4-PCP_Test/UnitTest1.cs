@@ -281,8 +281,6 @@ namespace EU4_PCP_Test
         {
             // Also tests both C-tors
 
-            
-
             var gameMembers = new MembersCount[] {
                 new MembersCount($@"{TestFiles}\gamePath\localisation\aow_l_english.yml", "3", "1"),
                 new MembersCount($@"{TestFiles}\gamePath\localisation\manchu_l_english.yml", "43", "0"),

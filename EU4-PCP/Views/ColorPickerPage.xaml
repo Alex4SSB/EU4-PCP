@@ -80,8 +80,7 @@
                         Maximum="255"
                         Minimum="-1"
                         SmallChange="1"
-                        ValueChanged="Slider_ValueChanged"
-                        Value="-1" />
+                        ValueChanged="Slider_ValueChanged" />
                     <Grid Grid.Column="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
@@ -120,8 +119,7 @@
                         Maximum="255"
                         Minimum="-1"
                         SmallChange="1"
-                        ValueChanged="Slider_ValueChanged"
-                        Value="-1" />
+                        ValueChanged="Slider_ValueChanged" />
                     <Grid Grid.Row="1" Grid.Column="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
@@ -160,8 +158,7 @@
                         Maximum="255"
                         Minimum="-1"
                         SmallChange="1"
-                        ValueChanged="Slider_ValueChanged"
-                        Value="-1" />
+                        ValueChanged="Slider_ValueChanged" />
                     <Grid Grid.Row="2" Grid.Column="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />

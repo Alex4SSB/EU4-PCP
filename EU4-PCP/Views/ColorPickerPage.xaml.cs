@@ -25,8 +25,6 @@ namespace EU4_PCP.Views
 
         public ColorPickerPage()
         {
-            Lockdown = true;
-
             InitializeComponent();
             DataContext = this;
 
@@ -256,8 +254,6 @@ namespace EU4_PCP.Views
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (Lockdown) return;
-
             PickedColor.R = (short)RedSlider.Value;
             PickedColor.G = (short)GreenSlider.Value;
             PickedColor.B = (short)BlueSlider.Value;
