@@ -539,7 +539,7 @@ namespace EU4_PCP
             if (!CheckDupli || !SelectedMod) return;
 
 			var dupliGroups = (from prov in Provinces
-							  where prov && prov.Show
+							  where prov && prov.Show && prov.Color.IsLegal()
 							  group prov by (Color)prov.Color)
 							  .Where(g => g.Count() > 1);
 							  

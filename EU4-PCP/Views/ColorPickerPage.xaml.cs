@@ -282,6 +282,8 @@ namespace EU4_PCP.Views
 
             if (NewProvNameTextBox.Text.Any(c => c > 255)) return false;
 
+            if (!PickedColor.IsLegal()) return false;
+
             if (ChosenProv && (ChosenProv.Color.Equals(PickedColor)
                     && (ChosenProv.Name.Definition == NewProvNameTextBox.Text)))
                 return false;

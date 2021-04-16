@@ -54,7 +54,7 @@
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Background" Value="{Binding B_Color}" />
-                                <Setter Property="Text" Value="{Binding IsLegal}" />
+                                <Setter Property="Text" Value="{Binding IsColorLegal}" />
                                 <Setter Property="TextAlignment" Value="Center" />
                                 <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
                             </Style>
@@ -64,10 +64,20 @@
                         x:Name="ID"
                         Binding="{Binding ID}"
                         Header="ID" />
-                    <DataGridTextColumn
-                        x:Name="P_Name"
-                        Binding="{Binding P_Name}"
-                        Header="Name" />
+                    <DataGridTextColumn x:Name="P_Name" Header="Name">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding P_Name}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding P_Name}" Value="">
+                                        <Setter Property="Text" Value="&#xE711;" />
+                                        <Setter Property="TextAlignment" Value="Center" />
+                                        <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                     <DataGridTextColumn
                         x:Name="Red"
                         Binding="{Binding Red}"

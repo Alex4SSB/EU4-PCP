@@ -80,7 +80,7 @@ namespace EU4_PCP
 		public short Blue { get { return Color.B; } }
 
 		public bool IsDupli { get { return NextDupli; } }
-		public string IsLegal { get { return Color.IsLegal() ? "" : "\uE711"; } }
+		public string IsColorLegal { get { return Color.IsLegal() ? "" : "\uE711"; } }
 
 		public TableProvince(Province prov) : base(prov) { }
 	}
