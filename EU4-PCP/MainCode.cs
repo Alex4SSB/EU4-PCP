@@ -17,9 +17,6 @@ namespace EU4_PCP
 {
     public static class MainCode
 	{
-		public static readonly Color RedBackground = Color.FromRgb(0xDE, 25, 25);
-		public static readonly Color GreenBackground = Color.FromRgb(0x7C, 0xB6, 0x1A);
-
 		public static void PCP_Main()
 		{
 			if (!LaunchSequence())

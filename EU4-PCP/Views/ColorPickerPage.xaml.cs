@@ -18,9 +18,6 @@ namespace EU4_PCP.Views
 {
     public partial class ColorPickerPage : Page, INotifyPropertyChanged
     {
-        readonly Style GreenStyle = Application.Current.FindResource("GreenBackground") as Style;
-        readonly Style RedStyle = Application.Current.FindResource("RedBackground") as Style;
-
         private P_Color PickedColor = ColorPickerPickedColor;
 
         public ColorPickerPage()
@@ -266,14 +263,14 @@ namespace EU4_PCP.Views
                 ColorRectangle.Fill = new SolidColorBrush(PickedColor);
                 RedTextBox.Background =
                 GreenTextBox.Background =
-                BlueTextBox.Background = new SolidColorBrush(Provinces.Any(prov => prov.Color.Equals(PickedColor)) ? RedBackground : GreenBackground);
+                BlueTextBox.Background = SelectBG(PickedColor, !ChosenProv);
             }
             else
             {
                 ColorRectangle.Fill = new SolidColorBrush(Colors.Transparent);
-                RedTextBox.Background = new SolidColorBrush(PickedColor.R < 0 ? RedBackground : GreenBackground);
-                GreenTextBox.Background = new SolidColorBrush(PickedColor.G < 0 ? RedBackground : GreenBackground);
-                BlueTextBox.Background = new SolidColorBrush(PickedColor.B < 0 ? RedBackground : GreenBackground);
+                RedTextBox.Background = LegalBG(PickedColor.R);
+                GreenTextBox.Background = LegalBG(PickedColor.G);
+                BlueTextBox.Background = LegalBG(PickedColor.B);
             }
 
             AddProvButton.IsEnabled = EnableAddProv();

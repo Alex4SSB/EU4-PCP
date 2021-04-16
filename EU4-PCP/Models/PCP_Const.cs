@@ -1,9 +1,10 @@
-﻿using System.Drawing;
-using System.Text;
+﻿using System.Text;
+using System.Windows;
+using System.Windows.Media;
 
 namespace EU4_PCP
 {
-	public static class PCP_Const
+    public static class PCP_Const
 	{
 		// MISC
 		public static readonly string APP_NAME = "EU4 Province Color Picker";
@@ -14,9 +15,13 @@ namespace EU4_PCP
 		public static readonly string[] EUDF = {
 			"yyyy.M.dd", "yyyy.MM.dd", "yyyy.M.d", "yyyy.MM.d"
 		}; // EU Date Formats. The years 2 - 999 are interpreted falsely, and thus processed in the date parser
+		public static readonly Style GreenStyle = Application.Current.FindResource("GreenBackground") as Style;
+		public static readonly Style RedStyle = Application.Current.FindResource("RedBackground") as Style;
+		public static readonly Color RedBackground = Color.FromRgb(0xDE, 25, 25);
+		public static readonly Color GreenBackground = Color.FromRgb(0x7C, 0xB6, 0x1A);
 
 		// SYSTEM VARS
-		public static readonly Size MARKER_SIZE = new(8, 5);
+		public static readonly System.Drawing.Size MARKER_SIZE = new(8, 5);
 		public static readonly int MARKER_Y_OFFSET = 15;
 		public static readonly int HEIGHT_OFFSET_SB = 34;
 		public static readonly Encoding UTF7 = Encoding.UTF7;

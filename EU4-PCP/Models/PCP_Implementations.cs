@@ -1077,6 +1077,17 @@ namespace EU4_PCP
 			return tempColor;
 		}
 
+        public static System.Windows.Media.SolidColorBrush SelectBG(P_Color pickedColor, bool isNew = true) => 
+			new(Provinces.Count(prov => prov.Color.Equals(pickedColor)) switch
+        {
+            > 0 when isNew => RedBackground,
+            > 1 when !isNew => RedBackground,
+            _ => GreenBackground
+        });
+
+		public static System.Windows.Media.SolidColorBrush LegalBG(short channel) =>
+			new(channel < 0 ? RedBackground : GreenBackground);
+
 		#region File Fetching
 
 		/// <summary>
