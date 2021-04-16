@@ -302,7 +302,7 @@ namespace EU4_PCP.Views
             int g = GreenSlider.IsEnabled ? -1 : (int)GreenSlider.Value;
             int b = BlueSlider.IsEnabled ? -1 : (int)BlueSlider.Value;
 
-            var tempColor = RandomProvColor(Provinces, r, g, b).Convert();
+            var tempColor = RandomProvColor(Provinces, r, g, b);
             RedSlider.Value = tempColor.R;
             GreenSlider.Value = tempColor.G;
             BlueSlider.Value = tempColor.B;

@@ -2,13 +2,13 @@
 using EU4_PCP.Services;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using static EU4_PCP.PCP_Const;
 using static EU4_PCP.PCP_Data;
 using static EU4_PCP.PCP_Paths;
@@ -16,7 +16,7 @@ using static EU4_PCP.PCP_RegEx;
 
 namespace EU4_PCP
 {
-	public static class PCP_Implementations
+    public static class PCP_Implementations
 	{
 		#region Overrides and Helper Functions
 
@@ -100,11 +100,6 @@ namespace EU4_PCP
 				res[i] = byte.Parse(s[i]);
 			}
 			return res;
-		}
-
-		public static Color ToColor(this byte[] color)
-		{
-			return Color.FromArgb(color[0], color[1], color[2]);
 		}
 
 		/// <summary>
@@ -1051,17 +1046,17 @@ namespace EU4_PCP
 		public static Color RandomProvColor(List<Province> provList, int red = -1, int green = -1, int blue = -1)
 		{
 			var rnd = new Random();
-			int r, g, b;
+			byte r, g, b;
 			var tempColor = new Color();
 			if (red >= 0 && green >= 0 && blue >= 0)
 				return tempColor;
 
 			do
 			{
-				r = red < 0 ? rnd.Next(0, 255) : red;
-				g = green < 0 ? rnd.Next(0, 255) : green;
-				b = blue < 0 ? rnd.Next(0, 255) : blue;
-				tempColor = Color.FromArgb(r, g, b);
+				r = (byte)(red < 0 ? rnd.Next(0, 255) : red);
+				g = (byte)(green < 0 ? rnd.Next(0, 255) : green);
+				b = (byte)(blue < 0 ? rnd.Next(0, 255) : blue);
+				tempColor = Color.FromRgb(r, g, b);
 			} while (provList.Any(p => p && p.Color == tempColor));
 
 			return tempColor;

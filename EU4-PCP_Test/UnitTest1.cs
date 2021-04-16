@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
+using System.Windows.Media;
 using EU4_PCP;
 using EU4_PCP_Test.Properties;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -247,11 +247,11 @@ namespace EU4_PCP_Test
         public void RandomProvColorTest()
         {
             var testProv = new List<Province>() {
-                new Province(color: Color.FromArgb(130, 12, 56)),
-                new Province(color: Color.FromArgb(1, 40, 100)),
-                new Province(color: Color.FromArgb(78, 32, 47)),
-                new Province(color: Color.FromArgb(23, 190, 200)),
-                new Province(color: Color.FromArgb(90, 212, 231))
+                new Province(color: Color.FromRgb(130, 12, 56)),
+                new Province(color: Color.FromRgb(1, 40, 100)),
+                new Province(color: Color.FromRgb(78, 32, 47)),
+                new Province(color: Color.FromRgb(23, 190, 200)),
+                new Province(color: Color.FromRgb(90, 212, 231))
             };
 
             Color newColor = RandomProvColor(testProv);
@@ -312,11 +312,11 @@ namespace EU4_PCP_Test
             // Also tests IsRNW
 
             var colors = new List<Color>() {
-                Color.FromArgb(130, 12, 56),
-                Color.FromArgb(1, 40, 100),
-                Color.FromArgb(78, 32, 47),
-                Color.FromArgb(23, 190, 200),
-                Color.FromArgb(90, 212, 231)
+                Color.FromRgb(130, 12, 56),
+                Color.FromRgb(1, 40, 100),
+                Color.FromRgb(78, 32, 47),
+                Color.FromRgb(23, 190, 200),
+                Color.FromRgb(90, 212, 231)
             };
             var testProv = new List<Province>() {
                 new Province(index: 1, color: colors[0], name: "prov1"),
@@ -341,7 +341,7 @@ namespace EU4_PCP_Test
             Assert.IsTrue(list.Count(prov => prov) == 8);
             Assert.IsTrue(list.Single(prov => prov.Index == 2905).Name.ToString() == "Rio Das Mortes");
             Assert.IsTrue(list.Count(prov => prov.IsRNW()) == 3);
-            Assert.IsTrue(list.Single(prov => prov.Index == 2).Color == Color.FromArgb(0, 36, 128));
+            Assert.IsTrue(list.Single(prov => prov.Index == 2).Color == Color.FromRgb(0, 36, 128));
         }
 
         [TestMethod]

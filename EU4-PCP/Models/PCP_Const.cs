@@ -7,8 +7,6 @@ namespace EU4_PCP
     public static class PCP_Const
 	{
 		// MISC
-		public static readonly string APP_NAME = "EU4 Province Color Picker";
-		public static readonly string[] NOT_ENG = { "_l_french", "_l_german", "_l_spanish" };
 		public static readonly string[] NOT_CUL = {
 			"graphical_culture", "second_graphical_culture", "male_names", "female_names", "dynasty_names", "primary"};
 		public static readonly string DATE_FORMAT = "dd/MM/yyyy";
@@ -21,9 +19,6 @@ namespace EU4_PCP
 		public static readonly Color GreenBackground = Color.FromRgb(0x7C, 0xB6, 0x1A);
 
 		// SYSTEM VARS
-		public static readonly System.Drawing.Size MARKER_SIZE = new(8, 5);
-		public static readonly int MARKER_Y_OFFSET = 15;
-		public static readonly int HEIGHT_OFFSET_SB = 34;
 		public static readonly Encoding UTF7 = Encoding.UTF7;
 		public static readonly Encoding UTF8 = new UTF8Encoding(false);
 		public static readonly string[] SEPARATORS = new string[] { "\n", "\r" };

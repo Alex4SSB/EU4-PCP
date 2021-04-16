@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Windows.Media;
 
 namespace EU4_PCP
 {
@@ -164,7 +164,7 @@ namespace EU4_PCP
 		/// <summary>
 		/// Gets the name of this <see cref="Color"/>.
 		/// </summary>
-		public string Name => ((Color)this).Name;
+		public string Name => ((Color)this).ToString().TrimStart('#');
 
 		public P_Color(P_Color obj) : this(obj.R, obj.G, obj.B)
 		{ }
@@ -238,12 +238,7 @@ namespace EU4_PCP
 
 		public static implicit operator Color(P_Color obj)
 		{
-			return obj.AsByteArr().ToColor();
-		}
-
-		public static implicit operator System.Windows.Media.Color(P_Color obj)
-		{
-			return System.Windows.Media.Color.FromRgb(obj.R_(), obj.G_(), obj.B_());
+			return Color.FromRgb(obj.R_(), obj.G_(), obj.B_());
 		}
 
 		public static implicit operator P_Color(Color obj)
