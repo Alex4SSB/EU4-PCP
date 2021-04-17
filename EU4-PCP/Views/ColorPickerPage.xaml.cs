@@ -18,7 +18,9 @@ namespace EU4_PCP.Views
 {
     public partial class ColorPickerPage : Page, INotifyPropertyChanged
     {
-        private P_Color PickedColor = ColorPickerPickedColor;
+        private readonly P_Color PickedColor = ColorPickerPickedColor;
+
+        private bool RedLock = false, GreenLock = false, BlueLock = false;
 
         public ColorPickerPage()
         {
@@ -101,17 +103,18 @@ namespace EU4_PCP.Views
             bool isMod = ModSelComboBox.SelectedIndex > 0;
 
             HxValueBlock.IsEnabled =
-            RedSlider.IsEnabled =
-            RedTextBox.IsEnabled =
             LockRedButton.IsEnabled =
-            GreenSlider.IsEnabled =
-            GreenTextBox.IsEnabled =
             LockGreenButton.IsEnabled =
-            BlueSlider.IsEnabled =
-            BlueTextBox.IsEnabled =
             LockBlueButton.IsEnabled =
             NewProvNameTextBox.IsEnabled =
             RandomizeButton.IsEnabled = isMod;
+
+            RedSlider.IsEnabled =
+            RedTextBox.IsEnabled = isMod && !RedLock;
+            GreenSlider.IsEnabled =
+            GreenTextBox.IsEnabled = isMod && !GreenLock;
+            BlueSlider.IsEnabled =
+            BlueTextBox.IsEnabled = isMod && !BlueLock;
 
             if (!isMod)
             {
@@ -136,6 +139,7 @@ namespace EU4_PCP.Views
             switch (scope)
             {
                 case CriticalScope.Mod:
+                    ChosenProv = null;
                     ChangeMod();
                     ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
                     UpdatePicker();
@@ -235,9 +239,9 @@ namespace EU4_PCP.Views
             }
             else
             {
-                ModMaxProvBlock.Style = null;
+                ModMaxProvBlock.Style =
                 ModProvCountBlock.Style = null;
-                ModMaxProvBlock.ToolTip = null;
+                ModMaxProvBlock.ToolTip =
                 ModProvCountBlock.ToolTip = null;
             }
         }
@@ -298,9 +302,9 @@ namespace EU4_PCP.Views
 
         private void Randomize()
         {
-            int r = RedSlider.IsEnabled ? -1 : (int)RedSlider.Value;
-            int g = GreenSlider.IsEnabled ? -1 : (int)GreenSlider.Value;
-            int b = BlueSlider.IsEnabled ? -1 : (int)BlueSlider.Value;
+            int r = RedLock ? (int)RedSlider.Value : -1;
+            int g = GreenLock ? (int)GreenSlider.Value : -1;
+            int b = BlueLock ? (int)BlueSlider.Value : -1;
 
             var tempColor = RandomProvColor(Provinces, r, g, b);
             RedSlider.Value = tempColor.R;
@@ -341,27 +345,33 @@ namespace EU4_PCP.Views
 
         private void LockRedButton_Click(object sender, RoutedEventArgs e)
         {
-            RedSlider.IsEnabled = !RedSlider.IsEnabled;
-            RedTextBox.IsEnabled = RedSlider.IsEnabled;
-            LockRedButton.Content = RedSlider.IsEnabled ? "\uE785" : "\uE72E";
+            RedLock = !RedLock;
+
+            RedSlider.IsEnabled = 
+            RedTextBox.IsEnabled = !RedLock;
+            LockRedButton.Content = RedLock ? "\uE72E" : "\uE785";
 
             EnableRandomize();
         }
 
         private void LockGreenButton_Click(object sender, RoutedEventArgs e)
         {
-            GreenSlider.IsEnabled = !GreenSlider.IsEnabled;
-            GreenTextBox.IsEnabled = GreenSlider.IsEnabled;
-            LockGreenButton.Content = GreenSlider.IsEnabled ? "\uE785" : "\uE72E";
+            GreenLock = !GreenLock;
+
+            GreenSlider.IsEnabled = 
+            GreenTextBox.IsEnabled = !GreenLock;
+            LockGreenButton.Content = GreenLock ? "\uE72E" : "\uE785";
 
             EnableRandomize();
         }
 
         private void LockBlueButton_Click(object sender, RoutedEventArgs e)
         {
-            BlueSlider.IsEnabled = !BlueSlider.IsEnabled;
-            BlueTextBox.IsEnabled = BlueSlider.IsEnabled;
-            LockBlueButton.Content = BlueSlider.IsEnabled ? "\uE785" : "\uE72E";
+            BlueLock = !BlueLock;
+
+            BlueSlider.IsEnabled = 
+            BlueTextBox.IsEnabled = !BlueLock;
+            LockBlueButton.Content = BlueLock ? "\uE72E" : "\uE785";
 
             EnableRandomize();
         }
