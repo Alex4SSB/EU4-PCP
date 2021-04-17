@@ -1047,13 +1047,13 @@ namespace EU4_PCP
 			return tempColor;
 		}
 
-        public static System.Windows.Media.SolidColorBrush SelectBG(P_Color pickedColor, bool isNew = true) => 
+        public static SolidColorBrush SelectBG(P_Color pickedColor, Province chosenProv = null) => 
 			new(Provinces.Count(prov => prov.Color.Equals(pickedColor)) switch
         {
-            > 0 when isNew => RedBackground,
-            > 1 when !isNew => RedBackground,
-            _ => GreenBackground
-        });
+            < 1 => GreenBackground,
+			< 2 when chosenProv && chosenProv.Color.Equals(pickedColor) => GreenBackground,
+            _ => RedBackground
+		});
 
 		public static System.Windows.Media.SolidColorBrush LegalBG(short channel) =>
 			new(channel < 0 ? RedBackground : GreenBackground);

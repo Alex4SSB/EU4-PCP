@@ -263,7 +263,7 @@ namespace EU4_PCP.Views
                 ColorRectangle.Fill = new SolidColorBrush(PickedColor);
                 RedTextBox.Background =
                 GreenTextBox.Background =
-                BlueTextBox.Background = SelectBG(PickedColor, !ChosenProv);
+                BlueTextBox.Background = SelectBG(PickedColor, ChosenProv);
             }
             else
             {
