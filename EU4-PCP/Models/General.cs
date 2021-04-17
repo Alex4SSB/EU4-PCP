@@ -9,6 +9,7 @@
         CheckDupli,
         UpdateMaxProv,
         IterateMaxProv,
-        ShowIllegalProv
+        ShowIllegalProv,
+        IgnoreIllegal
     }
 }

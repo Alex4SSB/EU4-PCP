@@ -163,7 +163,7 @@
                         Content="{x:Static properties:Resources.ShowIllegalProv}"
                         FontSize="{StaticResource MediumFontSize}"
                         Tag="ShowIllegalProv"
-                        Unchecked="Box_Checked"/>
+                        Unchecked="Box_Checked" />
                 </StackPanel>
                 <StackPanel Margin="{StaticResource SmallTopMargin}">
                     <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.ColorDupli}" />
@@ -197,6 +197,17 @@
                         Content="{x:Static properties:Resources.IterateMaxProv}"
                         FontSize="{StaticResource MediumFontSize}"
                         Tag="IterateMaxProv"
+                        Unchecked="Box_Checked" />
+                </StackPanel>
+                <StackPanel Margin="{StaticResource SmallTopMargin}">
+                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.ColorPickerIllegal}" />
+                    <CheckBox
+                        x:Name="IgnoreIllegalBox"
+                        Margin="{StaticResource XSmallTopMargin}"
+                        Checked="Box_Checked"
+                        Content="{x:Static properties:Resources.IgnoreIllegal}"
+                        FontSize="{StaticResource MediumFontSize}"
+                        Tag="IgnoreIllegal"
                         Unchecked="Box_Checked" />
                 </StackPanel>
                 <TextBlock

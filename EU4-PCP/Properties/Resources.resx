@@ -135,6 +135,9 @@
   <data name="ColorDupli" xml:space="preserve">
     <value>Color Duplicates</value>
   </data>
+  <data name="ColorPickerIllegal" xml:space="preserve">
+    <value>Illegal Provinces</value>
+  </data>
   <data name="ColorPickerPageTitle" xml:space="preserve">
     <value>Color Picker</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="GamePath" xml:space="preserve">
     <value>Game Path</value>
+  </data>
+  <data name="IgnoreIllegal" xml:space="preserve">
+    <value>Ignore Illegal Provinces</value>
   </data>
   <data name="IterateMaxProv" xml:space="preserve">
     <value>Always Iterate max__provinces Value</value>

@@ -311,7 +311,11 @@ namespace EU4_PCP.Views
             GreenSlider.Value = tempColor.G;
             BlueSlider.Value = tempColor.B;
 
-            NextProvBlock.Text = (Provinces.Last().Index + 1).ToString();
+            var lastIndex = Security.RetrieveBool(General.IgnoreIllegal) 
+                ? Provinces.Last(prov => prov.IsNameLegal() && prov.Color.IsLegal()).Index
+                : Provinces.Last().Index;
+
+            NextProvBlock.Text = (lastIndex + 1).ToString();
         }
 
         private void RedTextBox_TextChanged(object sender, TextChangedEventArgs e)

@@ -115,6 +115,15 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Illegal Provinces.
+        /// </summary>
+        public static string ColorPickerIllegal {
+            get {
+                return ResourceManager.GetString("ColorPickerIllegal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color Picker.
         /// </summary>
         public static string ColorPickerPageTitle {
@@ -174,6 +183,15 @@ namespace EU4_PCP.Properties {
         public static string GamePath {
             get {
                 return ResourceManager.GetString("GamePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore Illegal Provinces.
+        /// </summary>
+        public static string IgnoreIllegal {
+            get {
+                return ResourceManager.GetString("IgnoreIllegal", resourceCulture);
             }
         }
         

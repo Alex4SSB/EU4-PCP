@@ -563,9 +563,8 @@ namespace EU4_PCP
 		{
 			var update = !(ChosenProv && ChosenProv.Color.IsLegal() && ChosenProv.IsNameLegal());
 
-			if (ChosenProv)
+			if (Provinces.Find(prov => prov.Index == newProv.Index) is Province prov)
 			{
-				var prov = Provinces.Find(prov => prov.Index == ChosenProv.ID);
 				prov.Color = newProv.Color;
 				prov.Name.Definition = newProv.Name.Definition;
 			}
