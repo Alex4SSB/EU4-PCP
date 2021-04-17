@@ -159,19 +159,19 @@ namespace EU4_PCP.Views
 
             if (ChosenProv)
             {
-                ClearButton.Visibility = Visibility.Visible;
+                ClearButton.IsEnabled = true;
                 NewProvBlock.Text = "Existing Province";
-                AddProvButton.Content = "Update Province";
+                AddProvButton.Content = "Update";
                 OriginalColorBlock.Visibility = Visibility.Visible;
                 OriginalColorBlock.Text = $"Original color: ({ChosenProv.Color.R}, {ChosenProv.Color.G}, {ChosenProv.Color.B})";
                 OpenProv();
             }
             else
             {
-                ClearButton.Visibility = Visibility.Collapsed;
+                ClearButton.IsEnabled = false;
                 NewProvNameTextBox.Text = "";
                 NewProvBlock.Text = "New Province";
-                AddProvButton.Content = "Add Province";
+                AddProvButton.Content = "Add";
                 OriginalColorBlock.Visibility = Visibility.Collapsed;
                 Randomize();
             }
@@ -277,7 +277,18 @@ namespace EU4_PCP.Views
                 BlueTextBox.Background = LegalBG(PickedColor.B);
             }
 
-            AddProvButton.IsEnabled = EnableAddProv();
+            NewProvLegal();
+        }
+
+        private void NewProvLegal()
+        {
+            var enable = EnableAddProv();
+            AddProvButton.IsEnabled = enable;
+            NextIllegalButton.IsEnabled = enable
+                && ChosenProv
+                && !(ChosenProv.IsNameLegal() && ChosenProv.Color.IsLegal())
+                && !Security.RetrieveBool(General.IgnoreIllegal)
+                && ModIllegalProvinceCount != "0";
         }
 
         private bool EnableAddProv()
@@ -344,7 +355,7 @@ namespace EU4_PCP.Views
 
         private void NewProvNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            AddProvButton.IsEnabled = EnableAddProv();
+            NewProvLegal();
         }
 
         private void LockRedButton_Click(object sender, RoutedEventArgs e)
@@ -393,12 +404,21 @@ namespace EU4_PCP.Views
 
         private void AddProvButton_Click(object sender, RoutedEventArgs e)
         {
-            if (AddProv(new Province(NextProvBlock.Text.ToInt(), new CompositeName(NewProvNameTextBox.Text), PickedColor)))
-            {
-                CountProv(Scope.Mod);
-                InitializeData();
-                DupliPrep();
-            }
+            NewProv();
+        }
+
+        private void NewProv(bool next = false)
+        {
+            int index = NextProvBlock.Text.ToInt();
+            if (!AddProv(new Province(index, new CompositeName(NewProvNameTextBox.Text), PickedColor)))
+                return;
+
+            if (next)
+                ChosenProv = new(Provinces.Find(prov => prov.Index == index + 1));
+
+            CountProv(Scope.Mod);
+            InitializeData();
+            DupliPrep();
         }
 
         private void HxValueBlock_MouseDown(object sender, MouseButtonEventArgs e)
@@ -410,6 +430,11 @@ namespace EU4_PCP.Views
         private void HxValueBlock_MouseEnter(object sender, MouseEventArgs e)
         {
             HxValueBlock.TextDecorations.Add(TextDecorations.Underline);
+        }
+
+        private void NextIllegalButton_Click(object sender, RoutedEventArgs e)
+        {
+            NewProv(true);
         }
 
         private void HxValueBlock_MouseUp(object sender, MouseButtonEventArgs e)
