@@ -288,7 +288,7 @@ namespace EU4_PCP.Views
                 && ChosenProv
                 && !(ChosenProv.IsNameLegal() && ChosenProv.Color.IsLegal())
                 && !Security.RetrieveBool(General.IgnoreIllegal)
-                && ModIllegalProvinceCount != "0";
+                && ModIllegalProvinceCount.ToInt() > 1;
         }
 
         private bool EnableAddProv()
@@ -326,7 +326,8 @@ namespace EU4_PCP.Views
                 ? Provinces.Last(prov => prov.IsNameLegal() && prov.Color.IsLegal()).Index
                 : Provinces.Last().Index;
 
-            NextProvBlock.Text = (lastIndex + 1).ToString();
+            if (!ChosenProv)
+                NextProvBlock.Text = (lastIndex + 1).ToString();
         }
 
         private void RedTextBox_TextChanged(object sender, TextChangedEventArgs e)
