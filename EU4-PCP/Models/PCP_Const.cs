@@ -15,9 +15,10 @@ namespace EU4_PCP
 		}; // EU Date Formats. The years 2 - 999 are interpreted falsely, and thus processed in the date parser
 		public static readonly Style GreenStyle = Application.Current.FindResource("GreenBackground") as Style;
 		public static readonly Style RedStyle = Application.Current.FindResource("RedBackground") as Style;
-		public static readonly Color RedBackground = Color.FromRgb(0xDE, 25, 25);
+		public static readonly Color RedBackground = Color.FromRgb(0xDE, 0x25, 0x25);
 		public static readonly Color GreenBackground = Color.FromRgb(0x7C, 0xB6, 0x1A);
-
+		public static readonly Color PurpleBackground = Color.FromRgb(0x6A, 0x33, 0x9E);
+		
 		// SYSTEM VARS
 		public static readonly Encoding UTF7 = Encoding.UTF7;
 		public static readonly Encoding UTF8 = new UTF8Encoding(false);

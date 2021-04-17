@@ -86,6 +86,7 @@ namespace EU4_PCP
 
 		public bool IsDupli { get { return NextDupli; } }
 		public string IsColorLegal { get { return Color.IsLegal() ? "" : "\uE711"; } }
+		public bool IsProvLegal { get { return Color.IsLegal() && IsNameLegal(); } }
 
 		public TableProvince(Province prov) : base(prov) { }
 	}

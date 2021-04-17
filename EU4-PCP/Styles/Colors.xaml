@@ -6,4 +6,8 @@
     <Style x:Key="RedBackground" TargetType="{x:Type TextBlock}">
         <Setter Property="Background" Value="#FFDE2525" />
     </Style>
+
+    <SolidColorBrush x:Key="RedRow">#FFDE2525</SolidColorBrush>
+
+    <SolidColorBrush x:Key="PurpleRow">#FF6A339E</SolidColorBrush>
 </ResourceDictionary>

@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using static EU4_PCP.PCP_Data;
+using static EU4_PCP.PCP_Const;
 
 namespace EU4_PCP.Views
 {
@@ -55,13 +56,13 @@ namespace EU4_PCP.Views
 
         private void PaintMarkers()
         {
-            foreach (var dupliProv in Provinces.Where(prov => prov.NextDupli))
+            foreach (var markedProv in Provinces.Where(prov => prov.NextDupli || !prov.IsNameLegal() || !prov.Color.IsLegal()))
             {
-                var marker = new Rectangle() { Height = 4, VerticalAlignment = System.Windows.VerticalAlignment.Bottom, Margin = new System.Windows.Thickness(0, 0, 0, 0), Fill = new SolidColorBrush(Colors.Crimson) };
+                var marker = new Rectangle() { Height = 4, VerticalAlignment = System.Windows.VerticalAlignment.Bottom, Margin = new System.Windows.Thickness(0, 0, 0, 0), Fill = new SolidColorBrush(markedProv.NextDupli ? RedBackground : PurpleBackground) };
                 marker.MouseLeftButtonUp += new MouseButtonEventHandler(Rectangle_MouseLeftButtonUp);
-                marker.Tag = dupliProv;
+                marker.Tag = markedProv;
                 var shownProvs = Provinces.Where(p => p && p.Show).ToList();
-                double ratio = shownProvs.IndexOf(dupliProv) / (double)shownProvs.Count;
+                double ratio = shownProvs.IndexOf(markedProv) / (double)shownProvs.Count;
 
                 var grid = new Grid() { Children = { marker }, RowDefinitions = { new RowDefinition() { Height = new System.Windows.GridLength(ratio, System.Windows.GridUnitType.Star), MinHeight = 4 }, new RowDefinition() { Height = new System.Windows.GridLength(1 - ratio, System.Windows.GridUnitType.Star) } } };
                 MarkerGrid.Children.Add(grid);

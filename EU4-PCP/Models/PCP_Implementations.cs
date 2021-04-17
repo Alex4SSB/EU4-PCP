@@ -88,21 +88,6 @@ namespace EU4_PCP
 		}
 
 		/// <summary>
-		/// Converts a <see cref="string"/> array to <see cref="byte"/> array.
-		/// </summary>
-		/// <param name="s">The <see cref="string"/> array to convert.</param>
-		/// <returns><see cref="byte"/> array that contains the result of the conversion.</returns>
-		public static byte[] ToByte(this string[] s)
-		{
-			var res = new byte[s.Length];
-			for (int i = 0; i < s.Length; i++)
-			{
-				res[i] = byte.Parse(s[i]);
-			}
-			return res;
-		}
-
-		/// <summary>
 		/// Trims and then compares two numeric strings using > (greater than) operator
 		/// </summary>
 		/// <param name="s">The left hand string.</param>
