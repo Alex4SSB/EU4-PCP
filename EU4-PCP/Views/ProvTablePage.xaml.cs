@@ -9,6 +9,8 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using static EU4_PCP.PCP_Data;
 using static EU4_PCP.PCP_Const;
+using EU4_PCP.Services;
+using EU4_PCP.Models;
 
 namespace EU4_PCP.Views
 {
@@ -32,7 +34,8 @@ namespace EU4_PCP.Views
 
             ProvincesShown = ProvTable.Items.Count.ToString();
 
-            PaintMarkers();
+            if (Security.RetrieveBool(General.CheckDupli) || Security.RetrieveBool(General.ShowIllegalProv))
+                PaintMarkers();
         }
 
         public void OnNavigatedFrom()
