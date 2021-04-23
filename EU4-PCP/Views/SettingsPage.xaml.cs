@@ -162,6 +162,8 @@ namespace EU4_PCP.Views
                 PathHandler(Scope.Mod);
                 if (!string.IsNullOrEmpty(ParadoxModPath))
                     ModPathBlock.Text = ParadoxModPath;
+
+                PCP_Main();
             }
         }
 
