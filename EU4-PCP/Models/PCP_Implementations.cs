@@ -70,7 +70,8 @@ namespace EU4_PCP
 		}
 
 		/// <summary>
-		/// Converts a <see cref="string"/> array to <see cref="byte"/> array.
+		/// Converts a <see cref="string"/> array to <see cref="byte"/> array. <br />
+		/// [Backwards compatible with C# 7.3]
 		/// </summary>
 		/// <param name="s">The <see cref="string"/> array to convert.</param>
 		/// <param name="res">The output <see cref="byte"/> array that will receive the result of the conversion.</param>
@@ -1047,6 +1048,12 @@ namespace EU4_PCP
 			return tempColor;
 		}
 
+		/// <summary>
+		/// Selects a color depending on color value.
+		/// </summary>
+		/// <param name="pickedColor">The color to evaluate</param>
+		/// <param name="chosenProv">The province to compare with the picked color</param>
+		/// <returns>Green background color for a color that doesn't exist in the provinces list, except for the chosen province. Red otherwise.</returns>
         public static SolidColorBrush SelectBG(P_Color pickedColor, Province chosenProv = null) => 
 			new(Provinces.Count(prov => prov.Color.Equals(pickedColor)) switch
         {
@@ -1055,7 +1062,12 @@ namespace EU4_PCP
             _ => RedBackground
 		});
 
-		public static System.Windows.Media.SolidColorBrush LegalBG(short channel) =>
+		/// <summary>
+		/// Selects a color depending on color channel value.
+		/// </summary>
+		/// <param name="channel">Color channel value to evaluate</param>
+		/// <returns>Red background color for a value smaller than 0, green otherwise.</returns>
+		public static SolidColorBrush LegalBG(short channel) =>
 			new(channel < 0 ? RedBackground : GreenBackground);
 
 		#region File Fetching
@@ -1221,6 +1233,12 @@ namespace EU4_PCP
 
 		#endregion
 
+		/// <summary>
+		/// Handles all error messages. Returns a value to be used later.
+		/// </summary>
+		/// <param name="type">The error type</param>
+		/// <param name="returnVal">The boolean value to return</param>
+		/// <returns>returnVal</returns>
 		public static bool ErrorMsg(ErrorType type, bool returnVal = false)
 		{
 			Error_Msg(type);
