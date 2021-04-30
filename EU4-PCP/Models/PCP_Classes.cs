@@ -62,7 +62,7 @@ namespace EU4_PCP
 
         public string ToCsv()
 		{
-			return $"{Index};{Color.ToCsv()};{Name.Definition}" + (IsRNW(false) ? "" : ";x");
+			return $"{Index};{Color.ToCsv()};{Name.Definition};{(!IsRNW(false) && IsNameLegal() && Color.IsLegal() ? "x" : "")}";
 		}
 
         public bool IsRNW(bool updateShow = true)
