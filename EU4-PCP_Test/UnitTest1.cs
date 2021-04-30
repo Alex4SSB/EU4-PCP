@@ -355,5 +355,24 @@ namespace EU4_PCP_Test
 
             Assert.IsTrue(list.Count == 0);
         }
+
+        [TestMethod]
+        public void DefinParsePositiveTest()
+        {
+            Assert.IsTrue(DefinParse("4941;110;47;45;East Utah;", true) is not null);
+            Assert.IsTrue(DefinParse("4942;10;77;55;;", true) is not null);
+
+            Assert.IsTrue(DefinParse("4952;110;167;;;", false) is not null);
+            Assert.IsTrue(DefinParse("4954;;;;;", false) is not null);
+        }
+
+        [TestMethod]
+        public void DefinParseNegativeTest()
+        {
+            Assert.IsTrue(DefinParse("4952;110;167;;;", true) is null);
+            Assert.IsTrue(DefinParse("4954;;;;;", true) is null);
+
+            Assert.IsTrue(DefinParse(";3;251;221;;", false) is null);
+        }
     }
 }
