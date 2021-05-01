@@ -34,7 +34,7 @@ namespace EU4_PCP.Views
 
 			ProvincesShown = ProvTable.Items.Count.ToString();
 
-			if (Security.RetrieveBool(General.CheckDupli) || Security.RetrieveBool(General.ShowIllegalProv))
+			if (Storage.RetrieveBool(General.CheckDupli) || Storage.RetrieveBool(General.ShowIllegalProv))
 				PaintMarkers();
 		}
 

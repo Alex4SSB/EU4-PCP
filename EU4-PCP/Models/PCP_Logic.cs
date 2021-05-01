@@ -38,9 +38,9 @@ namespace EU4_PCP
 			}
 			ModList = modNames;
 
-			var lastSelMod = Security.RetrieveValue(General.LastSelMod);
+			var lastSelMod = Storage.RetrieveValue(General.LastSelMod);
 
-			if (Security.RetrieveBoolEnum(AutoLoad.Fully)
+			if (Storage.RetrieveBoolEnum(AutoLoad.Fully)
 				&& modNames.IndexOf(lastSelMod) is int index
 				&& index > -1)
 			{
@@ -62,10 +62,10 @@ namespace EU4_PCP
 		/// <returns><see langword="false"/> if any of the sub-sequences fails.</returns>
 		private static bool MainSequence()
 		{
-			if (!Security.RetrieveBoolEnum(ProvinceNames.Definition))
+			if (!Storage.RetrieveBoolEnum(ProvinceNames.Definition))
 			{
 				EnLoc = true;
-				EnDyn = Security.RetrieveBoolEnum(ProvinceNames.Dynamic);
+				EnDyn = Storage.RetrieveBoolEnum(ProvinceNames.Dynamic);
 			}
 			else
 			{
@@ -73,8 +73,8 @@ namespace EU4_PCP
 				EnDyn = false;
 			}
 
-			CheckDupli = Security.RetrieveBool(General.CheckDupli);
-			ShowRnw = Security.RetrieveBool(General.ShowAllProvinces);
+			CheckDupli = Storage.RetrieveBool(General.CheckDupli);
+			ShowRnw = Storage.RetrieveBool(General.ShowAllProvinces);
 			UpdateCountries = false;
 
 			ClearArrays();
@@ -199,7 +199,7 @@ namespace EU4_PCP
 			SelectedBookmarkIndex = BookmarkList != null && BookmarkList.Any() ? 0 : -1;
 
 			if (MainSequence())
-				Security.StoreValue(SelectedMod ? SelectedMod.Name : "-1", General.LastSelMod.ToString());
+				Storage.StoreValue(SelectedMod ? SelectedMod.Name : "-1", General.LastSelMod.ToString());
 			else if (SelectedMod)
 			{
 				SelectedModIndex = 0;
@@ -212,7 +212,7 @@ namespace EU4_PCP
 		/// </summary>
 		public static void UpdateProperties()
 		{
-			if (Security.RetrieveBool(General.ShowAllProvinces) is bool showRnw && showRnw != ShowRnw)
+			if (Storage.RetrieveBool(General.ShowAllProvinces) is bool showRnw && showRnw != ShowRnw)
 			{
 				ShowRnw = showRnw;
 
@@ -224,13 +224,13 @@ namespace EU4_PCP
 
 				DupliPrep();
 			}
-			if (Security.RetrieveBool(General.CheckDupli) is bool checkDupli && checkDupli != CheckDupli)
+			if (Storage.RetrieveBool(General.CheckDupli) is bool checkDupli && checkDupli != CheckDupli)
 			{
 				CheckDupli = checkDupli;
 
 				DupliPrep();
 			}
-			if (Security.RetrieveBoolEnum(ProvinceNames.Dynamic) != EnDyn || Security.RetrieveBoolEnum(ProvinceNames.Localisation) != EnLoc)
+			if (Storage.RetrieveBoolEnum(ProvinceNames.Dynamic) != EnDyn || Storage.RetrieveBoolEnum(ProvinceNames.Localisation) != EnLoc)
 				MainSequence();
 		}
 

@@ -162,7 +162,7 @@ namespace EU4_PCP
 		/// <returns><see langword="false"/> if an exception occurs while trying to read from the definition file.</returns>
 		public static bool DefinSetup(string path)
 		{
-			if (DefinRead(path + DefinPath, true, !Security.RetrieveBool(General.ShowIllegalProv)) is List<Province> provList)
+			if (DefinRead(path + DefinPath, true, !Storage.RetrieveBool(General.ShowIllegalProv)) is List<Province> provList)
 			{
 				Provinces.Clear();
 				Provinces = provList;
@@ -436,7 +436,7 @@ namespace EU4_PCP
 			switch (mode)
 			{
 				case Mode.Read:
-					string setting = Security.RetrieveValue(scope);
+					string setting = Storage.RetrieveValue(scope);
 					if (string.IsNullOrEmpty(setting)) return;
 
 					string[] lines = setting.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
@@ -448,7 +448,7 @@ namespace EU4_PCP
 					}
 					break;
 				case Mode.Write:
-					Security.StoreValue(string.Join("\r\n", Members.Where(m => m.Type == scope)), scope);
+					Storage.StoreValue(string.Join("\r\n", Members.Where(m => m.Type == scope)), scope);
 					break;
 			}
 		}
@@ -780,7 +780,7 @@ namespace EU4_PCP
 		/// </summary>
 		public static void DynamicSetup()
 		{
-			var showIllegal = Security.RetrieveBool(General.ShowIllegalProv);
+			var showIllegal = Storage.RetrieveBool(General.ShowIllegalProv);
 
 			foreach (var prov in Provinces.Where(p => p))
 			{
@@ -1030,9 +1030,9 @@ namespace EU4_PCP
 		/// <returns><see langword="false"/> upon failure or if auto-loading is disabled.</returns>
 		public static bool ValGame()
 		{
-			string tempGamePath = Security.RetrieveValue(General.GamePath);
+			string tempGamePath = Storage.RetrieveValue(General.GamePath);
 
-			if (Security.RetrieveBoolEnum(AutoLoad.Disable) ||
+			if (Storage.RetrieveBoolEnum(AutoLoad.Disable) ||
 				string.IsNullOrEmpty(tempGamePath) ||
 				!PathHandler(Scope.Game)) return false;
 			GamePath = tempGamePath;
@@ -1099,7 +1099,7 @@ namespace EU4_PCP
 		/// <returns><see langword="true"/> if Bookmarks should be updated.</returns>
 		public static bool BookStatus(bool enabled)
 		{
-			return (enabled || Security.RetrieveBoolEnum(ProvinceNames.Dynamic)) &&
+			return (enabled || Storage.RetrieveBoolEnum(ProvinceNames.Dynamic)) &&
 				SelectedBookmarkIndex < 1;
 		}
 
@@ -1109,7 +1109,7 @@ namespace EU4_PCP
 		/// <param name="scope">Game / Mod.</param>
 		/// <returns>The path as string.</returns>
 		private static string PathRead(Scope scope) 
-			=> Security.RetrieveValue(Enum.GetName(typeof(Scope), scope) + "Path") is string str 
+			=> Storage.RetrieveValue(Enum.GetName(typeof(Scope), scope) + "Path") is string str 
 			? str 
 			: "";
 
@@ -1120,7 +1120,7 @@ namespace EU4_PCP
 		/// <param name="path">The path as string.</param>
 		private static void PathWrite(Scope scope, string path)
 		{
-			Security.StoreValue(path, Enum.GetName(typeof(Scope), scope) + "Path");
+			Storage.StoreValue(path, Enum.GetName(typeof(Scope), scope) + "Path");
 		}
 
 		/// <summary>
@@ -1152,7 +1152,7 @@ namespace EU4_PCP
 			var provCount = Provinces.Count(p => p && p.IsNameLegal() && p.Color.IsLegal()).ToString();
 			var illegalCount = "";
 
-			if (Security.RetrieveBool(General.ShowIllegalProv))
+			if (Storage.RetrieveBool(General.ShowIllegalProv))
 				illegalCount = Provinces.Count(p => p && !(p.IsNameLegal() && p.Color.IsLegal())).ToString();
 
 			switch (scope)
@@ -1259,7 +1259,7 @@ namespace EU4_PCP
 			StartDate = Bookmarks[SelectedBookmarkIndex].BookDate;
 			StartDateStr = StartDate.ToString(DATE_FORMAT);
 
-			ShowRnw = Security.RetrieveBool(General.ShowAllProvinces);
+			ShowRnw = Storage.RetrieveBool(General.ShowAllProvinces);
 			UpdateCountries = true;
 			CountryCulSetup();
 			OwnerSetup(true);
@@ -1367,11 +1367,11 @@ namespace EU4_PCP
 
 			if (update)
 			{
-				ModMaxProvinces = Security.RetrieveBool(General.IterateMaxProv)
+				ModMaxProvinces = Storage.RetrieveBool(General.IterateMaxProv)
 					? Inc(ModMaxProvinces, 1)
 					: Inc(ModProvinceCount, 2);
 
-				if (Security.RetrieveBool(General.UpdateMaxProv) && !WriteDefines(ModMaxProvinces))
+				if (Storage.RetrieveBool(General.UpdateMaxProv) && !WriteDefines(ModMaxProvinces))
 					return false;
 
 				ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();

@@ -44,7 +44,7 @@ namespace EU4_PCP.Views
 
 		private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-		private static bool EnableBooks => Security.RetrieveBoolEnum(ProvinceNames.Dynamic)
+		private static bool EnableBooks => Storage.RetrieveBoolEnum(ProvinceNames.Dynamic)
 			&& BookmarkList != null
 			&& BookmarkList.Any();
 
@@ -64,7 +64,7 @@ namespace EU4_PCP.Views
 			GameMaxProvBlock.Text = $" {GameMaxProvinces} ";
 			ModMaxProvBlock.Text = $" {ModMaxProvinces} ";
 
-			if (Security.RetrieveBool(General.ShowIllegalProv))
+			if (Storage.RetrieveBool(General.ShowIllegalProv))
 			{
 				IllegalProvCountGrid.Visibility = Visibility.Visible;
 				GameIllegalProvCount.Text = $" {GameIllegalProvinceCount} ";
@@ -286,7 +286,7 @@ namespace EU4_PCP.Views
 			NextIllegalButton.IsEnabled = enable
 				&& ChosenProv
 				&& !(ChosenProv.IsNameLegal() && ChosenProv.Color.IsLegal())
-				&& !Security.RetrieveBool(General.IgnoreIllegal)
+				&& !Storage.RetrieveBool(General.IgnoreIllegal)
 				&& ModIllegalProvinceCount.ToInt() > 1;
 		}
 
@@ -321,7 +321,7 @@ namespace EU4_PCP.Views
 			GreenSlider.Value = tempColor.G;
 			BlueSlider.Value = tempColor.B;
 
-			var lastIndex = Security.RetrieveBool(General.IgnoreIllegal) 
+			var lastIndex = Storage.RetrieveBool(General.IgnoreIllegal) 
 				? Provinces.Last(prov => prov.IsNameLegal() && prov.Color.IsLegal()).Index
 				: Provinces.Last().Index;
 

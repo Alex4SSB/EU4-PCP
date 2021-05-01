@@ -154,7 +154,7 @@ namespace EU4_PCP.Views
 				return;
 
 			blockText = System.IO.Directory.GetParent(dialog.FileName).ToString();
-			Security.StoreValue(blockText, tag);
+			Storage.StoreValue(blockText, tag);
 
 			((TextBlock)Controls.First(c => c.Tag.ToString() == tag && c is TextBlock)).Text = blockText;
 
@@ -175,7 +175,7 @@ namespace EU4_PCP.Views
 
 			foreach (var item in groups)
 			{
-				ChangeGroup(item, Security.RetrieveGroup(item));
+				ChangeGroup(item, Storage.RetrieveGroup(item));
 			}
 		}
 
@@ -204,10 +204,10 @@ namespace EU4_PCP.Views
 					ChangeGroup(property[0], index);
 				}
 
-				Security.StoreValue(Enum.Parse(property[0].ToEnum(), property[1]), property[0]);
+				Storage.StoreValue(Enum.Parse(property[0].ToEnum(), property[1]), property[0]);
 			}
 			else
-				Security.StoreValue(control.IsChecked.ToString(), control.Tag);
+				Storage.StoreValue(control.IsChecked.ToString(), control.Tag);
 		}
 
 		private void InitializeSettings()
@@ -218,11 +218,11 @@ namespace EU4_PCP.Views
 				switch (item)
 				{
 					case TextBlock box:
-						string value = Security.RetrieveValue(item.Tag);
+						string value = Storage.RetrieveValue(item.Tag);
 						box.Text = string.IsNullOrEmpty(value) ? item.GetPlaceholder() : value;
 						break;
 					case CheckBox box:
-						box.IsChecked = Security.RetrieveBool(item.Tag);
+						box.IsChecked = Storage.RetrieveBool(item.Tag);
 						break;
 					default:
 						break;
