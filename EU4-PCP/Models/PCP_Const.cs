@@ -4,7 +4,7 @@ using System.Windows.Media;
 
 namespace EU4_PCP
 {
-    public static class PCP_Const
+	public static class PCP_Const
 	{
 		// MISC
 		public static readonly string[] NOT_CUL = {

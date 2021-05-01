@@ -6,27 +6,27 @@ namespace EU4_PCP
 {
 
 	public abstract class ProvinceAbstract : IComparable<ProvinceAbstract>
-    {
+	{
 		public int Index;
 		public CompositeName Name;
 
 		public ProvinceAbstract(int index = -1, CompositeName name = null)
-        {
-            Index = index;
+		{
+			Index = index;
 			Name = name;
-        }
+		}
 
 		public bool IsNameLegal()
-        {
+		{
 			return !string.IsNullOrWhiteSpace(ToString());
-        }
+		}
 
-        public int CompareTo(ProvinceAbstract other)
-        {
+		public int CompareTo(ProvinceAbstract other)
+		{
 			return Index.CompareTo(other.Index);
-        }
+		}
 
-        public override string ToString() => Name.ToString();
+		public override string ToString() => Name.ToString();
 
 		public static implicit operator bool(ProvinceAbstract obj)
 		{
@@ -47,12 +47,12 @@ namespace EU4_PCP
 		public bool Show = true;
 		public Province NextDupli = null;
 
-        public Province(int index = -1, CompositeName name = null, P_Color color = null) : base (index, name)
-        {
+		public Province(int index = -1, CompositeName name = null, P_Color color = null) : base (index, name)
+		{
 			Color = new (color);
 		}
 
-        public Province(Province prov) : base(prov.Index, prov.Name)
+		public Province(Province prov) : base(prov.Index, prov.Name)
 		{
 			Color = prov.Color;
 			Owner = prov.Owner;
@@ -60,12 +60,12 @@ namespace EU4_PCP
 			NextDupli = prov.NextDupli;
 		}
 
-        public string ToCsv()
+		public string ToCsv()
 		{
 			return $"{Index};{Color.ToCsv()};{Name.Definition};{(!IsRNW(false) && IsNameLegal() && Color.IsLegal() ? "x" : "")}";
 		}
 
-        public bool IsRNW(bool updateShow = true)
+		public bool IsRNW(bool updateShow = true)
 		{
 			var isRnw = PCP_RegEx.RnwRE.Match(Name.Definition).Success;
 			if (updateShow && isRnw)
@@ -73,10 +73,10 @@ namespace EU4_PCP
 			return isRnw;
 		}
 
-    }
+	}
 
 	public class TableProvince : Province
-    {
+	{
 		public string B_Color { get { return $"#{(Color.IsLegal() ? Color.Name : "00ffffff")}"; } }
 		public int ID { get { return Index; } }
 		public string P_Name { get { return Name.ToString(); } }
@@ -128,19 +128,19 @@ namespace EU4_PCP
 	}
 
 	public class CompositeName
-    {
+	{
 		public string Definition;
 		public string Localisation;
 		public string Dynamic;
 
-        public CompositeName(string definition, string localisation = "", string dynamic = "")
-        {
-            Definition = definition;
-            Localisation = localisation;
-            Dynamic = dynamic;
-        }
+		public CompositeName(string definition, string localisation = "", string dynamic = "")
+		{
+			Definition = definition;
+			Localisation = localisation;
+			Dynamic = dynamic;
+		}
 
-        public override string ToString()
+		public override string ToString()
 		{
 			if (!string.IsNullOrEmpty(Dynamic)) { return Dynamic; }
 			if (!string.IsNullOrEmpty(Localisation)) { return Localisation; }
@@ -148,14 +148,14 @@ namespace EU4_PCP
 		}
 
 		public static implicit operator CompositeName(string name)
-        {
+		{
 			return new CompositeName(name);
-        }
+		}
 
 		public static implicit operator bool(CompositeName obj)
-        {
+		{
 			return obj is object;
-        }
+		}
 	}
 
 	public class P_Color
@@ -220,7 +220,7 @@ namespace EU4_PCP
 		public bool IsLegal() => R.Range(0, 255) && G.Range(0, 255) && B.Range(0, 255);
 
 		public string ToCsv()
-        {
+		{
 			return $"{(R < 0 ? "" : R)};{(G < 0 ? "" : G)};{(B < 0 ? "" : B)}";
 		}
 
@@ -247,17 +247,17 @@ namespace EU4_PCP
 			return new P_Color(obj);
 		}
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
 
-        public override string ToString()
-        {
-            return AsHex();
-        }
+		public override string ToString()
+		{
+			return AsHex();
+		}
 
-    }
+	}
 
 	public class Bookmark : IComparable<Bookmark>
 	{
@@ -322,7 +322,7 @@ namespace EU4_PCP
 			return $"{Path}|{Count}|{(int)Type}";
 		}
 
-        public MembersCount(params string[] member)
+		public MembersCount(params string[] member)
 		{
 			Path = member[0];
 			Count = int.Parse(member[1]);
@@ -345,9 +345,9 @@ namespace EU4_PCP
 		}
 
 		public static implicit operator Scope(ModObj obj)
-        {
+		{
 			return obj ? Scope.Mod : Scope.Game;
-        }
+		}
 
 		public override string ToString()
 		{

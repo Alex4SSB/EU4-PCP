@@ -49,7 +49,7 @@ namespace EU4_PCP
 
             await _host.StartAsync();
 
-            MainCode.PCP_Main();
+            PCP_Logic.PCP_Main();
         }
 
         private void ConfigureServices(HostBuilderContext context, IServiceCollection services)

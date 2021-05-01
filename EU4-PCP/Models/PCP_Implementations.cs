@@ -1025,6 +1025,367 @@ namespace EU4_PCP
 		}
 
 		/// <summary>
+		/// Checks game validity.
+		/// </summary>
+		/// <returns><see langword="false"/> upon failure or if auto-loading is disabled.</returns>
+		public static bool ValGame()
+		{
+			string tempGamePath = Security.RetrieveValue(General.GamePath);
+
+			if (Security.RetrieveBoolEnum(AutoLoad.Disable) ||
+				string.IsNullOrEmpty(tempGamePath) ||
+				!PathHandler(Scope.Game)) return false;
+			GamePath = tempGamePath;
+
+			return true;
+		}
+
+		/// <summary>
+		/// Handles path validation for game and mod.
+		/// </summary>
+		/// <param name="scope">Game / Mod.</param>
+		/// <returns><see langword="true"/> if the validation was successful.</returns>
+		public static bool PathHandler(Scope scope) => PathHandler(scope, PathRead(scope));
+
+		/// <summary>
+		/// Handles path validation for game and mod.
+		/// </summary>
+		/// <param name="scope">Game / Mod.</param>
+		/// <param name="setting">The setting from which to read.</param>
+		/// <returns><see langword="true"/> if the validation was successful.</returns>
+		private static bool PathHandler(Scope scope, string setting)
+		{
+			if (setting.Contains('|')) // Legacy support
+				setting = setting.Split('|')[0];
+
+			switch (scope)
+			{
+				case Scope.Game when !File.Exists(setting + GameFile):
+					return ErrorMsg(ErrorType.GameExe);
+				case Scope.Mod:
+					if (string.IsNullOrEmpty(setting))
+					{
+						var path = SelectedDocsPath + ModPath;
+						if (Directory.Exists(path))
+						{
+							ParadoxModPath =
+							setting = path;
+						}
+						else return false;
+					}
+					else
+						ParadoxModPath = setting;
+					break;
+				default:
+					break;
+			}
+			PathWrite(scope, setting);
+
+			return true;
+		}
+
+		/// <summary>
+		/// Decide whether to update the bookmarks - if a bookmark is selected.
+		/// <br /> <br />
+		/// The function is used to prevent updating the bookmarks CB when a bookmark is selected,
+		/// thus preventing the start date from changing, which in turn prevents useless
+		/// activation of some sequences again.
+		/// <br />
+		/// Optionally combined with enabled bookmarks check, to disable some sequences
+		/// when the bookmarks are disabled.
+		/// </summary>
+		/// <param name="enabled"><see langword="true"/> to ignore bookmarks being enabled or disabled 
+		/// (tied to dynamic enabled).</param>
+		/// <returns><see langword="true"/> if Bookmarks should be updated.</returns>
+		public static bool BookStatus(bool enabled)
+		{
+			return (enabled || Security.RetrieveBoolEnum(ProvinceNames.Dynamic)) &&
+				SelectedBookmarkIndex < 1;
+		}
+
+		/// <summary>
+		/// Reads path from game / mod settings.
+		/// </summary>
+		/// <param name="scope">Game / Mod.</param>
+		/// <returns>The path as string.</returns>
+		private static string PathRead(Scope scope) 
+			=> Security.RetrieveValue(Enum.GetName(typeof(Scope), scope) + "Path") is string str 
+			? str 
+			: "";
+
+		/// <summary>
+		/// Writes path to game / mod settings.
+		/// </summary>
+		/// <param name="scope">Game / Mod.</param>
+		/// <param name="path">The path as string.</param>
+		private static void PathWrite(Scope scope, string path)
+		{
+			Security.StoreValue(path, Enum.GetName(typeof(Scope), scope) + "Path");
+		}
+
+		/// <summary>
+		/// Reads game version from the game logs.
+		/// </summary>
+		public static void GameVer()
+		{
+			var gameVer = "Game";
+			var logText = "";
+
+			try
+			{
+				logText = File.ReadAllText(SelectedDocsPath + GameLogPath, UTF8);
+			}
+			catch (Exception) { }
+
+			if (GameVerRE.Match(logText) is Match match && match.Success)
+				gameVer += $" - {match.Value}";
+
+			GameVersion = gameVer;
+		}
+
+		/// <summary>
+		/// A smart count of overall Provinces.
+		/// </summary>
+		/// <param name="scope"></param>
+		public static void CountProv(Scope scope)
+		{
+			var provCount = Provinces.Count(p => p && p.IsNameLegal() && p.Color.IsLegal()).ToString();
+			var illegalCount = "";
+
+			if (Security.RetrieveBool(General.ShowIllegalProv))
+				illegalCount = Provinces.Count(p => p && !(p.IsNameLegal() && p.Color.IsLegal())).ToString();
+
+			switch (scope)
+			{
+				case Scope.Game:
+					GameProvinceCount = provCount;
+					GameIllegalProvinceCount = illegalCount;
+					ModProvinceCount =
+					ModIllegalProvinceCount = "";
+					break;
+				case Scope.Mod:
+					ModProvinceCount = provCount;
+					ModIllegalProvinceCount = illegalCount;
+					break;
+				default:
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Update the bookmark list with all relevant bookmarks.
+		/// </summary>
+		public static void PopulateBooks()
+		{
+			if (!BookStatus(false)) return;
+
+			if (!Bookmarks.Any(b => b.Code != null))
+			{
+				BookmarkList = null;
+				return;
+			}
+
+			BookmarkList = Bookmarks.Select(b => b.Name).ToList();
+
+			SelectedBookmarkIndex = 0;
+		}
+
+		/// <summary>
+		/// Default file max provinces.
+		/// </summary>
+		/// <param name="scope">Game / Mod.</param>
+		/// <returns><see langword="false"/> upon failure.</returns>
+		public static bool MaxProvinces(Scope scope)
+		{
+			var filePath = (scope == Scope.Mod) ? SteamModPath : GamePath;
+
+			string d_file;
+			try
+			{
+				d_file = File.ReadAllText(filePath + DefMapPath, UTF8);
+			}
+			catch (Exception)
+			{
+				return ErrorMsg(ErrorType.DefMapRead);
+			}
+			var match = MaxProvRE.Match(d_file);
+
+			if (!match.Success)
+			{
+				switch (scope)
+				{
+					case Scope.Game:
+						GameMaxProvinces = "";
+						break;
+					case Scope.Mod:
+						ModMaxProvinces = "";
+						SelectedModIndex = -1;
+						break;
+					default:
+						break;
+				}
+				return ErrorMsg(ErrorType.DefMapMaxProv);
+			}
+
+			switch (scope)
+			{
+				case Scope.Game:
+					GameMaxProvinces = match.Value;
+					ModMaxProvinces = "";
+					break;
+				case Scope.Mod:
+					ModMaxProvinces = match.Value;
+					break;
+				default:
+					break;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Combines the game and mod bookmark CB index changed handlers.
+		/// </summary>
+		public static void EnactBook()
+		{
+			if (Lockdown) return;
+			if (SelectedBookmarkIndex < 0)
+			{
+				if (BookmarkList.Any())
+					SelectedBookmarkIndex = 0;
+				else return;
+			}
+
+			StartDate = Bookmarks[SelectedBookmarkIndex].BookDate;
+			StartDateStr = StartDate.ToString(DATE_FORMAT);
+
+			ShowRnw = Security.RetrieveBool(General.ShowAllProvinces);
+			UpdateCountries = true;
+			CountryCulSetup();
+			OwnerSetup(true);
+			ProvNameSetup();
+			DynamicSetup();
+		}
+
+		/// <summary>
+		/// Updates the definition.csv file by writing all current provinces.
+		/// </summary>
+		/// <returns><see langword="false"/> if the operation was not successful.</returns>
+		public static bool WriteProvinces()
+		{
+			string stream = "province;red;green;blue;x;x\r\n";
+
+			foreach (var prov in Provinces.Where(p => p.Index >= 0))
+			{
+				stream += prov.ToCsv() + "\r\n";
+			}
+
+			try
+			{
+				File.WriteAllBytes(SteamModPath + DefinPath, stream.Select(c => (byte)c).ToArray());
+			}
+			catch (Exception)
+			{
+				return ErrorMsg(ErrorType.DefinWrite);
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Updates the default.map file.
+		/// </summary>
+		/// <param name="newMax">The new max_provinces value</param>
+		/// <returns></returns>
+		public static bool WriteDefines(string newMax)
+		{
+			string defMap;
+			try
+			{
+				defMap = File.ReadAllText(SteamModPath + DefMapPath);
+			}
+			catch (Exception)
+			{
+				return ErrorMsg(ErrorType.DefMapRead);
+			}
+			defMap = DefMapRE.Replace(defMap, $"max_provinces = {newMax}");
+			try
+			{
+				File.WriteAllText(SteamModPath + DefMapPath, defMap, UTF8);
+			}
+			catch (Exception)
+			{
+				return ErrorMsg(ErrorType.DefMapWrite);
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Handles duplicate provinces - sets for each province its next duplicate.
+		/// </summary>
+		public static void DupliPrep()
+		{
+			Provinces.ForEach(prov => prov.NextDupli = null);
+			if (!CheckDupli || !SelectedMod) return;
+
+			var dupliGroups = (from prov in Provinces
+							   where prov && prov.Show && prov.Color.IsLegal()
+							   group prov by (Color)prov.Color)
+							  .Where(g => g.Count() > 1);
+
+			foreach (var group in dupliGroups)
+			{
+				for (int i = 0; i < group.Count(); i++)
+				{
+					var nextIndex = (i == group.Count() - 1) ? 0 : i + 1;
+
+					group.ElementAt(i).NextDupli = group.ElementAt(nextIndex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Adds the given <see cref="Province"/> to the list if it doesn't exist. Otherwise, updates its color and definition name.
+		/// </summary>
+		/// <param name="newProv">The province to add / update</param>
+		/// <returns></returns>
+		public static bool AddProv(Province newProv)
+		{
+			var update = !(ChosenProv && ChosenProv.Color.IsLegal() && ChosenProv.IsNameLegal());
+
+			if (Provinces.Find(prov => prov.Index == newProv.Index) is Province prov)
+			{
+				prov.Color = newProv.Color;
+				prov.Name.Definition = newProv.Name.Definition;
+			}
+			else
+			{
+				newProv.IsRNW();
+				Provinces.Add(newProv);
+			}
+
+			if (update)
+			{
+				ModMaxProvinces = Security.RetrieveBool(General.IterateMaxProv)
+					? Inc(ModMaxProvinces, 1)
+					: Inc(ModProvinceCount, 2);
+
+				if (Security.RetrieveBool(General.UpdateMaxProv) && !WriteDefines(ModMaxProvinces))
+					return false;
+
+				ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
+			}
+
+			if (!WriteProvinces())
+				return false;
+
+			ChosenProv = null;
+
+			return true;
+		}
+
+		/// <summary>
 		/// Generates an exclusive random <see cref="Color"/>, that doesn't exist in the given <see cref="Province"/> array.
 		/// </summary>
 		/// <param name="provList">The <see cref="Province"/> array to be searched.</param>
