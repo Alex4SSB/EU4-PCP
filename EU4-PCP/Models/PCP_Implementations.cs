@@ -16,7 +16,7 @@ using static EU4_PCP.PCP_RegEx;
 
 namespace EU4_PCP
 {
-    public static class PCP_Implementations
+	public static class PCP_Implementations
 	{
 		#region Overrides and Helper Functions
 
@@ -178,7 +178,7 @@ namespace EU4_PCP
 		/// <param name="definLine">A line from definition.csv</param>
 		/// <returns><see cref="Province"/> object if the parsing was successful, <see langword="null"/> otherwise.</returns>
 		public static Province DefinParse(string definLine, bool validateColor = true)
-        {
+		{
 			P_Color provColor;
 			var list = definLine.Split(';');
 
@@ -192,7 +192,7 @@ namespace EU4_PCP
 						return null;
 				}
 				else
-                {
+				{
 					provColor = new(list[1..]);
 				}
 			}
@@ -201,8 +201,8 @@ namespace EU4_PCP
 
 			var provName = list.Length < 5 ? "" : list[4].Trim();
 
-            return new Province(i, provName, provColor);
-        }
+			return new Province(i, provName, provColor);
+		}
 
 		/// <summary>
 		/// Converts the given definition.csv file to a <see cref="Province"/> list.
@@ -211,9 +211,9 @@ namespace EU4_PCP
 		/// <param name="parallel"><see langword="false"/> to disable parallelism</param>
 		/// <returns><see cref="Province"/> list containing the provinces from the file.</returns>
 		public static List<Province> DefinRead(string path, bool parallel = true, bool validateColor = true)
-        {
-            string[] dFile;
-            try
+		{
+			string[] dFile;
+			try
 			{
 				dFile = File.ReadAllText(path, UTF7).Split(
 					SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
@@ -221,30 +221,30 @@ namespace EU4_PCP
 			catch (Exception)
 			{ return null; }
 
-            List<Province> provList = new();
-            if (parallel)
-            {
-                var definLock = new object();
-                Parallel.ForEach(dFile, line =>
-                {
-                    var prov = DefinParse(line, validateColor);
-                    if (!prov) return;
+			List<Province> provList = new();
+			if (parallel)
+			{
+				var definLock = new object();
+				Parallel.ForEach(dFile, line =>
+				{
+					var prov = DefinParse(line, validateColor);
+					if (!prov) return;
 
-                    lock (definLock)
-                    {
-                        provList.Add(prov);
-                    }
-                });
-            }
-            else
-            {
-                provList.AddRange(from line in dFile
-                                  let prov = DefinParse(line)
-                                  where prov
-                                  select prov);
-            }
+					lock (definLock)
+					{
+						provList.Add(prov);
+					}
+				});
+			}
+			else
+			{
+				provList.AddRange(from line in dFile
+								  let prov = DefinParse(line)
+								  where prov
+								  select prov);
+			}
 
-            return provList;
+			return provList;
 		}
 
 		/// <summary>
@@ -788,9 +788,9 @@ namespace EU4_PCP
 				if (!ShowRnw) prov.IsRNW();
 				if (!prov.Owner)
 				{
-                    if (!showIllegal && prov.Name.ToString() == "")
-                        prov.Show = false;
-                    continue;
+					if (!showIllegal && prov.Name.ToString() == "")
+						prov.Show = false;
+					continue;
 				}
 				if (DynamicName(prov, NameType.Country)
 					|| !prov.Owner.Culture
@@ -1049,18 +1049,30 @@ namespace EU4_PCP
 		}
 
 		/// <summary>
-		/// Selects a color depending on color value.
+		/// Selects a background color depending on color value.
 		/// </summary>
 		/// <param name="pickedColor">The color to evaluate</param>
 		/// <param name="chosenProv">The province to compare with the picked color</param>
 		/// <returns>Green background color for a color that doesn't exist in the provinces list, except for the chosen province. Red otherwise.</returns>
-        public static SolidColorBrush SelectBG(P_Color pickedColor, Province chosenProv = null) => 
-			new(Provinces.Count(prov => prov.Color.Equals(pickedColor)) switch
-        {
-            < 1 => GreenBackground,
-			< 2 when chosenProv && chosenProv.Color.Equals(pickedColor) => GreenBackground,
-            _ => RedBackground
-		});
+		public static SolidColorBrush SelectBG(P_Color pickedColor, Province chosenProv = null)
+			=> new(ColorExist(pickedColor, Provinces, chosenProv)
+				? RedBackground
+				: GreenBackground);
+
+		/// <summary>
+		/// Determines whether a color exists in a province list.
+		/// </summary>
+		/// <param name="pickedColor">The color to evaluate</param>
+		/// <param name="provList">The list of provinces to search</param>
+		/// <param name="chosenProv">The province to compare with the picked color</param>
+		/// <returns><see langword="false"/> for a color that doesn't exist in the given list, except for the chosen province. <see langword="true"/> otherwise.</returns>
+		public static bool ColorExist(P_Color pickedColor, List<Province> provList, Province chosenProv = null) => 
+			provList.Count(prov => prov.Color.Equals(pickedColor)) switch
+		{
+			< 1 => false,
+			< 2 when chosenProv && chosenProv.Show && chosenProv.Color.Equals(pickedColor) => false,
+			_ => true
+		};
 
 		/// <summary>
 		/// Selects a color depending on color channel value.
