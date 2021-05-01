@@ -319,14 +319,15 @@ namespace EU4_PCP
 
 		public override string ToString()
 		{
-			return $"{Path}|{Count}|{(int)Type}";
+			return $"{System.IO.Path.GetFileName(Path)}    ({Count} {Scope} {(Type == LocScope.ProvLoc ? "Provinces" : "Bookmarks")})";
 		}
 
-		public MembersCount(params string[] member)
+		public MembersCount(string Path, int Count, LocScope Type, Scope Scope = Scope.Game)
 		{
-			Path = member[0];
-			Count = int.Parse(member[1]);
-			Type = (LocScope)int.Parse(member[2]);
+			this.Path = Path;
+			this.Count = Count;
+			this.Type = Type;
+			this.Scope = Scope;
 		}
 
 		public MembersCount() { }

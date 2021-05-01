@@ -10,6 +10,8 @@
         UpdateMaxProv,
         IterateMaxProv,
         ShowIllegalProv,
-        IgnoreIllegal
+        IgnoreIllegal,
+        LocFiles,
+        NoLocProvCount
     }
 }

@@ -1,5 +1,6 @@
 ﻿using EU4_PCP.Models;
 using EU4_PCP.Services;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -255,7 +256,7 @@ namespace EU4_PCP
 		{
 			bool readSuccess;
 
-			LocMembers(Mode.Read, scope);
+			LocMembers(Mode.Read);
 			if (Members.Any(m => m.Type == scope))
 			{
 				List<FileObj> filesList = new();
@@ -284,13 +285,24 @@ namespace EU4_PCP
 
 				// If members were recovered successfully 
 				if (!abort && filesList.Any() && NameSetup(filesList, scope, out readSuccess))
-					return readSuccess;
+                {
+					if (scope == LocScope.BookLoc) return readSuccess;
+
+                    var current = Provinces.Count(p => string.IsNullOrEmpty(p.Name.Localisation));
+					var prev = Storage.RetrieveValue(General.NoLocProvCount.ToString());
+
+					if (prev is not int prevI || prevI >= current)
+					{
+						Storage.StoreValue(current, General.NoLocProvCount);
+						return readSuccess;
+					}
+                }
 			}
 
 			// If there are no members in the settings, or the members have changed
 			NameSetup(LocFiles, scope, out readSuccess);
 			if (readSuccess)
-				LocMembers(Mode.Write, scope);
+				LocMembers(Mode.Write);
 
 			return readSuccess;
 		}
@@ -430,25 +442,18 @@ namespace EU4_PCP
 		/// A link between LocFiles <see cref="Settings"/> and <see cref="Members"/> list.
 		/// </summary>
 		/// <param name="mode">Read from the <see cref="Settings"/>, or Write to the <see cref="Settings"/></param>
-		/// <param name="scope">Province or Bookmark</param>
-		public static void LocMembers(Mode mode, LocScope scope)
+		public static void LocMembers(Mode mode)
 		{
 			switch (mode)
 			{
 				case Mode.Read:
-					string setting = Storage.RetrieveValue(scope);
-					if (string.IsNullOrEmpty(setting)) return;
+					var membersObj = Storage.RetrieveValue(General.LocFiles.ToString());
+					if (membersObj is not JArray membersJA) return;
 
-					string[] lines = setting.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries);
-
-					foreach (var member in lines.Where(l => l.Length > 5))
-					{
-						Members.Add(new MembersCount(member.Split('|')));
-						Members.Last().MemberScope();
-					}
+					Members = membersJA.ToObject<List<MembersCount>>();
 					break;
 				case Mode.Write:
-					Storage.StoreValue(string.Join("\r\n", Members.Where(m => m.Type == scope)), scope);
+					Storage.StoreValue(Members, General.LocFiles);
 					break;
 			}
 		}

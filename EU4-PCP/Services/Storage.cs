@@ -5,6 +5,21 @@ namespace EU4_PCP.Services
 {
 	class Storage
 	{
+		
+		public static void StoreValue(string value, Enum keyName) => StoreValue((object)value, keyName.ToString());
+		public static void StoreValue(string value, object tag) => StoreValue((object)value, (string)tag);
+
+		public static void StoreValue(string value, string keyName) => StoreValue((object)value, keyName);
+
+		public static void StoreValue(object value, Enum keyName) => StoreValue(value, keyName.ToString());
+
+		public static void StoreValue(object value, string keyName)
+		{
+			if (value is null || 
+				(value is string strVal && string.IsNullOrEmpty(strVal))) return;
+			App.Current.Properties[keyName] = value;
+		}
+
 		public static string RetrieveValue(Enum value) => RetrieveValue(value.ToString())?.ToString();
 
 		public static string RetrieveValue(Type value) => RetrieveValue(value.Name)?.ToString();
@@ -14,18 +29,6 @@ namespace EU4_PCP.Services
 		public static object RetrieveValue(string keyName)
 		{
 			return App.Current.Properties[keyName];
-		}
-
-		public static void StoreValue(string value, Enum keyName) => StoreValue((object)value, keyName.ToString());
-		public static void StoreValue(string value, object tag) => StoreValue((object)value, (string)tag);
-
-		public static void StoreValue(string value, string keyName) => StoreValue((object)value, keyName);
-
-		public static void StoreValue(object value, string keyName)
-		{
-			if (value is null || 
-				(value is string strVal && string.IsNullOrEmpty(strVal))) return;
-			App.Current.Properties[keyName] = value;
 		}
 
 		public static bool RetrieveBool(Enum value) => RetrieveBool(value.ToString());
