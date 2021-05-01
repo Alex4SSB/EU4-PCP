@@ -6,6 +6,7 @@ using EU4_PCP;
 using EU4_PCP_Test.Properties;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static EU4_PCP.PCP_Implementations;
+using static EU4_PCP.PCP_Const;
 
 namespace EU4_PCP_Test
 {
@@ -373,6 +374,31 @@ namespace EU4_PCP_Test
             Assert.IsTrue(DefinParse("4954;;;;;", true) is null);
 
             Assert.IsTrue(DefinParse(";3;251;221;;", false) is null);
+        }
+
+        [TestMethod]
+        public void ColorExistTest()
+        {
+            var colors = new List<Color>() {
+                Color.FromRgb(130, 12, 56),
+                Color.FromRgb(1, 40, 100),
+                Color.FromRgb(78, 32, 47),
+                Color.FromRgb(23, 190, 200),
+                Color.FromRgb(90, 212, 231)
+            };
+            var testProv = new List<Province>() {
+                new Province(index: 0, color: colors[0]),
+                new Province(index: 1, color: colors[1]),
+                new Province(index: 2, color: colors[2]),
+                new Province(index: 3, color: colors[3]),
+                new Province(index: 4, color: colors[4]),
+                new Province(index: 5, color: new P_Color(238, 42, 192)),
+                new Province(index: 6, color: new P_Color(-1, -1, 100))
+            };
+
+            Assert.IsTrue(ColorExist(new P_Color(0, 1, 2), testProv) == false);
+            Assert.IsTrue(ColorExist(new P_Color(1, 40, 100), testProv) == true);
+            Assert.IsTrue(ColorExist(new P_Color(1, 40, 100), testProv, testProv[1]) == false);
         }
     }
 }
