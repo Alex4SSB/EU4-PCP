@@ -1156,7 +1156,8 @@ namespace EU4_PCP
 			var provCount = Provinces.Count(p => p && p.IsNameLegal() && p.Color.IsLegal()).ToString();
 			var illegalCount = "";
 
-			if (Storage.RetrieveBool(General.ShowIllegalProv))
+			ShowIllegal = Storage.RetrieveBool(General.ShowIllegalProv);
+			if (ShowIllegal)
 				illegalCount = Provinces.Count(p => p && !(p.IsNameLegal() && p.Color.IsLegal())).ToString();
 
 			switch (scope)
@@ -1170,6 +1171,8 @@ namespace EU4_PCP
 				case Scope.Mod:
 					ModProvinceCount = provCount;
 					ModIllegalProvinceCount = illegalCount;
+					if (string.IsNullOrEmpty(GameIllegalProvinceCount))
+						GameIllegalProvinceCount = "?";
 					break;
 				default:
 					break;

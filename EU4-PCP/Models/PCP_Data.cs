@@ -11,6 +11,7 @@ namespace EU4_PCP
 		public static bool UpdateCountries;
 		public static bool Lockdown = false;
 		public static bool CheckDupli;
+		public static bool ShowIllegal;
 
 		// GLOBAL OBJECTS
 		public static ModObj SelectedMod;

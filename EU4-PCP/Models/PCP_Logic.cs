@@ -215,13 +215,18 @@ namespace EU4_PCP
 
 				DupliPrep();
 			}
+			
 			if (Storage.RetrieveBool(General.CheckDupli) is bool checkDupli && checkDupli != CheckDupli)
 			{
 				CheckDupli = checkDupli;
 
 				DupliPrep();
 			}
+
 			if (Naming != (ProvinceNames)Storage.RetrieveEnumGroup(typeof(ProvinceNames)))
+				MainSequence();
+
+            if (Storage.RetrieveBool(General.ShowIllegalProv) != ShowIllegal)
 				MainSequence();
 		}
 
