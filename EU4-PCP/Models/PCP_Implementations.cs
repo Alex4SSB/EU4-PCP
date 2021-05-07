@@ -285,10 +285,10 @@ namespace EU4_PCP
 
 				// If members were recovered successfully 
 				if (!abort && filesList.Any() && NameSetup(filesList, scope, out readSuccess))
-                {
+				{
 					if (scope == LocScope.BookLoc) return readSuccess;
 
-                    var current = Provinces.Count(p => string.IsNullOrEmpty(p.Name.Localisation));
+					var current = Provinces.Count(p => string.IsNullOrEmpty(p.Name.Localisation));
 					var prev = Storage.RetrieveValue(General.NoLocProvCount.ToString());
 
 					if (prev is not int prevI || prevI >= current)
@@ -296,7 +296,7 @@ namespace EU4_PCP
 						Storage.StoreValue(current, General.NoLocProvCount);
 						return readSuccess;
 					}
-                }
+				}
 			}
 
 			// If there are no members in the settings, or the members have changed
@@ -470,8 +470,8 @@ namespace EU4_PCP
 				var match = ProvFileRE.Match(p_file.File);
 				if (!match.Success) return;
 				int i = match.Value.ToInt();
-				if (i >= Provinces.Count) return;
-				if (!updateOwner && Provinces.First(prov => prov.Index == i).Owner) return;
+				Province prov = Provinces.Find(p => p.Index == i);
+				if (!prov || (!updateOwner && prov.Owner)) return;
 
 				string provFile = File.ReadAllText(p_file.Path);
 				var currentOwner = LastEvent(provFile, EventType.Province, StartDate);
@@ -485,9 +485,8 @@ namespace EU4_PCP
 					currentOwner = match.Value;
 				}
 
-				var owner = Countries.Where(c => c.Name == currentOwner);
-				if (owner.Any())
-					Provinces.First(prov => prov.Index == i).Owner = owner.First();
+				if (Countries.Find(c => c.Name == currentOwner) is Country country)
+					prov.Owner = country;
 			});
 		}
 
