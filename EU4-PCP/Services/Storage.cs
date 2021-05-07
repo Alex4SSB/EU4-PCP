@@ -50,6 +50,12 @@ namespace EU4_PCP.Services
 			return EnumToLong.GetIndex(value.GetType().Name, value.ToString()) == index;
 		}
 
+		public static object RetrieveEnumGroup(Type type)
+        {
+			var index = RetrieveGroup(type.Name);
+			return Enum.ToObject(type, index);
+		}
+
 		public static long RetrieveGroup(string groupName)
 		{
 			var obj = RetrieveValue(groupName);

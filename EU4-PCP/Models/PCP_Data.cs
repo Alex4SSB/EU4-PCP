@@ -8,8 +8,6 @@ namespace EU4_PCP
 	{
 		// BOOLEANS
 		public static bool ShowRnw;
-		public static bool EnLoc;
-		public static bool EnDyn;
 		public static bool UpdateCountries;
 		public static bool Lockdown = false;
 		public static bool CheckDupli;

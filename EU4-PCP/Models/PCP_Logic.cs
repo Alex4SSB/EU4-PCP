@@ -13,6 +13,7 @@ namespace EU4_PCP
 {
 	public static class PCP_Logic
 	{
+		private static ProvinceNames Naming;
 		/// <summary>
 		/// Main entry point from launch
 		/// </summary>
@@ -62,17 +63,7 @@ namespace EU4_PCP
 		/// <returns><see langword="false"/> if any of the sub-sequences fails.</returns>
 		private static bool MainSequence()
 		{
-			if (!Storage.RetrieveBoolEnum(ProvinceNames.Definition))
-			{
-				EnLoc = true;
-				EnDyn = Storage.RetrieveBoolEnum(ProvinceNames.Dynamic);
-			}
-			else
-			{
-				EnLoc =
-				EnDyn = false;
-			}
-
+			Naming = (ProvinceNames)Storage.RetrieveEnumGroup(typeof(ProvinceNames));
 			CheckDupli = Storage.RetrieveBool(General.CheckDupli);
 			ShowRnw = Storage.RetrieveBool(General.ShowAllProvinces);
 			UpdateCountries = false;
@@ -83,7 +74,7 @@ namespace EU4_PCP
 			if (BookStatus(true) && !DefinSetup(DecidePath()))
 				return ErrorMsg(ErrorType.DefinRead);
 
-			if (!EnDyn)
+			if (Naming != ProvinceNames.Dynamic)
 			{
 				FetchDefines();
 				DefinesPrep();
@@ -91,7 +82,7 @@ namespace EU4_PCP
 			}
 
 			if (!LocalisationSequence()) return false;
-			if (!EnDyn) DynamicSetup();
+			if (Naming != ProvinceNames.Dynamic) DynamicSetup();
 			GameVer();
 
 			StartDateStr = StartDate.ToString(DATE_FORMAT);
@@ -121,7 +112,7 @@ namespace EU4_PCP
 		/// <returns>DynamicSequence result.</returns>
 		private static bool LocalisationSequence()
 		{
-			if (!EnLoc) return true;
+			if (Naming == ProvinceNames.Definition) return true;
 
 			if (!FetchFiles(FileType.Localisation))
 				return ErrorMsg(ErrorType.LocFolder);
@@ -138,7 +129,7 @@ namespace EU4_PCP
 		/// <returns><see langword="false"/> on failure.</returns>
 		private static bool DynamicSequence()
 		{
-			if (!EnDyn) return true;
+			if (Naming != ProvinceNames.Dynamic) return true;
 			bool enBooks = BookStatus(false);
 			bool success = true;
 
@@ -230,7 +221,7 @@ namespace EU4_PCP
 
 				DupliPrep();
 			}
-			if (Storage.RetrieveBoolEnum(ProvinceNames.Dynamic) != EnDyn || Storage.RetrieveBoolEnum(ProvinceNames.Localisation) != EnLoc)
+			if (Naming != (ProvinceNames)Storage.RetrieveEnumGroup(typeof(ProvinceNames)))
 				MainSequence();
 		}
 
