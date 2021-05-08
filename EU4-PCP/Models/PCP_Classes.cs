@@ -424,4 +424,32 @@ namespace EU4_PCP
 			return Path;
 		}
 	}
+
+	public class Indexer
+    {
+		public string path;
+		public DateTime lastModified;
+		public string source;
+		public List<Indexer> content;
+
+        public Indexer(string path, DateTime lastModified, string source, List<Indexer> content = null)
+        {
+            this.path = path;
+            this.lastModified = lastModified;
+			this.source = source;
+			this.content = content;
+        }
+
+		public Indexer() { }
+
+        public static implicit operator bool (Indexer obj)
+        {
+			return obj is object;
+        }
+
+        public override string ToString()
+        {
+            return $"{source} Loc Indexer";
+        }
+    }
 }

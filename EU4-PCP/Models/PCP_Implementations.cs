@@ -1450,6 +1450,38 @@ namespace EU4_PCP
 		public static SolidColorBrush LegalBG(short channel) =>
 			new(channel < 0 ? RedBackground : GreenBackground);
 
+		public static void PathIndexer(string path, Scope scope)
+		{
+			var source = IndexerSource(scope);
+			var current = new Indexer {
+				path = path,
+				lastModified = Directory.GetLastWriteTime(path),
+				source = source,
+                content = (from f in Directory.GetFiles(path, "*", SearchOption.AllDirectories)
+                           where LocFileRE.Match(f).Success
+                           select new Indexer(f, File.GetLastWriteTime(f), source)).ToList()
+            };
+
+			var prev = (Indexer)Storage.RetrieveValue(current.ToString());
+
+			if (!prev) return;
+
+			if (current.lastModified.CompareTo(prev.lastModified) == 0)
+            {
+				var modified = current.content.Where(i => prev.content.Find(prevI => prevI.path == i.path)?.lastModified.CompareTo(i.lastModified) != 0);
+            }
+			else
+            {
+
+            }
+        }
+
+		private static string IndexerSource(Scope scope) => scope switch
+		{
+			Scope.Game => scope.ToString(),
+			_ => SelectedMod.Name
+		};
+
 		#region File Fetching
 
 		/// <summary>

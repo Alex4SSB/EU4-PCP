@@ -114,6 +114,8 @@ namespace EU4_PCP
 		{
 			if (Naming == ProvinceNames.Definition) return true;
 
+			PathIndexer(GamePath + LocPath, Scope.Game);
+
 			if (!FetchFiles(FileType.Localisation))
 				return ErrorMsg(ErrorType.LocFolder);
 
