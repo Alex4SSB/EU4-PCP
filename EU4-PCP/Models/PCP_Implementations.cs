@@ -1,5 +1,6 @@
 ﻿using EU4_PCP.Models;
 using EU4_PCP.Services;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -1462,18 +1463,20 @@ namespace EU4_PCP
                            select new Indexer(f, File.GetLastWriteTime(f), source)).ToList()
             };
 
-			var prev = (Indexer)Storage.RetrieveValue(current.ToString());
+			var prev = (JObject)JsonConvert.DeserializeObject(Storage.RetrieveValue(current.ToString()).ToString());
+			Storage.StoreValue(current, current.ToString());
 
-			if (!prev) return;
+			if (prev is null) return;
+			var prevI = prev.ToObject<Indexer>();
 
-			if (current.lastModified.CompareTo(prev.lastModified) == 0)
-            {
-				var modified = current.content.Where(i => prev.content.Find(prevI => prevI.path == i.path)?.lastModified.CompareTo(i.lastModified) != 0);
-            }
-			else
-            {
+			//if (current.lastModified.CompareTo(prevI.lastModified) == 0)
+   //         {
+				var modified = current.content.Where(i => prevI.content.Find(p => p.path == i.path)?.lastModified.CompareTo(i.lastModified) != 0);
+   //         }
+			//else
+   //         {
 
-            }
+   //         }
         }
 
 		private static string IndexerSource(Scope scope) => scope switch
