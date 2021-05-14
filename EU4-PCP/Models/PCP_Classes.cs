@@ -385,7 +385,7 @@ namespace EU4_PCP
 	{
 		public string Path;
 		public string File;
-		public FileType Scope;
+		//public FileType Scope;
 
 		public static implicit operator bool(FileObj obj)
 		{
@@ -396,7 +396,7 @@ namespace EU4_PCP
 		{
 			Path = fPath;
 			File = System.IO.Path.GetFileName(fPath);
-			Scope = scope;
+			//Scope = scope;
 		}
 
 		public static bool operator ==(FileObj left, FileObj right)
@@ -427,15 +427,20 @@ namespace EU4_PCP
 
 	public class Indexer
 	{
-		public string path;
-		public DateTime lastModified;
-		public string source;
+		public string Path;
+		public DateTime LastModified;
+		public string Source;
+		public Dictionary<int, string> ProvDict;
+		public Dictionary<string, string> BookDict;
 
 		public Indexer(string path, DateTime lastModified, string source)
 		{
-			this.path = path;
-			this.lastModified = lastModified;
-			this.source = source;
+			Path = path;
+			LastModified = lastModified;
+			Source = source;
+
+			ProvDict = new();
+			BookDict = new();
 		}
 
 		public Indexer() { }
@@ -447,7 +452,7 @@ namespace EU4_PCP
 
 		public override string ToString()
 		{
-			return $"{source} Loc Indexer";
+			return $"{Source} Loc Indexer";
 		}
 	}
 }

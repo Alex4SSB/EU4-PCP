@@ -589,12 +589,13 @@ namespace EU4_PCP
 		/// <returns>The <see cref="Regex"/> pattern.</returns>
 		private static string BookPattern()
 		{
-			string pattern = "";
-			foreach (var book in Bookmarks)
-			{
-				pattern += $"{book.Code}|";
-			}
-			return pattern[..^1];
+			return string.Join('|', Bookmarks.Select(b => b.Code));
+			//string pattern = "";
+			//foreach (var book in Bookmarks)
+			//{
+			//	pattern += $"{book.Code}|";
+			//}
+			//return pattern[..^1];
 		}
 
 		#region Culture
@@ -1461,10 +1462,13 @@ namespace EU4_PCP
 
 			var previous = Storage.RetrieveIndexer(storageName);
 			Storage.StoreValue(current, storageName);
-			if (previous is null) return;
+			if (previous is null)
+			{
+				CacheLoc(ref current);
+			}
 			
-			var modified = current.Where(i => !previous.Exists(p => p.path == i.path) || previous.Find(p => p.path == i.path)?.lastModified.CompareTo(i.lastModified) != 0);
-			var deleted = previous.Where(i => !current.Exists(c => c.path == i.path));
+			var modified = current.Where(i => !previous.Exists(p => p.Path == i.Path) || previous.Find(p => p.Path == i.Path)?.LastModified.CompareTo(i.LastModified) != 0);
+			var deleted = previous.Where(i => !current.Exists(c => c.Path == i.Path));
 
 		}
 
@@ -1473,6 +1477,36 @@ namespace EU4_PCP
 			Scope.Game => scope.ToString(),
 			_ => SelectedMod.Name
 		};
+
+		public static void CacheLoc(ref List<Indexer> indexList)
+		{
+			//var bookRE = new Regex($@"^ *({BookPattern()}):\d* *"".+""", RegexOptions.Multiline);
+
+			foreach (var item in indexList)
+			{
+				var text = File.ReadAllText(item.Path);
+				var provMatches = LocProvRE.Matches(text);
+				//var bookMatches = bookRE.Matches(text);
+
+				foreach (Match match in provMatches.Where(m => m.Success))
+				{
+					var val = match.Value;
+					var name = val.Split('"')[1].Trim();
+					var id = val.Split(':')[0].ToInt();
+
+					item.ProvDict.Add(id, name);
+				}
+
+	//            foreach (Match match in bookMatches)
+	//            {
+				//	var val = match.Value;
+				//	var code = BookLocCodeRE.Match(val).Value;
+				//	var name = LocNameRE.Match(val).Value;
+
+				//	item.BookDict.Add(code, name);
+				//}
+			}
+		}
 
 		#region File Fetching
 

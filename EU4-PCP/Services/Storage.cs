@@ -79,9 +79,9 @@ namespace EU4_PCP.Services
 			return obj switch
 			{
 				JArray JAobj => JAobj.Select(
-					token => new Indexer(token["path"].Value<string>(),
-					token["lastModified"].Value<DateTime>(),
-					token["source"].Value<string>())).ToList(),
+					token => new Indexer(token["Path"].Value<string>(),
+					token["LastModified"].Value<DateTime>(),
+					token["Source"].Value<string>())).ToList(),
 
 				_ => obj as List<Indexer>
 			};
