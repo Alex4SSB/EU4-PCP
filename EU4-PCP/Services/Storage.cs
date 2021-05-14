@@ -1,6 +1,8 @@
 ﻿using EU4_PCP.Converters;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace EU4_PCP.Services
 {
@@ -52,7 +54,7 @@ namespace EU4_PCP.Services
 		}
 
 		public static object RetrieveEnumGroup(Type type)
-        {
+		{
 			var index = RetrieveGroup(type.Name);
 			return Enum.ToObject(type, index);
 		}
@@ -70,19 +72,20 @@ namespace EU4_PCP.Services
 			};
 		}
 
-		public static T RetrieveList<T>(string keyName)
-        {
+		public static List<Indexer> RetrieveIndexer(string keyName)
+		{
 			var obj = RetrieveValue(keyName);
 
-			if (obj is JArray objJA)
-            {
-				return objJA.ToObject<T>();
-            }
-            else
-            {
-				return (T)obj;
-            }
-        }
+			return obj switch
+			{
+				JArray JAobj => JAobj.Select(
+					token => new Indexer(token["path"].Value<string>(),
+					token["lastModified"].Value<DateTime>(),
+					token["source"].Value<string>())).ToList(),
+
+				_ => obj as List<Indexer>
+			};
+		}
 
 		public static long SaveDefault(string groupName)
 		{

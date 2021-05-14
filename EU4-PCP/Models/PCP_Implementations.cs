@@ -1459,13 +1459,14 @@ namespace EU4_PCP
 						   where LocFileRE.Match(f).Success
 						   select new Indexer(f, File.GetLastWriteTime(f), source)).ToList();
 
-            var previous = Storage.RetrieveList<List<Indexer>>(storageName);
+			var previous = Storage.RetrieveIndexer(storageName);
 			Storage.StoreValue(current, storageName);
 			if (previous is null) return;
 			
 			var modified = current.Where(i => !previous.Exists(p => p.path == i.path) || previous.Find(p => p.path == i.path)?.lastModified.CompareTo(i.lastModified) != 0);
+			var deleted = previous.Where(i => !current.Exists(c => c.path == i.path));
 
-        }
+		}
 
 		private static string IndexerSource(Scope scope) => scope switch
 		{

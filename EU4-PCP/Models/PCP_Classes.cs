@@ -426,28 +426,28 @@ namespace EU4_PCP
 	}
 
 	public class Indexer
-    {
+	{
 		public string path;
 		public DateTime lastModified;
 		public string source;
 
-        public Indexer(string path, DateTime lastModified, string source)
-        {
-            this.path = path;
-            this.lastModified = lastModified;
+		public Indexer(string path, DateTime lastModified, string source)
+		{
+			this.path = path;
+			this.lastModified = lastModified;
 			this.source = source;
-        }
+		}
 
 		public Indexer() { }
 
-        public static implicit operator bool (Indexer obj)
-        {
+		public static implicit operator bool (Indexer obj)
+		{
 			return obj is object;
-        }
+		}
 
-        public override string ToString()
-        {
-            return $"{source} Loc Indexer";
-        }
-    }
+		public override string ToString()
+		{
+			return $"{source} Loc Indexer";
+		}
+	}
 }

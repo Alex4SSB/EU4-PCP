@@ -228,7 +228,7 @@ namespace EU4_PCP
 			if (Naming != (ProvinceNames)Storage.RetrieveEnumGroup(typeof(ProvinceNames)))
 				MainSequence();
 
-            if (Storage.RetrieveBool(General.ShowIllegalProv) != ShowIllegal)
+			if (Storage.RetrieveBool(General.ShowIllegalProv) != ShowIllegal)
 				MainSequence();
 		}
 
