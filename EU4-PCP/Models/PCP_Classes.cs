@@ -430,14 +430,12 @@ namespace EU4_PCP
 		public string path;
 		public DateTime lastModified;
 		public string source;
-		public List<Indexer> content;
 
-        public Indexer(string path, DateTime lastModified, string source, List<Indexer> content = null)
+        public Indexer(string path, DateTime lastModified, string source)
         {
             this.path = path;
             this.lastModified = lastModified;
 			this.source = source;
-			this.content = content;
         }
 
 		public Indexer() { }

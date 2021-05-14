@@ -18,6 +18,7 @@ namespace EU4_PCP
 		public static readonly Color RedBackground = Color.FromRgb(0xDE, 0x25, 0x25);
 		public static readonly Color GreenBackground = Color.FromRgb(0x7C, 0xB6, 0x1A);
 		public static readonly Color PurpleBackground = Color.FromRgb(0x6A, 0x33, 0x9E);
+		public static readonly string LocIndexer = " Loc Indexer";
 		
 		// SYSTEM VARS
 		public static readonly Encoding UTF7 = Encoding.UTF7;

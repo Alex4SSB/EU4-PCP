@@ -1,4 +1,5 @@
 ﻿using EU4_PCP.Converters;
+using Newtonsoft.Json.Linq;
 using System;
 
 namespace EU4_PCP.Services
@@ -68,6 +69,20 @@ namespace EU4_PCP.Services
 				_ => EnumToLong.GetIndex(groupName, obj.ToString())
 			};
 		}
+
+		public static T RetrieveList<T>(string keyName)
+        {
+			var obj = RetrieveValue(keyName);
+
+			if (obj is JArray objJA)
+            {
+				return objJA.ToObject<T>();
+            }
+            else
+            {
+				return (T)obj;
+            }
+        }
 
 		public static long SaveDefault(string groupName)
 		{

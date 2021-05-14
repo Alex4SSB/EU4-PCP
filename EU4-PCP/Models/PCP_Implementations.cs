@@ -1454,29 +1454,17 @@ namespace EU4_PCP
 		public static void PathIndexer(string path, Scope scope)
 		{
 			var source = IndexerSource(scope);
-			var current = new Indexer {
-				path = path,
-				lastModified = Directory.GetLastWriteTime(path),
-				source = source,
-                content = (from f in Directory.GetFiles(path, "*", SearchOption.AllDirectories)
-                           where LocFileRE.Match(f).Success
-                           select new Indexer(f, File.GetLastWriteTime(f), source)).ToList()
-            };
+			string storageName = source + LocIndexer;
+			var current = (from f in Directory.GetFiles(path, "*", SearchOption.AllDirectories)
+						   where LocFileRE.Match(f).Success
+						   select new Indexer(f, File.GetLastWriteTime(f), source)).ToList();
 
-			var prev = (JObject)JsonConvert.DeserializeObject(Storage.RetrieveValue(current.ToString()).ToString());
-			Storage.StoreValue(current, current.ToString());
+            var previous = Storage.RetrieveList<List<Indexer>>(storageName);
+			Storage.StoreValue(current, storageName);
+			if (previous is null) return;
+			
+			var modified = current.Where(i => !previous.Exists(p => p.path == i.path) || previous.Find(p => p.path == i.path)?.lastModified.CompareTo(i.lastModified) != 0);
 
-			if (prev is null) return;
-			var prevI = prev.ToObject<Indexer>();
-
-			//if (current.lastModified.CompareTo(prevI.lastModified) == 0)
-   //         {
-				var modified = current.content.Where(i => prevI.content.Find(p => p.path == i.path)?.lastModified.CompareTo(i.lastModified) != 0);
-   //         }
-			//else
-   //         {
-
-   //         }
         }
 
 		private static string IndexerSource(Scope scope) => scope switch
