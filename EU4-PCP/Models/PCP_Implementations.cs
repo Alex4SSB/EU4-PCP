@@ -1482,29 +1482,34 @@ namespace EU4_PCP
 		{
 			//var bookRE = new Regex($@"^ *({BookPattern()}):\d* *"".+""", RegexOptions.Multiline);
 
-			foreach (var item in indexList)
+			Parallel.ForEach(indexList, item =>
 			{
 				var text = File.ReadAllText(item.Path);
 				var provMatches = LocProvRE.Matches(text);
-				//var bookMatches = bookRE.Matches(text);
+                //var bookMatches = bookRE.Matches(text);
 
-				foreach (Match match in provMatches.Where(m => m.Success))
-				{
-					var val = match.Value;
-					var name = val.Split('"')[1].Trim();
-					var id = val.Split(':')[0].ToInt();
+                ProvLocDict(provMatches, ref item.ProvDict);
 
-					item.ProvDict.Add(id, name);
-				}
+                //foreach (Match match in bookMatches)
+                //{
+                //	var val = match.Value;
+                //	var code = BookLocCodeRE.Match(val).Value;
+                //	var name = LocNameRE.Match(val).Value;
 
-	//            foreach (Match match in bookMatches)
-	//            {
-				//	var val = match.Value;
-				//	var code = BookLocCodeRE.Match(val).Value;
-				//	var name = LocNameRE.Match(val).Value;
+                //	item.BookDict.Add(code, name);
+                //}
+            });
+		}
 
-				//	item.BookDict.Add(code, name);
-				//}
+		private static void ProvLocDict(MatchCollection collection, ref Dictionary<int, string> dict)
+		{
+			foreach (Match match in collection)
+			{
+				var val = match.Value;
+				var name = val.Split('"')[1].Trim();
+				var id = val.Split(':')[0].ToInt();
+
+				dict.Add(id, name);
 			}
 		}
 
