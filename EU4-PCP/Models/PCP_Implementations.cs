@@ -853,7 +853,7 @@ namespace EU4_PCP
 				});
 			}
 			if (!Bookmarks.Any()) return; 
-			LocPrep(LocScope.BookLoc);
+			//LocPrep(LocScope.BookLoc);
 			Bookmarks = SortBooks(Bookmarks);
 		}
 
@@ -1452,7 +1452,7 @@ namespace EU4_PCP
 		public static SolidColorBrush LegalBG(short channel) =>
 			new(channel < 0 ? RedBackground : GreenBackground);
 
-		public static void PathIndexer(string path, Scope scope)
+		public static void PathIndexer(string path, Scope scope, bool enBooks)
 		{
 			var source = IndexerSource(scope);
 			string storageName = source + LocIndexer;
@@ -1461,15 +1461,37 @@ namespace EU4_PCP
 						   select new Indexer(f, File.GetLastWriteTime(f), source)).ToList();
 
 			var previous = Storage.RetrieveIndexer(storageName);
-			Storage.StoreValue(current, storageName);
+			
 			if (previous is null)
 			{
-				CacheLoc(ref current);
+				CacheLoc(ref current, enBooks);
 			}
-			
-			var modified = current.Where(i => !previous.Exists(p => p.Path == i.Path) || previous.Find(p => p.Path == i.Path)?.LastModified.CompareTo(i.LastModified) != 0);
-			var deleted = previous.Where(i => !current.Exists(c => c.Path == i.Path));
+			else
+			{
+				var modified = current.Where(i => 
+					!previous.Exists(p => p.Path == i.Path)
+					|| previous.Find(p => p.Path == i.Path)?.LastModified.CompareTo(i.LastModified) != 0).ToList();
 
+				if (modified is not null)
+				{
+					CacheLoc(ref modified, enBooks);
+					foreach (var item in modified)
+					{
+						if (previous.Find(i => i.Path == item.Path) is Indexer prev)
+							prev = item;
+						else
+							previous.Add(item);
+					}
+				}
+
+				previous.RemoveAll(i => !current.Exists(c => c.Path == i.Path));
+				current = previous;
+			}
+
+			Storage.StoreValue(current, storageName);
+			ReadProvLoc(current);
+			if (enBooks)
+				ReadBookLoc(current);
 		}
 
 		private static string IndexerSource(Scope scope) => scope switch
@@ -1478,27 +1500,27 @@ namespace EU4_PCP
 			_ => SelectedMod.Name
 		};
 
-		public static void CacheLoc(ref List<Indexer> indexList)
+		public static void CacheLoc(ref List<Indexer> indexList, bool enBooks)
 		{
-			//var bookRE = new Regex($@"^ *({BookPattern()}):\d* *"".+""", RegexOptions.Multiline);
+			Regex bookRE = null;
+			if (enBooks)
+				bookRE = new Regex($@"^ *({BookPattern()}):\d* *"".+""", RegexOptions.Multiline);
 
 			Parallel.ForEach(indexList, item =>
 			{
 				var text = File.ReadAllText(item.Path);
 				var provMatches = LocProvRE.Matches(text);
-                //var bookMatches = bookRE.Matches(text);
+				
+				item.ProvDict.Clear();
+				ProvLocDict(provMatches, ref item.ProvDict);
 
-                ProvLocDict(provMatches, ref item.ProvDict);
-
-                //foreach (Match match in bookMatches)
-                //{
-                //	var val = match.Value;
-                //	var code = BookLocCodeRE.Match(val).Value;
-                //	var name = LocNameRE.Match(val).Value;
-
-                //	item.BookDict.Add(code, name);
-                //}
-            });
+				if (enBooks)
+				{
+					var bookMatches = bookRE.Matches(text);
+					item.BookDict.Clear();
+					BookLocDict(bookMatches, ref item.BookDict);
+				}
+			});
 		}
 
 		private static void ProvLocDict(MatchCollection collection, ref Dictionary<int, string> dict)
@@ -1510,6 +1532,35 @@ namespace EU4_PCP
 				var id = val.Split(':')[0].ToInt();
 
 				dict.Add(id, name);
+			}
+		}
+
+		public static void ReadProvLoc(List<Indexer> indexers)
+		{
+			var dict = Provinces.ToDictionary(p => p.Index, p => p);
+			foreach (var prov in indexers.SelectMany(i => i.ProvDict))
+			{
+				dict[prov.Key].Name.Localisation = prov.Value;
+			}
+		}
+
+		private static void BookLocDict(MatchCollection collection, ref Dictionary<string, string> dict)
+		{
+			foreach (Match match in collection)
+			{
+				var val = match.Value;
+				var code = BookLocCodeRE.Match(val).Value;
+				var name = LocNameRE.Match(val).Value;
+
+				dict.Add(code, name);
+			}
+		}
+
+		public static void ReadBookLoc(List<Indexer> indexers)
+		{
+			foreach (var book in indexers.SelectMany(i => i.BookDict))
+			{
+				Bookmarks.Find(b => b.Code == book.Key).Name = book.Value;
 			}
 		}
 

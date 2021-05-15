@@ -114,13 +114,19 @@ namespace EU4_PCP
 		{
 			if (Naming == ProvinceNames.Definition) return true;
 
-			PathIndexer($@"{GamePath}\#localisation#", Scope.Game);
+			if (Naming == ProvinceNames.Dynamic) // BookStatus(false)
+			{
+				FetchFiles(FileType.Bookmark);
+				BookPrep();
+			}
 
-			if (!FetchFiles(FileType.Localisation))
-				return ErrorMsg(ErrorType.LocFolder);
+            PathIndexer($@"{GamePath}\#localisation#", Scope.Game, Naming == ProvinceNames.Dynamic);
 
-			if (!LocPrep(LocScope.ProvLoc))
-				return ErrorMsg(ErrorType.LocRead);
+   //         if (!FetchFiles(FileType.Localisation))
+			//	return ErrorMsg(ErrorType.LocFolder);
+
+			//if (!LocPrep(LocScope.ProvLoc))
+			//	return ErrorMsg(ErrorType.LocRead);
 
 			return DynamicSequence();
 		}
@@ -144,13 +150,17 @@ namespace EU4_PCP
 			else if (!Cultures.Where(cul => cul && cul.Group).Any())
 				return ErrorMsg(ErrorType.NoCulGroups);
 
-			Parallel.Invoke(
-				() => DefinesPrep(),
-				() => { if (enBooks) FetchFiles(FileType.Bookmark); });
+			//Parallel.Invoke(
+			//	() => DefinesPrep(),
+			//	() => { if (enBooks) FetchFiles(FileType.Bookmark); });
 
 			Parallel.Invoke(
-				() => { if (enBooks) BookPrep(); },
+				() => DefinesPrep(),
 				() => FetchFiles(FileType.Country));
+			
+			//Parallel.Invoke(
+			//	() => { if (enBooks) BookPrep(); },
+			//	() => FetchFiles(FileType.Country));
 
 			if (!ValDate()) return false;
 
