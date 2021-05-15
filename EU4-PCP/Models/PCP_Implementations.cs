@@ -1472,7 +1472,7 @@ namespace EU4_PCP
 					!previous.Exists(p => p.Path == i.Path)
 					|| previous.Find(p => p.Path == i.Path)?.LastModified.CompareTo(i.LastModified) != 0).ToList();
 
-				if (modified is not null)
+				if (modified.Any())
 				{
 					CacheLoc(ref modified, enBooks);
 					foreach (var item in modified)

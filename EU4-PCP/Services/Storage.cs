@@ -81,7 +81,10 @@ namespace EU4_PCP.Services
 				JArray JAobj => JAobj.Select(
 					token => new Indexer(token["Path"].Value<string>(),
 					token["LastModified"].Value<DateTime>(),
-					token["Source"].Value<string>())).ToList(),
+					token["Source"].Value<string>(),
+					token["ProvDict"].ToObject<Dictionary<int, string>>(),
+					token["BookDict"].ToObject<Dictionary<string, string>>()
+				)).ToList(),
 
 				_ => obj as List<Indexer>
 			};

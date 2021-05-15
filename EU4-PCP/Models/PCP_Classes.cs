@@ -433,14 +433,14 @@ namespace EU4_PCP
 		public Dictionary<int, string> ProvDict;
 		public Dictionary<string, string> BookDict;
 
-		public Indexer(string path, DateTime lastModified, string source)
+		public Indexer(string path, DateTime lastModified, string source, Dictionary<int, string> provDict = null, Dictionary<string, string> bookDict = null)
 		{
 			Path = path;
 			LastModified = lastModified;
 			Source = source;
 
-			ProvDict = new();
-			BookDict = new();
+			ProvDict = provDict is null ? new() : provDict;
+			BookDict = bookDict is null ? new() : bookDict;
 		}
 
 		public Indexer() { }
