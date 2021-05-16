@@ -164,14 +164,14 @@ namespace EU4_PCP
 		/// <returns><see langword="false"/> if an exception occurs while trying to read from the definition file.</returns>
 		public static bool DefinSetup(string path)
 		{
-			if (DefinRead(path + DefinPath, true, !Storage.RetrieveBool(General.ShowIllegalProv)) is List<Province> provList)
-			{
-				Provinces.Clear();
-				Provinces = provList;
-				Provinces.Sort();
-				return true;
-			}
-			else return false;
+			var provList = DefinRead(path + DefinPath, true, !Storage.RetrieveBool(General.ShowIllegalProv));
+			if (provList is null)
+				return false;
+			
+			Provinces.Clear();
+			Provinces = provList;
+			
+			return true;
 		}
 
 		/// <summary>
@@ -212,7 +212,7 @@ namespace EU4_PCP
 		/// <param name="path">Full path to definition.csv</param>
 		/// <param name="parallel"><see langword="false"/> to disable parallelism</param>
 		/// <returns><see cref="Province"/> list containing the provinces from the file.</returns>
-		public static List<Province> DefinRead(string path, bool parallel = true, bool validateColor = true)
+		public static Dictionary<int, Province> DefinRead(string path, bool parallel = true, bool validateColor = true)
 		{
 			string[] dFile;
 			try
@@ -223,27 +223,28 @@ namespace EU4_PCP
 			catch (Exception)
 			{ return null; }
 
-			List<Province> provList = new();
+			Dictionary<int, Province> provList = new();
 			if (parallel)
 			{
 				var definLock = new object();
 				Parallel.ForEach(dFile, line =>
 				{
 					var prov = DefinParse(line, validateColor);
-					if (!prov) return;
+					if (!prov || provList.ContainsKey(prov.Index)) return;
 
 					lock (definLock)
 					{
-						provList.Add(prov);
+						provList.Add(prov.Index, prov);
 					}
 				});
 			}
 			else
 			{
-				provList.AddRange(from line in dFile
-								  let prov = DefinParse(line)
-								  where prov
-								  select prov);
+				foreach (var line in dFile)
+				{
+					if (DefinParse(line) is Province prov)
+						provList.Add(prov.Index, prov);
+				}
 			}
 
 			return provList;
@@ -285,19 +286,19 @@ namespace EU4_PCP
 				}
 
 				// If members were recovered successfully 
-				if (!abort && filesList.Any() && NameSetup(filesList, scope, out readSuccess))
-				{
-					if (scope == LocScope.BookLoc) return readSuccess;
+				//if (!abort && filesList.Any() && NameSetup(filesList, scope, out readSuccess))
+				//{
+				//	if (scope == LocScope.BookLoc) return readSuccess;
 
-					var current = Provinces.Count(p => string.IsNullOrEmpty(p.Name.Localisation));
-					var prev = Storage.RetrieveValue(General.NoLocProvCount.ToString());
+				//	var current = Provinces.Count(p => string.IsNullOrEmpty(p.Name.Localisation));
+				//	var prev = Storage.RetrieveValue(General.NoLocProvCount.ToString());
 
-					if (prev is not int prevI || prevI >= current)
-					{
-						Storage.StoreValue(current, General.NoLocProvCount);
-						return readSuccess;
-					}
-				}
+				//	if (prev is not int prevI || prevI >= current)
+				//	{
+				//		Storage.StoreValue(current, General.NoLocProvCount);
+				//		return readSuccess;
+				//	}
+				//}
 			}
 
 			// If there are no members in the settings, or the members have changed
@@ -411,10 +412,14 @@ namespace EU4_PCP
 			string name = match.Split('"')[1].Trim();
 			var provId = match.Split(':')[0].ToInt();
 
-			if (string.IsNullOrWhiteSpace(name)
-				|| (Provinces.Where(prov => prov.Index == provId) is var tempProv && !tempProv.Any())
-				|| tempProv.First() is not Province prov
-				|| (!string.IsNullOrEmpty(prov.Name.Localisation) && gameDir)) return false;
+			Provinces.ContainsKey(provId);
+			if (string.IsNullOrWhiteSpace(name) || !Provinces.ContainsKey(provId))
+				return false;
+
+			var prov = Provinces[provId];
+			if (!string.IsNullOrEmpty(prov.Name.Localisation) && gameDir)
+				return false;
+
 			prov.Name.Localisation = name;
 			return true;
 		}
@@ -470,8 +475,7 @@ namespace EU4_PCP
 			{
 				var match = ProvFileRE.Match(p_file.File);
 				if (!match.Success) return;
-				int i = match.Value.ToInt();
-				Province prov = Provinces.Find(p => p.Index == i);
+				var prov = Provinces[match.Value.ToInt()];
 				if (!prov || (!updateOwner && prov.Owner)) return;
 
 				string provFile = File.ReadAllText(p_file.Path);
@@ -788,7 +792,7 @@ namespace EU4_PCP
 		{
 			var showIllegal = Storage.RetrieveBool(General.ShowIllegalProv);
 
-			foreach (var prov in Provinces.Where(p => p))
+			foreach (var prov in Provinces.Values.Where(p => p))
 			{
 				prov.Name.Dynamic = "";
 				if (!ShowRnw) prov.IsRNW();
@@ -1155,12 +1159,12 @@ namespace EU4_PCP
 		/// <param name="scope"></param>
 		public static void CountProv(Scope scope)
 		{
-			var provCount = Provinces.Count(p => p && p.IsNameLegal() && p.Color.IsLegal()).ToString();
+			var provCount = Provinces.Values.Count(p => p && p.IsNameLegal() && p.Color.IsLegal()).ToString();
 			var illegalCount = "";
 
 			ShowIllegal = Storage.RetrieveBool(General.ShowIllegalProv);
 			if (ShowIllegal)
-				illegalCount = Provinces.Count(p => p && !(p.IsNameLegal() && p.Color.IsLegal())).ToString();
+				illegalCount = Provinces.Values.Count(p => p && !(p.IsNameLegal() && p.Color.IsLegal())).ToString();
 
 			switch (scope)
 			{
@@ -1284,7 +1288,7 @@ namespace EU4_PCP
 		{
 			string stream = "province;red;green;blue;x;x\r\n";
 
-			foreach (var prov in Provinces.Where(p => p.Index >= 0))
+			foreach (var prov in Provinces.Values)
 			{
 				stream += prov.ToCsv() + "\r\n";
 			}
@@ -1335,10 +1339,14 @@ namespace EU4_PCP
 		/// </summary>
 		public static void DupliPrep()
 		{
-			Provinces.ForEach(prov => prov.NextDupli = null);
+			foreach (var prov in Provinces)
+			{
+				prov.Value.NextDupli = null;
+			}
+			
 			if (!CheckDupli || !SelectedMod) return;
 
-			var dupliGroups = (from prov in Provinces
+			var dupliGroups = (from prov in Provinces.Values
 							   where prov && prov.Show && prov.Color.IsLegal()
 							   group prov by (Color)prov.Color)
 							  .Where(g => g.Count() > 1);
@@ -1363,15 +1371,16 @@ namespace EU4_PCP
 		{
 			var update = !(ChosenProv && ChosenProv.Color.IsLegal() && ChosenProv.IsNameLegal());
 
-			if (Provinces.Find(prov => prov.Index == newProv.Index) is Province prov)
+			if (Provinces.ContainsKey(newProv.Index))
 			{
+				var prov = Provinces[newProv.Index];
 				prov.Color = newProv.Color;
 				prov.Name.Definition = newProv.Name.Definition;
 			}
 			else
 			{
 				newProv.IsRNW();
-				Provinces.Add(newProv);
+				Provinces.Add(newProv.Index, newProv);
 			}
 
 			if (update)
@@ -1383,7 +1392,7 @@ namespace EU4_PCP
 				if (Storage.RetrieveBool(General.UpdateMaxProv) && !WriteDefines(ModMaxProvinces))
 					return false;
 
-				ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
+				ProvincesShown = Provinces.Values.Count(prov => prov && prov.Show).ToString();
 			}
 
 			if (!WriteProvinces())
@@ -1399,7 +1408,7 @@ namespace EU4_PCP
 		/// </summary>
 		/// <param name="provList">The <see cref="Province"/> array to be searched.</param>
 		/// <returns>The generated <see cref="Color"/>.</returns>
-		public static Color RandomProvColor(List<Province> provList, int red = -1, int green = -1, int blue = -1)
+		public static Color RandomProvColor(Dictionary<int, Province> provList, int red = -1, int green = -1, int blue = -1)
 		{
 			var rnd = new Random();
 			byte r, g, b;
@@ -1413,7 +1422,7 @@ namespace EU4_PCP
 				g = (byte)(green < 0 ? rnd.Next(0, 255) : green);
 				b = (byte)(blue < 0 ? rnd.Next(0, 255) : blue);
 				tempColor = Color.FromRgb(r, g, b);
-			} while (provList.Any(p => p && p.Color == tempColor));
+			} while (provList.Values.Any(p => p && p.Color == tempColor));
 
 			return tempColor;
 		}
@@ -1436,8 +1445,8 @@ namespace EU4_PCP
 		/// <param name="provList">The list of provinces to search</param>
 		/// <param name="chosenProv">The province to compare with the picked color</param>
 		/// <returns><see langword="false"/> for a color that doesn't exist in the given list, except for the chosen province. <see langword="true"/> otherwise.</returns>
-		public static bool ColorExist(P_Color pickedColor, List<Province> provList, Province chosenProv = null) => 
-			provList.Count(prov => prov.Color.Equals(pickedColor)) switch
+		public static bool ColorExist(P_Color pickedColor, Dictionary<int, Province> provList, Province chosenProv = null) => 
+			provList.Values.Count(prov => prov.Color.Equals(pickedColor)) switch
 		{
 			< 1 => false,
 			< 2 when chosenProv && chosenProv.Show && chosenProv.Color.Equals(pickedColor) => false,
@@ -1537,10 +1546,10 @@ namespace EU4_PCP
 
 		public static void ReadProvLoc(List<Indexer> indexers)
 		{
-			var dict = Provinces.ToDictionary(p => p.Index, p => p);
 			foreach (var prov in indexers.SelectMany(i => i.ProvDict))
 			{
-				dict[prov.Key].Name.Localisation = prov.Value;
+				if (Provinces.ContainsKey(prov.Key))
+					Provinces[prov.Key].Name.Localisation = prov.Value;
 			}
 		}
 

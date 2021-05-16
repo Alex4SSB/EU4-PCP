@@ -140,7 +140,7 @@ namespace EU4_PCP.Views
 				case CriticalScope.Mod:
 					ChosenProv = null;
 					ChangeMod();
-					ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
+					ProvincesShown = Provinces.Values.Count(prov => prov && prov.Show).ToString();
 					UpdatePicker();
 					break;
 				case CriticalScope.Bookmark:
@@ -321,9 +321,14 @@ namespace EU4_PCP.Views
 			GreenSlider.Value = tempColor.G;
 			BlueSlider.Value = tempColor.B;
 
-			var lastIndex = Storage.RetrieveBool(General.IgnoreIllegal) 
-				? Provinces.Last(prov => prov.IsNameLegal() && prov.Color.IsLegal()).Index
-				: Provinces.Last().Index;
+			int lastIndex;
+			if (Storage.RetrieveBool(General.IgnoreIllegal))
+			{
+				var provs = Provinces.Values.OrderBy(p => p.Index);
+				lastIndex = provs.Last(prov => prov.IsNameLegal() && prov.Color.IsLegal());
+			}
+			else 
+				lastIndex = Provinces.Keys.Max();
 
 			if (!ChosenProv)
 				NextProvBlock.Text = (lastIndex + 1).ToString();
@@ -414,7 +419,7 @@ namespace EU4_PCP.Views
 				return;
 
 			if (next)
-				ChosenProv = new(Provinces.Find(prov => prov.Index == index + 1));
+				ChosenProv = new(Provinces[index + 1]);
 
 			CountProv(Scope.Mod);
 			InitializeData();

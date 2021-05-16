@@ -120,7 +120,7 @@ namespace EU4_PCP
 				BookPrep();
 			}
 
-            PathIndexer($@"{GamePath}\#localisation#", Scope.Game, Naming == ProvinceNames.Dynamic);
+			PathIndexer($@"{GamePath}\#localisation#", Scope.Game, Naming == ProvinceNames.Dynamic);
 
    //         if (!FetchFiles(FileType.Localisation))
 			//	return ErrorMsg(ErrorType.LocFolder);
@@ -219,11 +219,11 @@ namespace EU4_PCP
 			{
 				ShowRnw = showRnw;
 
-				foreach (var prov in Provinces.Where(prov => prov && prov.Name))
+				foreach (var prov in Provinces.Values.Where(prov => prov && prov.Name))
 				{
 					prov.Show = !prov.IsRNW() || (ShowRnw && !string.IsNullOrEmpty(prov.Name.ToString()));
 				}
-				ProvincesShown = Provinces.Count(prov => prov && prov.Show).ToString();
+				ProvincesShown = Provinces.Values.Count(prov => prov && prov.Show).ToString();
 
 				DupliPrep();
 			}

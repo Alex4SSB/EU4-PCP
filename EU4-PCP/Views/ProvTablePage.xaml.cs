@@ -28,8 +28,9 @@ namespace EU4_PCP.Views
 			if (SelectedMod)
 				PageTitle.Text += $" - {SelectedMod}";
 
-			ProvTable.ItemsSource = from prov in Provinces
+			ProvTable.ItemsSource = from prov in Provinces.Values
 									where prov && prov.Show
+									orderby prov.Index
 									select new TableProvince(prov);
 
 			ProvincesShown = ProvTable.Items.Count.ToString();
@@ -59,12 +60,12 @@ namespace EU4_PCP.Views
 
 		private void PaintMarkers()
 		{
-			foreach (var markedProv in Provinces.Where(prov => prov.NextDupli || !prov.IsNameLegal() || !prov.Color.IsLegal()))
+			foreach (var markedProv in Provinces.Values.Where(prov => prov.NextDupli || !prov.IsNameLegal() || !prov.Color.IsLegal()))
 			{
 				var marker = new Rectangle() { Height = 4, VerticalAlignment = System.Windows.VerticalAlignment.Bottom, Margin = new System.Windows.Thickness(0, 0, 0, 0), Fill = new SolidColorBrush(markedProv.NextDupli ? RedBackground : PurpleBackground) };
 				marker.MouseLeftButtonUp += new MouseButtonEventHandler(Rectangle_MouseLeftButtonUp);
 				marker.Tag = markedProv;
-				var shownProvs = Provinces.Where(p => p && p.Show).ToList();
+				var shownProvs = Provinces.Values.Where(p => p && p.Show).ToList();
 				double ratio = shownProvs.IndexOf(markedProv) / (double)shownProvs.Count;
 
 				var grid = new Grid() { Children = { marker }, RowDefinitions = { new RowDefinition() { Height = new System.Windows.GridLength(ratio, System.Windows.GridUnitType.Star), MinHeight = 4 }, new RowDefinition() { Height = new System.Windows.GridLength(1 - ratio, System.Windows.GridUnitType.Star) } } };
@@ -109,7 +110,7 @@ namespace EU4_PCP.Views
 
 		private void ScrollToProv(Province prov)
 		{
-			var provIndex = Provinces.Where(p => p && p.Show).ToList().IndexOf(prov);
+			var provIndex = Provinces.Values.Where(p => p && p.Show).ToList().IndexOf(prov);
 			var offset = provIndex + (int)(ProvTable.RenderSize.Height / (ProvTable.MinRowHeight + 1) / 2) - 1;
 			if (offset >= ProvTable.Items.Count) offset = ProvTable.Items.Count - 1;
 

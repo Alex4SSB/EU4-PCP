@@ -246,32 +246,32 @@ namespace EU4_PCP_Test
 		[TestMethod]
 		public void RandomProvColorTest()
 		{
-			var testProv = new List<Province>() {
-				new Province(color: Color.FromRgb(130, 12, 56)),
-				new Province(color: Color.FromRgb(1, 40, 100)),
-				new Province(color: Color.FromRgb(78, 32, 47)),
-				new Province(color: Color.FromRgb(23, 190, 200)),
-				new Province(color: Color.FromRgb(90, 212, 231))
+			var testProv = new Dictionary<int, Province>() {
+				{ 0, new Province(color: Color.FromRgb(130, 12, 56)) },
+				{ 1, new Province(color: Color.FromRgb(1, 40, 100)) },
+				{ 2, new Province(color: Color.FromRgb(78, 32, 47)) },
+				{ 3, new Province(color: Color.FromRgb(23, 190, 200)) },
+				{ 4, new Province(color: Color.FromRgb(90, 212, 231)) }
 			};
 
 			Color newColor = RandomProvColor(testProv);
 
-			Assert.IsTrue(!testProv.Any(p => p.Color == newColor));
+			Assert.IsTrue(!testProv.Values.Any(p => p.Color == newColor));
 
 			// Lock tests
 			int val1 = 10, val2 = 20;
 
 			newColor = RandomProvColor(testProv, val1); // lock red
-			Assert.IsTrue(!testProv.Any(p => p.Color == newColor));
+			Assert.IsTrue(!testProv.Values.Any(p => p.Color == newColor));
 			Assert.IsTrue(newColor.R == val1);
 
 			newColor = RandomProvColor(testProv, val1, val2); // lock red & green
-			Assert.IsTrue(!testProv.Any(p => p.Color == newColor));
+			Assert.IsTrue(!testProv.Values.Any(p => p.Color == newColor));
 			Assert.IsTrue(newColor.R == val1);
 			Assert.IsTrue(newColor.G == val2);
 
 			newColor = RandomProvColor(testProv, -1, val1, val2); // lock green & blue
-			Assert.IsTrue(!testProv.Any(p => p.Color == newColor));
+			Assert.IsTrue(!testProv.Values.Any(p => p.Color == newColor));
 			Assert.IsTrue(newColor.G == val1);
 			Assert.IsTrue(newColor.B == val2);
 		}
@@ -340,12 +340,12 @@ namespace EU4_PCP_Test
 		[TestMethod]
 		public void DefinReadPositiveTest()
 		{
-			var list = DefinRead($@"{TestFiles}\definition.csv");
+			var dict = DefinRead($@"{TestFiles}\definition.csv");
 
-			Assert.IsTrue(list.Count(prov => prov) == 8);
-			Assert.IsTrue(list.Single(prov => prov.Index == 2905).Name.ToString() == "Rio Das Mortes");
-			Assert.IsTrue(list.Count(prov => prov.IsRNW()) == 3);
-			Assert.IsTrue(list.Single(prov => prov.Index == 2).Color == Color.FromRgb(0, 36, 128));
+			Assert.IsTrue(dict.Values.Count(prov => prov) == 8);
+			Assert.IsTrue(dict[2905].Name.ToString() == "Rio Das Mortes");
+			Assert.IsTrue(dict.Values.Count(prov => prov.IsRNW()) == 3);
+			Assert.IsTrue(dict[2].Color == Color.FromRgb(0, 36, 128));
 		}
 
 		[TestMethod]
@@ -385,14 +385,15 @@ namespace EU4_PCP_Test
 				Color.FromRgb(23, 190, 200),
 				Color.FromRgb(90, 212, 231)
 			};
-			var testProv = new List<Province>() {
-				new Province(index: 0, color: colors[0]),
-				new Province(index: 1, color: colors[1]),
-				new Province(index: 2, color: colors[2]),
-				new Province(index: 3, color: colors[3]),
-				new Province(index: 4, color: colors[4]),
-				new Province(index: 5, color: new P_Color(238, 42, 192)),
-				new Province(index: 6, color: new P_Color(-1, -1, 100))
+			var testProv = new Dictionary<int, Province>
+			{
+				{ 0, new Province(index: 0, color: colors[0]) },
+				{ 1, new Province(index: 1, color: colors[1]) },
+				{ 2, new Province(index: 2, color: colors[2]) },
+				{ 3, new Province(index: 3, color: colors[3]) },
+				{ 4, new Province(index: 4, color: colors[4]) },
+				{ 5, new Province(index: 5, color: new P_Color(238, 42, 192)) },
+				{ 6, new Province(index: 6, color: new P_Color(-1, -1, 100)) }
 			};
 
 			Assert.IsTrue(ColorExist(new P_Color(0, 1, 2), testProv) == false);
