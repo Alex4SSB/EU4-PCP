@@ -471,14 +471,14 @@ namespace EU4_PCP
 		/// </summary>
 		public static void OwnerSetup(bool updateOwner = false)
 		{
-            Parallel.ForEach(ProvFiles, p_file =>
+			Parallel.ForEach(ProvFiles, p_file =>
 			{
 				var match = ProvFileRE.Match(p_file.File);
 				if (!match.Success) return;
-                int i = match.Value.ToInt();
+				int i = match.Value.ToInt();
 				if (!Provinces.ContainsKey(i)) return;
 
-                var prov = Provinces[i];
+				var prov = Provinces[i];
 				if (!prov || (!updateOwner && prov.Owner)) return;
 
 				string provFile = File.ReadAllText(p_file.Path);
@@ -1464,13 +1464,25 @@ namespace EU4_PCP
 		public static SolidColorBrush LegalBG(short channel) =>
 			new(channel < 0 ? RedBackground : GreenBackground);
 
-		public static List<Indexer> PathIndexer(string path, Scope scope, bool enBooks)
+		public static List<string> PathCombiner(params string[] dirs)
+		{
+			var files = dirs.Where(d => Directory.Exists(d)).SelectMany(d => Directory.GetFiles(d, "*", SearchOption.AllDirectories).Where(f => LocFileRE.Match(f).Success)).ToList();
+
+			if (dirs.Length > 1 && files.Any(d => d.Contains(RepLocPath)))
+			{
+				var replace = files.Where(f => f.Contains(RepLocPath)).ToDictionary(f => Path.GetFileName(f), f => f);
+
+				files.RemoveAll(f => replace.Keys.Contains(Path.GetFileName(f)) && !replace.Values.Contains(f));
+			}
+			
+			return files;
+		}
+
+		public static List<Indexer> PathIndexer(List<string> files, Scope scope, bool enBooks)
 		{
 			var source = IndexerSource(scope);
 			string storageName = source + LocIndexer;
-			var current = (from f in Directory.GetFiles(path, "*", SearchOption.AllDirectories)
-						   where LocFileRE.Match(f).Success
-						   select new Indexer(f, File.GetLastWriteTime(f), source)).ToList();
+			var current = files.Select(f => new Indexer(f, File.GetLastWriteTime(f), source)).ToList();
 
 			var previous = Storage.RetrieveIndexer(storageName);
 			
@@ -1547,15 +1559,15 @@ namespace EU4_PCP
 
 		public static void ReadProvLoc(List<Indexer> indexers)
 		{
-            foreach (var item in indexers)
-            {
+			foreach (var item in indexers)
+			{
 				foreach (var prov in item.ProvDict)
-                {
-                    if (Provinces.ContainsKey(prov.Key)
-                        && (string.IsNullOrEmpty(Provinces[prov.Key].Name.Localisation) || item.Source != "Game"))
-                        Provinces[prov.Key].Name.Localisation = prov.Value;
-                }
-            }
+				{
+					if (Provinces.ContainsKey(prov.Key)
+						&& (string.IsNullOrEmpty(Provinces[prov.Key].Name.Localisation) || item.Source != "Game"))
+						Provinces[prov.Key].Name.Localisation = prov.Value;
+				}
+			}
 		}
 
 		private static void BookLocDict(MatchCollection collection, ref Dictionary<string, string> dict)
@@ -1572,8 +1584,8 @@ namespace EU4_PCP
 
 		public static void ReadBookLoc(List<Indexer> indexers)
 		{
-            foreach (var item in indexers)
-            {
+			foreach (var item in indexers)
+			{
 				foreach (var bookLoc in item.BookDict)
 				{
 					if (Bookmarks.Find(b => b.Code == bookLoc.Key) is Bookmark bookObj
