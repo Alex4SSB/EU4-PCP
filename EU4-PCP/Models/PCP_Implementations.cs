@@ -471,11 +471,14 @@ namespace EU4_PCP
 		/// </summary>
 		public static void OwnerSetup(bool updateOwner = false)
 		{
-			Parallel.ForEach(ProvFiles, p_file =>
+            Parallel.ForEach(ProvFiles, p_file =>
 			{
 				var match = ProvFileRE.Match(p_file.File);
 				if (!match.Success) return;
-				var prov = Provinces[match.Value.ToInt()];
+                int i = match.Value.ToInt();
+				if (!Provinces.ContainsKey(i)) return;
+
+                var prov = Provinces[i];
 				if (!prov || (!updateOwner && prov.Owner)) return;
 
 				string provFile = File.ReadAllText(p_file.Path);
@@ -1461,7 +1464,7 @@ namespace EU4_PCP
 		public static SolidColorBrush LegalBG(short channel) =>
 			new(channel < 0 ? RedBackground : GreenBackground);
 
-		public static void PathIndexer(string path, Scope scope, bool enBooks)
+		public static List<Indexer> PathIndexer(string path, Scope scope, bool enBooks)
 		{
 			var source = IndexerSource(scope);
 			string storageName = source + LocIndexer;
@@ -1498,9 +1501,7 @@ namespace EU4_PCP
 			}
 
 			Storage.StoreValue(current, storageName);
-			ReadProvLoc(current);
-			if (enBooks)
-				ReadBookLoc(current);
+			return current;
 		}
 
 		private static string IndexerSource(Scope scope) => scope switch
@@ -1546,11 +1547,15 @@ namespace EU4_PCP
 
 		public static void ReadProvLoc(List<Indexer> indexers)
 		{
-			foreach (var prov in indexers.SelectMany(i => i.ProvDict))
-			{
-				if (Provinces.ContainsKey(prov.Key))
-					Provinces[prov.Key].Name.Localisation = prov.Value;
-			}
+            foreach (var item in indexers)
+            {
+				foreach (var prov in item.ProvDict)
+                {
+                    if (Provinces.ContainsKey(prov.Key)
+                        && (string.IsNullOrEmpty(Provinces[prov.Key].Name.Localisation) || item.Source != "Game"))
+                        Provinces[prov.Key].Name.Localisation = prov.Value;
+                }
+            }
 		}
 
 		private static void BookLocDict(MatchCollection collection, ref Dictionary<string, string> dict)
@@ -1567,10 +1572,16 @@ namespace EU4_PCP
 
 		public static void ReadBookLoc(List<Indexer> indexers)
 		{
-			foreach (var book in indexers.SelectMany(i => i.BookDict))
-			{
-				Bookmarks.Find(b => b.Code == book.Key).Name = book.Value;
+            foreach (var item in indexers)
+            {
+				foreach (var bookLoc in item.BookDict)
+				{
+					if (Bookmarks.Find(b => b.Code == bookLoc.Key) is Bookmark bookObj
+						&& (string.IsNullOrEmpty(bookObj.Name) || item.Source != "Game"))
+						bookObj.Name = bookLoc.Value;
+				}
 			}
+			
 		}
 
 		#region File Fetching
@@ -1629,7 +1640,7 @@ namespace EU4_PCP
 		/// </summary>
 		/// <param name="scope">The type of the files to process.</param>
 		/// <returns>Path for base files.</returns>
-		private static string PathRep(FileType scope)
+		public static string PathRep(FileType scope)
 		{
 			string path;
 			if (SelectedMod && SelectReplace(scope))

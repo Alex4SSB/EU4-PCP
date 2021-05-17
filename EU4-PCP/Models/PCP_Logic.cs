@@ -2,6 +2,7 @@
 using EU4_PCP.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static EU4_PCP.PCP_Const;
@@ -120,7 +121,7 @@ namespace EU4_PCP
 				BookPrep();
 			}
 
-			PathIndexer($@"{GamePath}\#localisation#", Scope.Game, Naming == ProvinceNames.Dynamic);
+			MainLoc();
 
    //         if (!FetchFiles(FileType.Localisation))
 			//	return ErrorMsg(ErrorType.LocFolder);
@@ -240,6 +241,49 @@ namespace EU4_PCP
 
 			if (Storage.RetrieveBool(General.ShowIllegalProv) != ShowIllegal)
 				MainSequence();
+		}
+
+		public static void MainLoc()
+        {
+			var enBooks = Naming == ProvinceNames.Dynamic;
+			var scope = Scope.Game;
+			string path = GamePath;
+
+			if (SelectedMod && SelectedMod.Replace.Localisation)
+            {
+				scope = Scope.Mod;
+				path = SteamModPath;
+            }
+
+			// Game files for game and non fully replace mod, or mod files for fully replace mod
+			var baseList = PathIndexer(path + LocPath, scope, enBooks);
+
+			if (!SelectedMod || SelectedMod.Replace.Localisation)
+            {
+				ReadProvLoc(baseList);
+				if (enBooks)
+					ReadBookLoc(baseList);
+
+				return;
+			}
+
+			// Mod files for non fully replace mod, including replace folder if exists
+			var addList = PathIndexer(SteamModPath + LocPath, Scope.Mod, enBooks);
+
+			if (Directory.Exists(SteamModPath + RepLocPath))
+			{
+				var replace = from file in addList
+							  where file.Path.Contains(RepLocPath)
+							  select Path.GetFileName(file.Path);
+
+				addList.AddRange(baseList.Where(i => !replace.Contains(Path.GetFileName(i.Path))));
+			}
+			else
+				addList.AddRange(baseList);
+
+			ReadProvLoc(addList);
+			if (enBooks)
+				ReadBookLoc(addList);
 		}
 
 	}
