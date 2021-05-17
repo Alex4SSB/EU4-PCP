@@ -1550,8 +1550,10 @@ namespace EU4_PCP
 			foreach (Match match in collection)
 			{
 				var val = match.Value;
-				var name = val.Split('"')[1].Trim();
 				var id = val.Split(':')[0].ToInt();
+				var name = val.Split('"')[1].Trim();
+				
+				if (dict.ContainsKey(id)) continue;
 
 				dict.Add(id, name);
 			}
@@ -1577,6 +1579,8 @@ namespace EU4_PCP
 				var val = match.Value;
 				var code = BookLocCodeRE.Match(val).Value;
 				var name = LocNameRE.Match(val).Value;
+
+				if (dict.ContainsKey(code)) continue;
 
 				dict.Add(code, name);
 			}
