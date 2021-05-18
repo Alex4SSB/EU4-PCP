@@ -115,13 +115,13 @@ namespace EU4_PCP
 		{
 			if (Naming == ProvinceNames.Definition) return true;
 
-			if (Naming == ProvinceNames.Dynamic) // BookStatus(false)
+			if (Naming == ProvinceNames.Dynamic && SelectedBookmarkIndex < 1)
 			{
 				FetchFiles(FileType.Bookmark);
 				BookPrep();
 			}
 
-			MainLoc();
+			LocalisationSetup(Naming == ProvinceNames.Dynamic);
 
    //         if (!FetchFiles(FileType.Localisation))
 			//	return ErrorMsg(ErrorType.LocFolder);
@@ -241,35 +241,6 @@ namespace EU4_PCP
 
 			if (Storage.RetrieveBool(General.ShowIllegalProv) != ShowIllegal)
 				MainSequence();
-		}
-
-		public static void MainLoc()
-		{
-			var enBooks = Naming == ProvinceNames.Dynamic;
-			var scope = Scope.Game;
-			string path = GamePath;
-			List<Indexer> indexers;
-			string[] dirs = new string[1];
-
-			if (SelectedMod)
-			{
-				scope = Scope.Mod;
-				
-				if (!SelectedMod.Replace.Localisation)
-				{
-					Array.Resize(ref dirs, 2);
-					dirs[1] = path + LocPath;
-				}
-
-				path = SteamModPath;
-			}
-
-			dirs[0] = path + LocPath;
-			indexers = PathIndexer(PathCombiner(dirs), scope, enBooks);
-
-			ReadProvLoc(indexers);
-			if (enBooks)
-				ReadBookLoc(indexers);
 		}
 
 	}

@@ -1464,7 +1464,34 @@ namespace EU4_PCP
 		public static SolidColorBrush LegalBG(short channel) =>
 			new(channel < 0 ? RedBackground : GreenBackground);
 
-		public static List<string> PathCombiner(params string[] dirs)
+		public static void LocalisationSetup(bool enBooks)
+		{
+			var scope = Scope.Game;
+			string path = GamePath;
+			string[] dirs = new string[1];
+
+			if (SelectedMod)
+			{
+				scope = Scope.Mod;
+
+				if (!SelectedMod.Replace.Localisation)
+				{
+					Array.Resize(ref dirs, 2);
+					dirs[1] = path + LocPath;
+				}
+
+				path = SteamModPath;
+			}
+
+			dirs[0] = path + LocPath;
+			var indexers = PathIndexer(PathCombiner(dirs), scope, enBooks);
+
+			ReadProvLoc(indexers);
+			if (enBooks)
+				ReadBookLoc(indexers);
+		}
+
+		private static List<string> PathCombiner(params string[] dirs)
 		{
 			var files = dirs.Where(d => Directory.Exists(d)).SelectMany(d => Directory.GetFiles(d, "*", SearchOption.AllDirectories).Where(f => LocFileRE.Match(f).Success)).ToList();
 
@@ -1478,7 +1505,7 @@ namespace EU4_PCP
 			return files;
 		}
 
-		public static List<Indexer> PathIndexer(List<string> files, Scope scope, bool enBooks)
+		private static List<Indexer> PathIndexer(List<string> files, Scope scope, bool enBooks)
 		{
 			var source = IndexerSource(scope);
 			string storageName = source + LocIndexer;
@@ -1522,7 +1549,7 @@ namespace EU4_PCP
 			_ => SelectedMod.Name
 		};
 
-		public static void CacheLoc(ref List<Indexer> indexList, bool enBooks)
+		private static void CacheLoc(ref List<Indexer> indexList, bool enBooks)
 		{
 			Regex bookRE = null;
 			if (enBooks)
@@ -1559,7 +1586,7 @@ namespace EU4_PCP
 			}
 		}
 
-		public static void ReadProvLoc(List<Indexer> indexers)
+		private static void ReadProvLoc(List<Indexer> indexers)
 		{
 			foreach (var item in indexers)
 			{
@@ -1586,7 +1613,7 @@ namespace EU4_PCP
 			}
 		}
 
-		public static void ReadBookLoc(List<Indexer> indexers)
+		private static void ReadBookLoc(List<Indexer> indexers)
 		{
 			foreach (var item in indexers)
 			{
