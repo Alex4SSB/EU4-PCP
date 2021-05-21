@@ -48,13 +48,13 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <EntryPointProjectUniqueName>..\EU4-PCP\EU4-PCP.csproj</EntryPointProjectUniqueName>
-    <PackageCertificateKeyFile>EU4-PCP.Packaging_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxBuildConfigurationSelection>x86|x64</AppxBuildConfigurationSelection>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
+    <PackageCertificateThumbprint>1523ACD93DC5030ED0715313987E34478C56E7D3</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <AppxBundle>Always</AppxBundle>
@@ -131,7 +131,6 @@
       <SubType>Designer</SubType>
     </PRIResource>
     <Content Include="Package.appinstaller" />
-    <None Include="EU4-PCP.Packaging_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EU4-PCP\EU4-PCP.csproj">
