@@ -358,18 +358,16 @@ namespace EU4_PCP
 	{
 		public string Path;
 		public string File;
-		//public FileType Scope;
 
 		public static implicit operator bool(FileObj obj)
 		{
 			return obj is object;
 		}
 
-		public FileObj(string fPath, FileType scope)
+		public FileObj(string fPath)
 		{
 			Path = fPath;
 			File = System.IO.Path.GetFileName(fPath);
-			//Scope = scope;
 		}
 
 		public static bool operator ==(FileObj left, FileObj right)

@@ -169,6 +169,15 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enabled.
+        /// </summary>
+        public static string EnableInC {
+            get {
+                return ResourceManager.GetString("EnableInC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Load Last Mod.
         /// </summary>
         public static string FullyLoad {
@@ -192,6 +201,15 @@ namespace EU4_PCP.Properties {
         public static string IgnoreIllegal {
             get {
                 return ResourceManager.GetString("IgnoreIllegal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data Caching.
+        /// </summary>
+        public static string IndexAndCache {
+            get {
+                return ResourceManager.GetString("IndexAndCache", resourceCulture);
             }
         }
         

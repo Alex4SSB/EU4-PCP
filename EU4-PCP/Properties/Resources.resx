@@ -153,6 +153,9 @@
   <data name="Dynamic" xml:space="preserve">
     <value>Dynamic</value>
   </data>
+  <data name="EnableInC" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
   <data name="FullyLoad" xml:space="preserve">
     <value>Load Last Mod</value>
   </data>
@@ -161,6 +164,9 @@
   </data>
   <data name="IgnoreIllegal" xml:space="preserve">
     <value>Ignore Illegal Provinces</value>
+  </data>
+  <data name="IndexAndCache" xml:space="preserve">
+    <value>Data Caching</value>
   </data>
   <data name="IterateMaxProv" xml:space="preserve">
     <value>Always Iterate max__provinces Value</value>

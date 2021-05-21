@@ -130,7 +130,8 @@ namespace EU4_PCP.Views
 				UpdateMaxProvBox,
 				IterateMaxProvBox,
 				ShowIllegalProvBox,
-				IgnoreIllegalBox
+				IgnoreIllegalBox,
+				InCBox
 			});
 		}
 

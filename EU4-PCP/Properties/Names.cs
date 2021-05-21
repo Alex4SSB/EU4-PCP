@@ -17,6 +17,7 @@ namespace EU4_PCP
 			{ "IterateMaxProvDefault", "0" },
 			{ "ShowIllegalProvDefault", "0" },
 			{ "IgnoreIllegalDefault", "0" },
+			{ "InCDefault", "1" },
 			{ "MaxProvPositive", "Amount of provinces is within the limit." },
 			{ "MaxProvNegative", "Amount of provinces exceeds the limit." },
 			{ "ModProvNegative", "The game has more provinces, so name conflicts may occur." }

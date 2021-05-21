@@ -114,6 +114,18 @@
                             Tag="AutoLoad|Fully" />
                     </StackPanel>
                 </StackPanel>
+                <StackPanel Margin="{StaticResource SmallTopMargin}">
+                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.IndexAndCache}" />
+                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                        <CheckBox
+                            x:Name="InCBox"
+                            Checked="Box_Checked"
+                            Content="{x:Static properties:Resources.EnableInC}"
+                            FontSize="{StaticResource MediumFontSize}"
+                            Tag="InC"
+                            Unchecked="Box_Checked" />
+                    </StackPanel>
+                </StackPanel>
                 <TextBlock
                     Margin="{StaticResource SmallTopMargin}"
                     Style="{StaticResource SubtitleTextStyle}"

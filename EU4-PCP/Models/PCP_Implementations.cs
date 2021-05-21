@@ -97,7 +97,7 @@ namespace EU4_PCP
 			res = new byte[s.Length];
 			for (int i = startIndex; i < length + startIndex; i++)
 			{
-                if (!byte.TryParse(DigitStr(s[i]), out res[i - startIndex]))
+				if (!byte.TryParse(DigitStr(s[i]), out res[i - startIndex]))
 					return false;
 			}
 			return true;
@@ -1309,6 +1309,7 @@ namespace EU4_PCP
 			var source = IndexerSource(scope);
 			string storageName = source + LocIndexer;
 			List<Indexer> current;
+
 			try
 			{
 				current = files.Select(f => new Indexer(f, File.GetLastWriteTime(f), IsGameDirectory(f) ? "Game" : source)).ToList();
@@ -1317,8 +1318,13 @@ namespace EU4_PCP
 			{
 				return null;
 			}
-
-			var previous = Storage.RetrieveIndexer(storageName);
+			if (!Storage.RetrieveBool(General.InC))
+            {
+				CacheLoc(ref current, enBooks);
+				return current;
+			}
+			
+            var previous = Storage.RetrieveIndexer(storageName);
 			
 			if (previous is null)
 			{
@@ -1334,7 +1340,7 @@ namespace EU4_PCP
 					CacheLoc(ref modified, enBooks);
 
 				foreach (var item in previous)
-                {
+				{
 					if (modified.Any(i => i.Path == item.Path)) continue;
 
 					var curr = current.Find(i => i.Path == item.Path);
@@ -1342,7 +1348,7 @@ namespace EU4_PCP
 
 					curr.ProvDict = item.ProvDict;
 					curr.BookDict = item.BookDict;
-                }
+				}
 			}
 
 			Storage.StoreValue(current, storageName);
@@ -1463,7 +1469,7 @@ namespace EU4_PCP
 
 			if (!SelectedMod || SelectReplace(scope))
 			{
-				filesList.AddRange(baseFiles.Select(f => new FileObj(f, scope)));
+				filesList.AddRange(baseFiles.Select(f => new FileObj(f)));
 				return true;
 			}
 
@@ -1475,16 +1481,16 @@ namespace EU4_PCP
 			{
 				// If no mod files were found - just use the game files (except bookmarks)
 				if (scope != FileType.Bookmark)
-					filesList.AddRange(baseFiles.Select(f => new FileObj(f, scope)));
+					filesList.AddRange(baseFiles.Select(f => new FileObj(f)));
 
 				return false;
 			}
 
-			filesList.AddRange(addFiles.Select(f => new FileObj(f, scope)));
+			filesList.AddRange(addFiles.Select(f => new FileObj(f)));
 
 			foreach (var b_file in baseFiles)
 			{
-				var TempFile = new FileObj(b_file, scope);
+				var TempFile = new FileObj(b_file);
 				if (ReplacedFile(scope, filesList.Where(c => c == TempFile))) { continue; }
 				filesList.Add(TempFile);
 			}
