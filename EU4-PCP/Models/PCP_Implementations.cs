@@ -19,6 +19,20 @@ namespace EU4_PCP
 {
 	public static class PCP_Implementations
 	{
+		private static string _gamePath = null;
+
+		private static string GameFolder
+        {
+			get
+            {
+				if (_gamePath is null)
+                {
+					_gamePath = Directory.GetParent(GamePath + LocPath).FullName;
+				}
+				return _gamePath;
+            }
+        }
+
 		#region Overrides and Helper Functions
 
 		/// <summary>
@@ -439,15 +453,15 @@ namespace EU4_PCP
 		}
 
 		private static bool IsGameDirectory(string path)
-		{
-			return path.Contains(Directory.GetParent(GamePath + LocPath).FullName);
-		}
+        {
+            return path.Contains(GameFolder);
+        }
 
-		/// <summary>
-		/// A link between LocFiles <see cref="Settings"/> and <see cref="Members"/> list.
-		/// </summary>
-		/// <param name="mode">Read from the <see cref="Settings"/>, or Write to the <see cref="Settings"/></param>
-		public static void LocMembers(Mode mode)
+        /// <summary>
+        /// A link between LocFiles <see cref="Settings"/> and <see cref="Members"/> list.
+        /// </summary>
+        /// <param name="mode">Read from the <see cref="Settings"/>, or Write to the <see cref="Settings"/></param>
+        public static void LocMembers(Mode mode)
 		{
 			switch (mode)
 			{
@@ -1526,7 +1540,7 @@ namespace EU4_PCP
 			List<Indexer> current;
 			try
 			{
-				current = files.Select(f => new Indexer(f, File.GetLastWriteTime(f), source)).ToList();
+				current = files.Select(f => new Indexer(f, File.GetLastWriteTime(f), IsGameDirectory(f) ? "Game" : source)).ToList();
 			}
 			catch (Exception)
 			{
