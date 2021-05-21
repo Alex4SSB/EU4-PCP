@@ -400,5 +400,14 @@ namespace EU4_PCP_Test
 			Assert.IsTrue(ColorExist(new P_Color(1, 40, 100), testProv) == true);
 			Assert.IsTrue(ColorExist(new P_Color(1, 40, 100), testProv, testProv[1]) == false);
 		}
+
+        [TestMethod]
+        public void DigitStrTest()
+        {
+			Assert.IsTrue(DigitStr("135") == "135");
+			Assert.IsTrue(DigitStr("140u") == "140");
+
+			Assert.IsFalse(DigitStr("q45") == "45");
+        }
 	}
 }

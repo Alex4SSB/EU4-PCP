@@ -22,16 +22,16 @@ namespace EU4_PCP
 		private static string _gamePath = null;
 
 		private static string GameFolder
-        {
+		{
 			get
-            {
+			{
 				if (_gamePath is null)
-                {
+				{
 					_gamePath = Directory.GetParent(GamePath + LocPath).FullName;
 				}
 				return _gamePath;
-            }
-        }
+			}
+		}
 
 		#region Overrides and Helper Functions
 
@@ -97,10 +97,23 @@ namespace EU4_PCP
 			res = new byte[s.Length];
 			for (int i = startIndex; i < length + startIndex; i++)
 			{
-				if (!byte.TryParse(s[i], out res[i - startIndex]))
+                if (!byte.TryParse(DigitStr(s[i]), out res[i - startIndex]))
 					return false;
 			}
 			return true;
+		}
+
+		public static string DigitStr(string str)
+		{
+			while (str.Length > 0)
+			{
+				if (!char.IsDigit(str[^1]))
+					str = str[..^1];
+				else
+					break;
+			}
+
+			return str;
 		}
 
 		/// <summary>
@@ -453,15 +466,15 @@ namespace EU4_PCP
 		}
 
 		private static bool IsGameDirectory(string path)
-        {
-            return path.Contains(GameFolder);
-        }
+		{
+			return path.Contains(GameFolder);
+		}
 
-        /// <summary>
-        /// A link between LocFiles <see cref="Settings"/> and <see cref="Members"/> list.
-        /// </summary>
-        /// <param name="mode">Read from the <see cref="Settings"/>, or Write to the <see cref="Settings"/></param>
-        public static void LocMembers(Mode mode)
+		/// <summary>
+		/// A link between LocFiles <see cref="Settings"/> and <see cref="Members"/> list.
+		/// </summary>
+		/// <param name="mode">Read from the <see cref="Settings"/>, or Write to the <see cref="Settings"/></param>
+		public static void LocMembers(Mode mode)
 		{
 			switch (mode)
 			{
@@ -814,7 +827,7 @@ namespace EU4_PCP
 				if (!ShowRnw) prov.IsRNW();
 				if (!prov.Owner)
 				{
-					if (!showIllegal && prov.Name.ToString() == "")
+					if (!showIllegal && prov.Name.ToString() is null)
 						prov.Show = false;
 					continue;
 				}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Media;
+using static EU4_PCP.PCP_Implementations;
 
 namespace EU4_PCP
 {
@@ -181,7 +182,7 @@ namespace EU4_PCP
 			short[] s_arr = new short[3];
 			for (int i = 0; i < 3; i++)
 			{
-				if (!short.TryParse(str[i], out s_arr[i]))
+				if (!short.TryParse(DigitStr(str[i]), out s_arr[i]))
 					s_arr[i] = -1;
 			}
 
