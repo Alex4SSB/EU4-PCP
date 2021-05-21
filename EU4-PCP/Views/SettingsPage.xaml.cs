@@ -246,5 +246,12 @@ namespace EU4_PCP.Views
 
 		private void UserManual_Click(object sender, RoutedEventArgs e)
 			=> _systemService.OpenInWebBrowser(_appConfig.UserManual);
-	}
+
+        private void InCBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+			ClearCache();
+
+			Box_Checked(sender, e);
+        }
+    }
 }

@@ -169,7 +169,7 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enabled.
+        ///   Looks up a localized string similar to Enabled (Disable to clear cache).
         /// </summary>
         public static string EnableInC {
             get {

@@ -11,8 +11,6 @@
 		IterateMaxProv,
 		ShowIllegalProv,
 		IgnoreIllegal,
-		LocFiles,
-		NoLocProvCount,
 		InC
 	}
 }

@@ -154,7 +154,7 @@
     <value>Dynamic</value>
   </data>
   <data name="EnableInC" xml:space="preserve">
-    <value>Enabled</value>
+    <value>Enabled (Disable to clear cache)</value>
   </data>
   <data name="FullyLoad" xml:space="preserve">
     <value>Load Last Mod</value>

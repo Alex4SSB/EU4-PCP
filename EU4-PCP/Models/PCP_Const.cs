@@ -24,5 +24,8 @@ namespace EU4_PCP
 		public static readonly Encoding UTF7 = Encoding.UTF7;
 		public static readonly Encoding UTF8 = new UTF8Encoding(false);
 		public static readonly string[] SEPARATORS = new string[] { "\n", "\r" };
+
+		// CACHE TO REMOVE
+		public static readonly string[] LEGACY_CACHE = new string[] { "BookLoc", "ProvLoc", "NoLocProvCount", "LocFiles" };
 	}
 }

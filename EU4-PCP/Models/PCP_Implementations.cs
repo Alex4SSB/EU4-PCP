@@ -2,6 +2,7 @@
 using EU4_PCP.Services;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -1447,6 +1448,17 @@ namespace EU4_PCP
 			}
 			
 		}
+
+		public static void ClearCache()
+        {
+			var keys = App.Current.Properties.Keys.Cast<string>().ToList();
+
+			foreach (var item in keys)
+            {
+				if (LEGACY_CACHE.Contains(item) || item.Contains("Loc Indexer"))
+					App.Current.Properties.Remove(item);
+            }
+        }
 
 		#region File Fetching
 

@@ -123,7 +123,7 @@
                             Content="{x:Static properties:Resources.EnableInC}"
                             FontSize="{StaticResource MediumFontSize}"
                             Tag="InC"
-                            Unchecked="Box_Checked" />
+                            Unchecked="InCBox_Unchecked" />
                     </StackPanel>
                 </StackPanel>
                 <TextBlock
