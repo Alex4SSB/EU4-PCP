@@ -1,6 +1,5 @@
 ﻿using EU4_PCP.Models;
 using EU4_PCP.Services;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -1464,7 +1463,7 @@ namespace EU4_PCP
 		public static SolidColorBrush LegalBG(short channel) =>
 			new(channel < 0 ? RedBackground : GreenBackground);
 
-		public static void LocalisationSetup(bool enBooks)
+		public static bool LocalisationSetup(bool enBooks)
 		{
 			var scope = Scope.Game;
 			string path = GamePath;
@@ -1486,14 +1485,27 @@ namespace EU4_PCP
 			dirs[0] = path + LocPath;
 			var indexers = PathIndexer(PathCombiner(dirs), scope, enBooks);
 
+			if (indexers is null) return false;
+
 			ReadProvLoc(indexers);
 			if (enBooks)
 				ReadBookLoc(indexers);
+
+			return true;
 		}
 
 		private static List<string> PathCombiner(params string[] dirs)
 		{
-			var files = dirs.Where(d => Directory.Exists(d)).SelectMany(d => Directory.GetFiles(d, "*", SearchOption.AllDirectories).Where(f => LocFileRE.Match(f).Success)).ToList();
+			List<string> files;
+			try
+			{
+				files = dirs.Where(d => Directory.Exists(d)).SelectMany(d => Directory.GetFiles(d, "*", SearchOption.AllDirectories).Where(f => LocFileRE.Match(f).Success)).ToList();
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+
 
 			if (dirs.Length > 1 && files.Any(d => d.Contains(RepLocPath)))
 			{
@@ -1507,9 +1519,19 @@ namespace EU4_PCP
 
 		private static List<Indexer> PathIndexer(List<string> files, Scope scope, bool enBooks)
 		{
+			if (files is null) return null;
+
 			var source = IndexerSource(scope);
 			string storageName = source + LocIndexer;
-			var current = files.Select(f => new Indexer(f, File.GetLastWriteTime(f), source)).ToList();
+			List<Indexer> current;
+			try
+			{
+				current = files.Select(f => new Indexer(f, File.GetLastWriteTime(f), source)).ToList();
+			}
+			catch (Exception)
+			{
+				return null;
+			}
 
 			var previous = Storage.RetrieveIndexer(storageName);
 			
@@ -1557,7 +1579,16 @@ namespace EU4_PCP
 
 			Parallel.ForEach(indexList, item =>
 			{
-				var text = File.ReadAllText(item.Path);
+				string text = File.ReadAllText(item.Path);
+				try
+				{
+					text = File.ReadAllText(item.Path);
+				}
+				catch (Exception)
+				{
+					return;
+				}
+
 				var provMatches = LocProvRE.Matches(text);
 				
 				item.ProvDict.Clear();
@@ -1818,10 +1849,8 @@ namespace EU4_PCP
 				"Unable to access default file", MessageBoxButton.OK, MessageBoxImage.Error),
 			ErrorType.DefMapMaxProv => MessageBox.Show("The 'default.map' file has no max_provinces definition!",
 				"Missing max_provinces", MessageBoxButton.OK, MessageBoxImage.Error),
-			ErrorType.LocFolder => MessageBox.Show("The localisation folder is missing or inaccessible",
-				"Unable to access localisation files", MessageBoxButton.OK, MessageBoxImage.Error),
-			ErrorType.LocRead => MessageBox.Show("One or more of the localisation files are missing or corrupt",
-				"Unable to parse localisation file(s)", MessageBoxButton.OK, MessageBoxImage.Error),
+			ErrorType.LocRead => MessageBox.Show("Localisation folder and its content is missing or inaccessible",
+				"Error reading localisation files", MessageBoxButton.OK, MessageBoxImage.Error),
 			ErrorType.HistoryProvFolder => MessageBox.Show($"The {HistProvPath} folder is missing or inaccessible",
 				"Unable to access province history files", MessageBoxButton.OK, MessageBoxImage.Error),
 			ErrorType.ValDate => MessageBox.Show("At least one bookmark, or a defines entry are required to determine the start date",

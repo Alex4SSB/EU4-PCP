@@ -2,7 +2,6 @@
 using EU4_PCP.Services;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static EU4_PCP.PCP_Const;
@@ -121,13 +120,8 @@ namespace EU4_PCP
 				BookPrep();
 			}
 
-			LocalisationSetup(Naming == ProvinceNames.Dynamic);
-
-   //         if (!FetchFiles(FileType.Localisation))
-			//	return ErrorMsg(ErrorType.LocFolder);
-
-			//if (!LocPrep(LocScope.ProvLoc))
-			//	return ErrorMsg(ErrorType.LocRead);
+			if (!LocalisationSetup(Naming == ProvinceNames.Dynamic))
+				return ErrorMsg(ErrorType.LocRead);
 
 			return DynamicSequence();
 		}
