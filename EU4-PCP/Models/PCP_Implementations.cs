@@ -1573,19 +1573,18 @@ namespace EU4_PCP
 					|| previous.Find(p => p.Path == i.Path)?.LastModified.CompareTo(i.LastModified) != 0).ToList();
 
 				if (modified.Any())
-				{
 					CacheLoc(ref modified, enBooks);
-					foreach (var item in modified)
-					{
-						if (previous.Find(i => i.Path == item.Path) is Indexer prev)
-							prev = item;
-						else
-							previous.Add(item);
-					}
-				}
 
-				previous.RemoveAll(i => !current.Exists(c => c.Path == i.Path));
-				current = previous;
+				foreach (var item in previous)
+                {
+					if (modified.Any(i => i.Path == item.Path)) continue;
+
+					var curr = current.Find(i => i.Path == item.Path);
+					if (curr is null) continue;
+
+					curr.ProvDict = item.ProvDict;
+					curr.BookDict = item.BookDict;
+                }
 			}
 
 			Storage.StoreValue(current, storageName);
