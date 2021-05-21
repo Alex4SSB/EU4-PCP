@@ -216,7 +216,7 @@ namespace EU4_PCP
 
 			var provName = list.Length < 5 ? "" : list[4].Trim();
 
-			return new Province(i, provName, provColor);
+			return new Province(i, provName == "" ? null : provName, provColor);
 		}
 
 		/// <summary>
@@ -810,7 +810,7 @@ namespace EU4_PCP
 
 			foreach (var prov in Provinces.Values.Where(p => p))
 			{
-				prov.Name.Dynamic = "";
+				//prov.Name.Dynamic = "";
 				if (!ShowRnw) prov.IsRNW();
 				if (!prov.Owner)
 				{

@@ -13,12 +13,12 @@ namespace EU4_PCP
 		public ProvinceAbstract(int index = -1, CompositeName name = null)
 		{
 			Index = index;
-			Name = name;
+			Name = name is null ? new() : name;
 		}
 
 		public bool IsNameLegal()
 		{
-			return !string.IsNullOrWhiteSpace(ToString());
+			return ToString() is not null;
 		}
 
 		public int CompareTo(ProvinceAbstract other)
@@ -67,7 +67,7 @@ namespace EU4_PCP
 
 		public bool IsRNW(bool updateShow = true)
 		{
-			var isRnw = PCP_RegEx.RnwRE.Match(Name.Definition).Success;
+			bool isRnw = Name.Definition is not null && PCP_RegEx.RnwRE.Match(Name.Definition).Success;
 			if (updateShow && isRnw)
 				Show = false;
 			return isRnw;
@@ -133,7 +133,7 @@ namespace EU4_PCP
 		public string Localisation;
 		public string Dynamic;
 
-		public CompositeName(string definition, string localisation = "", string dynamic = "")
+		public CompositeName(string definition = null, string localisation = null, string dynamic = null)
 		{
 			Definition = definition;
 			Localisation = localisation;
@@ -142,8 +142,8 @@ namespace EU4_PCP
 
 		public override string ToString()
 		{
-			if (!string.IsNullOrEmpty(Dynamic)) { return Dynamic; }
-			if (!string.IsNullOrEmpty(Localisation)) { return Localisation; }
+			if (Dynamic is not null) { return Dynamic; }
+			if (Localisation is not null) { return Localisation; }
 			return Definition;
 		}
 

@@ -72,7 +72,7 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="Text" Value="{Binding P_Name}" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding P_Name}" Value="">
+                                    <DataTrigger Binding="{Binding P_Name}" Value="{x:Null}">
                                         <Setter Property="Text" Value="&#xE711;" />
                                         <Setter Property="TextAlignment" Value="Center" />
                                         <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
