@@ -277,36 +277,6 @@ namespace EU4_PCP_Test
 		}
 
 		[TestMethod]
-		public void MemberScopeTest()
-		{
-			// Also tests both C-tors
-
-			var gameMembers = new MembersCount[] {
-				new MembersCount($@"{TestFiles}\gamePath\localisation\aow_l_english.yml", 3, LocScope.BookLoc),
-				new MembersCount($@"{TestFiles}\gamePath\localisation\manchu_l_english.yml", 43, LocScope.ProvLoc),
-				new MembersCount($@"{TestFiles}\gamePath\localisation\EU4_l_english.yml", 1, LocScope.BookLoc),
-				new MembersCount($@"{TestFiles}\gamePath\localisation\emperor_map_l_english.yml", 91, LocScope.ProvLoc)
-			};
-
-			var modMembers = new MembersCount[] {
-				new MembersCount() { Path = $@"modPath\localisation\mod_aow_l_english.yml" },
-				new MembersCount() { Path = $@"modPath\localisation\mod_manchu_l_english.yml" }
-			};
-
-			foreach (var item in gameMembers)
-			{
-				item.MemberScope(TestFiles);
-				Assert.IsTrue(item.Scope == Scope.Game);
-			}
-
-			foreach (var item in modMembers)
-			{
-				item.MemberScope(TestFiles);
-				Assert.IsTrue(item.Scope == Scope.Mod);
-			}
-		}
-
-		[TestMethod]
 		public void ToCsvTest()
 		{
 			// Also tests IsRNW
@@ -401,13 +371,13 @@ namespace EU4_PCP_Test
 			Assert.IsTrue(ColorExist(new P_Color(1, 40, 100), testProv, testProv[1]) == false);
 		}
 
-        [TestMethod]
-        public void DigitStrTest()
-        {
+		[TestMethod]
+		public void DigitStrTest()
+		{
 			Assert.IsTrue(DigitStr("135") == "135");
 			Assert.IsTrue(DigitStr("140u") == "140");
 
 			Assert.IsFalse(DigitStr("q45") == "45");
-        }
+		}
 	}
 }

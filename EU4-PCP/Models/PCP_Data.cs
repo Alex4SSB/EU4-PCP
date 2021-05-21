@@ -23,14 +23,12 @@ namespace EU4_PCP
 		public static List<string> DefinesFiles = new();
 		public static List<string> CultureFiles = new();
 
-		// CLASS ARRAYS AND LISTS
+		// CLASS DICT AND LISTS
 		public static Dictionary<int, Province> Provinces = new();
 		public static List<Country> Countries = new();
 		public static List<Culture> Cultures = new();
 		public static List<Bookmark> Bookmarks = new();
-		public static List<MembersCount> Members = new();
 		public static List<ModObj> Mods = new();
-		public static List<FileObj> LocFiles = new();
 		public static List<FileObj> CountryFiles = new();
 		public static List<FileObj> BookFiles = new();
 		public static List<FileObj> ProvFiles = new();

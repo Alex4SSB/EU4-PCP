@@ -306,34 +306,6 @@ namespace EU4_PCP
 		}
 	}
 
-	public class MembersCount
-	{
-		public string Path;
-		public int Count;
-		public LocScope Type;
-		public Scope Scope;
-
-		public static implicit operator bool(MembersCount obj)
-		{
-			return (obj is object && obj.Path != null);
-		}
-
-		public override string ToString()
-		{
-			return $"{System.IO.Path.GetFileName(Path)}    ({Count} {Scope} {(Type == LocScope.ProvLoc ? "Provinces" : "Bookmarks")})";
-		}
-
-		public MembersCount(string Path, int Count, LocScope Type, Scope Scope = Scope.Game)
-		{
-			this.Path = Path;
-			this.Count = Count;
-			this.Type = Type;
-			this.Scope = Scope;
-		}
-
-		public MembersCount() { }
-	}
-
 	public class ModObj : IComparable<ModObj>
 	{
 		public string Name;

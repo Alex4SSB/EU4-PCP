@@ -151,36 +151,6 @@ namespace EU4_PCP
 			return temp.ToString();
 		}
 
-		/// <summary>
-		/// Converts LocScope to FileType.
-		/// </summary>
-		/// <param name="scope"><see cref="LocScope"/> enum.</param>
-		/// <returns><see cref="FileType"/> enum.</returns>
-		public static FileType FromLoc(LocScope scope) => scope switch
-		{
-			LocScope.ProvLoc => FileType.Province,
-			LocScope.BookLoc => FileType.Bookmark,
-			_ => throw new NotImplementedException()
-		};
-
-		/// <summary>
-		/// [Default overload for MemberScope] <br />
-		/// Determines member scope by whether it contains the game path.
-		/// </summary>
-		/// <param name="member">The member of which to determine the scope.</param>
-		public static void MemberScope(this MembersCount member) => MemberScope(member, GamePath);
-
-		/// <summary>
-		/// Determines member scope by whether it contains the provided path.
-		/// </summary>
-		/// <param name="member">The member of which to determine the scope.</param>
-		public static void MemberScope(this MembersCount member, string path)
-		{
-			member.Scope = 
-				member.Path.Contains(Directory.GetParent(path + LocPath).FullName) ? 
-				Scope.Game : Scope.Mod;
-		}
-
 		#endregion
 
 		/// <summary>
@@ -276,218 +246,9 @@ namespace EU4_PCP
 			return provList;
 		}
 
-		/// <summary>
-		/// Dynamically prepares the localisation files.
-		/// </summary>
-		/// <param name="scope">Province or Bookmark.</param>
-		public static bool LocPrep(LocScope scope)
-		{
-			bool readSuccess;
-
-			LocMembers(Mode.Read);
-			if (Members.Any(m => m.Type == scope))
-			{
-				List<FileObj> filesList = new();
-				foreach (var member in Members.Where(m => m.Type == scope))
-				{
-					if (!SelectedMod && member.Scope == Scope.Mod)
-						continue;
-					filesList.Add(new FileObj(member.Path, FromLoc(scope)));
-				}
-
-				bool abort = false;
-				for (int i = 0; i < filesList.Count; i++)
-				{
-					var lFile = filesList[i];
-					var memberFiles = LocFiles.Where(f => f == lFile);
-					if (memberFiles?.Any() == false || (SelectedMod &&
-						!lFile.Path.Contains(Directory.GetParent(SteamModPath + LocPath).FullName)))
-					{
-						abort = true;
-						break;
-					}
-
-					filesList[i] = memberFiles.First(); // For mod replacement files
-					LocFiles.Remove(memberFiles.First());
-				}
-
-				// If members were recovered successfully 
-				//if (!abort && filesList.Any() && NameSetup(filesList, scope, out readSuccess))
-				//{
-				//	if (scope == LocScope.BookLoc) return readSuccess;
-
-				//	var current = Provinces.Count(p => string.IsNullOrEmpty(p.Name.Localisation));
-				//	var prev = Storage.RetrieveValue(General.NoLocProvCount.ToString());
-
-				//	if (prev is not int prevI || prevI >= current)
-				//	{
-				//		Storage.StoreValue(current, General.NoLocProvCount);
-				//		return readSuccess;
-				//	}
-				//}
-			}
-
-			// If there are no members in the settings, or the members have changed
-			NameSetup(LocFiles, scope, out readSuccess);
-			if (readSuccess)
-				LocMembers(Mode.Write);
-
-			return readSuccess;
-		}
-
-		/// <summary>
-		/// Finds localisation names for Provinces and Bookmarks.
-		/// </summary>
-		/// <param name="lFiles">List of localisation files to work on.</param>
-		/// <param name="scope">Province or Bookmark.</param>
-		/// <param name="readSuccess"><see langword="false"/> if there was an error reading one of the files.</param>
-		/// <returns><see langword="false"/> if the member count of the game was NOT according to the settings.</returns>
-		private static bool NameSetup(List<FileObj> lFiles, LocScope scope, out bool readSuccess)
-		{
-			bool success = true;
-			bool recall = Members.Any(m => m.Type == scope);
-			bool locSuccess = true;
-			var nameLock = new object();
-
-			Regex locRE = scope switch // Select province or bookmark RegEx
-			{
-				LocScope.ProvLoc => LocProvRE,
-
-				// bookRE is a dynamic RegEx so it is local.
-				LocScope.BookLoc => new Regex($@"^ *({BookPattern()}):\d* *"".+""", RegexOptions.Multiline),
-				_ => throw new NotImplementedException()
-			};
-
-			Parallel.ForEach(lFiles, locFile =>
-			{
-				string l_file;
-				try
-				{
-					l_file = File.ReadAllText(locFile.Path, UTF7);
-				}
-				catch (Exception)
-				{
-					locSuccess = false;
-					return;
-				}
-
-				var collection = locRE.Matches(l_file);
-				if (recall)
-				{
-					var member = new MembersCount();
-					var tempMembers = Members.Where(m => Path.GetFileName(m.Path) == locFile.File);
-					
-					if (tempMembers.Any())
-						member = tempMembers.First();
-
-					if (!SelectedMod && member && member.Count != collection.Count)
-					{
-						success = false;
-						member.Count = collection.Count;
-					}
-				}
-				else if (collection.Count > 0)
-				{
-					lock (nameLock)
-					{
-						Members.Add(new MembersCount
-						{
-							Count = collection.Count,
-							Path = locFile.Path,
-							Type = scope
-						});
-						Members.Last().MemberScope();
-					}
-				}
-
-				Parallel.ForEach(collection, (prov) =>
-				{
-					NameSelect(prov.Value, IsGameDirectory(locFile.Path), scope);
-				});
-			});
-
-			if (scope == LocScope.BookLoc &&
-				!success &&
-				!Bookmarks.Any(book => book.Name == null))
-			{ success = true; }
-
-			readSuccess = locSuccess;
-			return success;
-		}
-
-		/// <summary>
-		/// Calls a function to write the name of either a <see cref="Province"/> or a <see cref="Bookmark"/>.
-		/// </summary>
-		/// <param name="match">The RegEx match result.</param>
-		/// <param name="scope">Province or Bookmark.</param>
-		/// <returns><see langword="true"/> if the name was written.</returns>
-		private static bool NameSelect(string match, bool gameDir, LocScope scope) => scope switch
-		{
-			LocScope.ProvLoc => NameProv(match, gameDir),
-			LocScope.BookLoc => NameBook(match, gameDir),
-			_ => false
-		};
-
-		/// <summary>
-		/// Writes the localisation name to the matching <see cref="Province"/>.
-		/// </summary>
-		/// <param name="match">The RegEx match result. (Localisation file line)</param>
-		/// <returns><see langword="true"/> if the name was written.</returns>
-		private static bool NameProv(string match, bool gameDir)
-		{
-			string name = match.Split('"')[1].Trim();
-			var provId = match.Split(':')[0].ToInt();
-
-			Provinces.ContainsKey(provId);
-			if (string.IsNullOrWhiteSpace(name) || !Provinces.ContainsKey(provId))
-				return false;
-
-			var prov = Provinces[provId];
-			if (!string.IsNullOrEmpty(prov.Name.Localisation) && gameDir)
-				return false;
-
-			prov.Name.Localisation = name;
-			return true;
-		}
-
-		/// <summary>
-		/// Writes the name to the matching <see cref="Bookmark"/>.
-		/// </summary>
-		/// <param name="match">The RegEx match result. (Bookmark name)</param>
-		/// <returns><see langword="true"/> if the name was written.</returns>
-		private static bool NameBook(string match, bool gameDir)
-		{
-			var tempBook = Bookmarks.First(book => book.Code == BookLocCodeRE.Match(match).Value);
-			if (SelectedMod && tempBook.Name != null && gameDir)
-				return false;
-			tempBook.Name = LocNameRE.Match(match).Value;
-
-			return true;
-		}
-
 		private static bool IsGameDirectory(string path)
 		{
 			return path.Contains(GameFolder);
-		}
-
-		/// <summary>
-		/// A link between LocFiles <see cref="Settings"/> and <see cref="Members"/> list.
-		/// </summary>
-		/// <param name="mode">Read from the <see cref="Settings"/>, or Write to the <see cref="Settings"/></param>
-		public static void LocMembers(Mode mode)
-		{
-			switch (mode)
-			{
-				case Mode.Read:
-					var membersObj = Storage.RetrieveValue(General.LocFiles.ToString());
-					if (membersObj is not JArray membersJA) return;
-
-					Members = membersJA.ToObject<List<MembersCount>>();
-					break;
-				case Mode.Write:
-					Storage.StoreValue(Members, General.LocFiles);
-					break;
-			}
 		}
 
 		/// <summary>
@@ -885,8 +646,7 @@ namespace EU4_PCP
 					DefBook = BookmarkDefRE.Match(bFile).Success
 				});
 			}
-			if (!Bookmarks.Any()) return; 
-			//LocPrep(LocScope.BookLoc);
+			if (!Bookmarks.Any()) return;
 			Bookmarks = SortBooks(Bookmarks);
 		}
 
@@ -1041,10 +801,8 @@ namespace EU4_PCP
 		/// </summary>
 		public static void ClearArrays()
 		{
-			Members.Clear();
 			CultureFiles.Clear();
 			DefinesFiles.Clear();
-			LocFiles.Clear();
 			CountryFiles.Clear();
 			Countries.Clear();
 			Cultures.Clear();
@@ -1699,7 +1457,7 @@ namespace EU4_PCP
 
 			try
 			{
-				baseFiles = ApplyRegEx(scope, Directory.GetFiles(PathRep(scope)));
+				baseFiles = Directory.GetFiles(PathRep(scope));
 			}
 			catch (Exception) { return false; }
 
@@ -1711,8 +1469,7 @@ namespace EU4_PCP
 
 			try
 			{
-				addFiles = ApplyRegEx(scope, Directory.GetFiles(
-					SteamModPath + SelectFolder(scope), "*", SearchOption.AllDirectories));
+				addFiles = Directory.GetFiles(SteamModPath + SelectFolder(scope), "*", SearchOption.AllDirectories);
 			}
 			catch (Exception)
 			{
@@ -1761,7 +1518,6 @@ namespace EU4_PCP
 			var rep = SelectedMod.Replace;
 			switch (scope)
 			{
-				case FileType.Localisation when rep.Localisation:
 				case FileType.Country when rep.Countries:
 				case FileType.Bookmark when rep.Bookmarks:
 				case FileType.Province when rep.Provinces:
@@ -1779,7 +1535,6 @@ namespace EU4_PCP
 		/// <returns>The path corresponding to the scope.</returns>
 		private static string SelectFolder(FileType scope) => scope switch
 		{
-			FileType.Localisation => LocPath,
 			FileType.Country => HistCountryPath,
 			FileType.Bookmark => BookmarksPath,
 			FileType.Province => HistProvPath,
@@ -1794,7 +1549,6 @@ namespace EU4_PCP
 		/// <returns>The files list corresponding to the scope.</returns>
 		private static List<FileObj> SelectList(FileType scope) => scope switch
 		{
-			FileType.Localisation => LocFiles,
 			FileType.Country => CountryFiles,
 			FileType.Bookmark => BookFiles,
 			FileType.Province => ProvFiles,
@@ -1803,46 +1557,21 @@ namespace EU4_PCP
 		};
 
 		/// <summary>
-		/// Applies RegEx on localisation files. <br />
-		/// Other files are returned unchanged.
-		/// </summary>
-		/// <param name="scope">The type of the files to process.</param>
-		/// <param name="query">The file to process.</param>
-		/// <returns>The input query.</returns>
-		private static IEnumerable<string> ApplyRegEx(FileType scope, IEnumerable<string> query)
-		{
-			if (scope == FileType.Localisation)
-				return query.Where(f => LocFileRE.Match(f).Success);
-			return query;
-		}
-
-		/// <summary>
-		/// Checks if the query contains province name files or localisation files from /replace.
+		/// Checks if the query contains province name files.
 		/// </summary>
 		/// <param name="scope">The type of the files to process.</param>
 		/// <param name="query">The file to process.</param>
 		/// <returns><see langword="true"/> for positive file count of: 
-		/// country, bookmark, province, and replace localisation files. 
+		/// country, bookmark, province. 
 		/// <see langword="false"/> otherwise, and always for ProvName.</returns>
 		private static bool ReplacedFile(FileType scope, IEnumerable<FileObj> query)
 		{
 			return scope switch
 			{
-				FileType.Localisation => RepLocCheck(query),
 				FileType.Country or FileType.Bookmark or FileType.Province when query.Any() => true,
 				FileType.ProvName => false,
 				_ => false,
 			};
-		}
-
-		/// <summary>
-		/// Checks if the query contains localisation files from /replace.
-		/// </summary>
-		/// <param name="query"></param>
-		/// <returns><see langword="true"/> if there is at least one replace file in the query.</returns>
-		private static bool RepLocCheck(IEnumerable<FileObj> query)
-		{
-			return query.Any(f => f.Path.Contains(RepLocPath));
 		}
 
 		#endregion

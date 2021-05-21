@@ -1,10 +1,5 @@
 ﻿namespace EU4_PCP
 {
-	public enum LocScope
-	{
-		ProvLoc,
-		BookLoc
-	}
 
 	public enum Mode
 	{
@@ -26,7 +21,6 @@
 
 	public enum FileType
 	{
-		Localisation,
 		Country,
 		Bookmark,
 		Province,
