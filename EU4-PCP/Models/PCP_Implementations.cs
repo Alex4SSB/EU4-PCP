@@ -239,7 +239,7 @@ namespace EU4_PCP
 			{
 				foreach (var line in dFile)
 				{
-					if (DefinParse(line) is Province prov)
+					if (DefinParse(line) is Province prov && !provList.ContainsKey(prov.Index))
 						provList.Add(prov.Index, prov);
 				}
 			}
@@ -1320,12 +1320,12 @@ namespace EU4_PCP
 				return null;
 			}
 			if (!Storage.RetrieveBool(General.InC))
-            {
+			{
 				CacheLoc(ref current, enBooks);
 				return current;
 			}
-			
-            var previous = Storage.RetrieveIndexer(storageName);
+
+			var previous = Storage.RetrieveIndexer(storageName);
 			
 			if (previous is null)
 			{
@@ -1450,15 +1450,15 @@ namespace EU4_PCP
 		}
 
 		public static void ClearCache()
-        {
+		{
 			var keys = App.Current.Properties.Keys.Cast<string>().ToList();
 
 			foreach (var item in keys)
-            {
+			{
 				if (LEGACY_CACHE.Contains(item) || item.Contains("Loc Indexer"))
 					App.Current.Properties.Remove(item);
-            }
-        }
+			}
+		}
 
 		#region File Fetching
 
