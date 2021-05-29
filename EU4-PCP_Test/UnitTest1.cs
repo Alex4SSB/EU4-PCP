@@ -3,6 +3,7 @@ using EU4_PCP_Test.Properties;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media;
 using static EU4_PCP.PCP_Implementations;
@@ -237,10 +238,14 @@ namespace EU4_PCP_Test
 				"TUR"
 			};
 
+			Stopwatch sw = new();
+			sw.Start();
 			for (int i = 0; i < dates.Length; i++)
 			{
 				Assert.AreEqual(owners[i], LastEvent(Resources.Prov_151, EventType.Province, dates[i]));
 			}
+			sw.Stop();
+			Console.WriteLine(sw.Elapsed); // Trace.WriteLine() for main app
 		}
 
 		[TestMethod]
@@ -379,5 +384,6 @@ namespace EU4_PCP_Test
 
 			Assert.IsFalse(DigitStr("q45") == "45");
 		}
+
 	}
 }

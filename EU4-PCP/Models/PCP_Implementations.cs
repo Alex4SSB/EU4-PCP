@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -434,7 +435,10 @@ namespace EU4_PCP
 					};
 
 					lock (countryLock)
-					{ Countries.Add(country); }
+					{
+						if (!Countries.Any(c => c.Name == code))
+							Countries.Add(country);
+					}
 				}
 			});
 
