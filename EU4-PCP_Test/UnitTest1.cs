@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media;
 using static EU4_PCP.PCP_Implementations;
+using static EU4_PCP.PCP_RegEx;
 
 namespace EU4_PCP_Test
 {

@@ -452,57 +452,84 @@ namespace EU4_PCP
 		/// <param name="mutex">External lock to be provided when the function is parallelized.</param>
 		private static void CultureSetup(string culFile, object mutex = null)
 		{
-			string[] cFile;
-			try
-			{
-				cFile = File.ReadAllLines(culFile, UTF7);
-			}
-			catch (Exception) { return; }
+			Stopwatch sw = new();
+			sw.Start();
 
-			int brackets = 0;
-			var cGroup = new Culture();
-			foreach (string line in cFile)
-			{
-				if (NextLine(line, true)) continue;
-				if (line.Contains('{'))
-				{
-					if (line.Contains('}')) continue;
-					brackets++;
-				}
+			object c_lock = new();
+			var text = File.ReadAllText(culFile, UTF7);
+			
+			var new_text = CulClearRE.Replace(text, "");
+			
+			var groups = CulGroupsRE.Matches(new_text);
 
-				int eIndex = line.IndexOf('=');
-				if (eIndex > -1 && brackets.Range(1, 2))
+			Parallel.ForEach(groups, group =>
+			{
+				var culs = CulSingleRE.Matches(group.Value);
+
+				var CulG = new Culture(culs.First().Value);
+
+				for (int i = 0; i < culs.Count; i++)
 				{
-					string temp = line[..eIndex].Trim();
-					if (!NOT_CUL.Contains(temp))
+					Culture newCul = i == 0 ? CulG : (new() { Name = culs[i].Value, Group = CulG });
+					lock (c_lock)
 					{
-						var culture = new Culture(temp);
-						switch (brackets)
-						{
-							case 1:
-								cGroup = culture;
-								break;
-							case 2:
-								culture.Group = cGroup;
-								break;
-						}
-
-						// If the function isn't parallelized, there's no need for the lock
-						if (mutex != null)
-						{
-							lock (mutex)
-							{
-								Cultures.Add(culture);
-							}
-						}
-						else
-							Cultures.Add(culture);
+						Cultures.Add(newCul);
 					}
 				}
+			});
+			sw.Stop();
+			Trace.WriteLine($"CultureSetup: {sw.Elapsed}");
+			//string[] cFile;
+			//try
+			//{
+			//	cFile = File.ReadAllLines(culFile, UTF7);
+			//}
+			//catch (Exception) { return; }
 
-				if (line.Contains('}') && brackets > 0)
-					brackets--;
-			}
+			//int brackets = 0;
+			//var cGroup = new Culture();
+			//foreach (string line in cFile)
+			//{
+			//	if (NextLine(line, true)) continue;
+			//	if (line.Contains('{'))
+			//	{
+			//		if (line.Contains('}')) continue;
+			//		brackets++;
+			//	}
+
+			//	int eIndex = line.IndexOf('=');
+			//	if (eIndex > -1 && brackets.Range(1, 2))
+			//	{
+			//		string temp = line[..eIndex].Trim();
+			//		if (!NOT_CUL.Contains(temp))
+			//		{
+			//			var culture = new Culture(temp);
+			//			switch (brackets)
+			//			{
+			//				case 1:
+			//					cGroup = culture;
+			//					break;
+			//				case 2:
+			//					culture.Group = cGroup;
+			//					break;
+			//			}
+
+			//			// If the function isn't parallelized, there's no need for the lock
+			//			if (mutex != null)
+			//			{
+			//				lock (mutex)
+			//				{
+			//					Cultures.Add(culture);
+			//				}
+			//			}
+			//			else
+			//				Cultures.Add(culture);
+			//		}
+			//	}
+
+			//	if (line.Contains('}') && brackets > 0)
+			//		brackets--;
+			//}
 		}
 
 		/// <summary>
@@ -512,6 +539,9 @@ namespace EU4_PCP
 		{
 			var cultureLock = new object();
 			CulFilePrep();
+
+			Stopwatch sw = new();
+			sw.Start();
 
 			// Separate handling because parallel loop seems to work slower for one file.
 			if (CultureFiles.Count == 1)
@@ -523,6 +553,9 @@ namespace EU4_PCP
 					CultureSetup(culFile, cultureLock);
 				});
 			}
+
+			sw.Stop();
+			Trace.WriteLine($"CulturePrep: {sw.Elapsed}");
 		}
 
 		/// <summary>

@@ -2,7 +2,7 @@
 
 namespace EU4_PCP
 {
-    public static class PCP_RegEx
+	public static class PCP_RegEx
 	{
 		// Global read-only RegEx patterns
 		public static readonly Regex DefinesDateRE = new(@"(?<=START_DATE *= *"")[\d.]+(?="")");
@@ -32,6 +32,9 @@ namespace EU4_PCP
 		public static readonly Regex RnwRE = new(@"(Unused(Land){0,1}\d+|RNW)");
 		public static readonly Regex NewLineRE = new("[\r\n]+");
 		public static readonly Regex AsciiRE = new("[\x00-\x7F]");
+		public static readonly Regex CulClearRE = new(@"(\w+_names\s*=\s*{[\s\S]+?}|\w+\s*=\s*\w+|#.*)", RegexOptions.Multiline);
+		public static readonly Regex CulGroupsRE = new(@"\w+[\s\S]*?({\s*})+\s+}", RegexOptions.Multiline);
+		public static readonly Regex CulSingleRE = new(@"\w+", RegexOptions.Multiline);
 	}
 
 }
