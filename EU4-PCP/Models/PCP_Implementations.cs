@@ -444,92 +444,41 @@ namespace EU4_PCP
 
 		}
 
+		private static void CultureSetup(string culFile, object mutex) => CultureSetup(culFile, mutex, Cultures);
+
 		/// <summary>
 		/// Creates the <see cref="Culture"/> objects in the <see cref="Cultures"/> list. <br />
 		/// Initializes with code and culture group object.
 		/// </summary>
 		/// <param name="culFile">The culture file to work on.</param>
-		/// <param name="mutex">External lock to be provided when the function is parallelized.</param>
-		private static void CultureSetup(string culFile, object mutex = null)
+		/// <param name="mutex">External lock to be provided for adding cultures.</param>
+		public static void CultureSetup(string culFile, object mutex, List<Culture> cultureList)
 		{
-			Stopwatch sw = new();
-			sw.Start();
-
-			object c_lock = new();
-			var text = File.ReadAllText(culFile, UTF7);
-			
-			var new_text = CulClearRE.Replace(text, "");
-			
-			var groups = CulGroupsRE.Matches(new_text);
+			string text;
+            try
+            {
+				text = File.ReadAllText(culFile, UTF7);
+			}
+            catch (Exception)
+            {
+                return;
+            }
+            var groups = CulGroupsRE.Matches(CulClearRE.Replace(text, ""));
 
 			Parallel.ForEach(groups, group =>
 			{
-				var culs = CulSingleRE.Matches(group.Value);
+				var cultures = CulSingleRE.Matches(group.Value);
+				var groupName = new Culture(cultures.First().Value);
 
-				var CulG = new Culture(culs.First().Value);
-
-				for (int i = 0; i < culs.Count; i++)
+				for (int i = 0; i < cultures.Count; i++)
 				{
-					Culture newCul = i == 0 ? CulG : (new() { Name = culs[i].Value, Group = CulG });
-					lock (c_lock)
+					Culture newCul = i == 0 ? groupName : (new() { Name = cultures[i].Value, Group = groupName });
+					lock (mutex)
 					{
-						Cultures.Add(newCul);
+						cultureList.Add(newCul);
 					}
 				}
 			});
-			sw.Stop();
-			Trace.WriteLine($"CultureSetup: {sw.Elapsed}");
-			//string[] cFile;
-			//try
-			//{
-			//	cFile = File.ReadAllLines(culFile, UTF7);
-			//}
-			//catch (Exception) { return; }
-
-			//int brackets = 0;
-			//var cGroup = new Culture();
-			//foreach (string line in cFile)
-			//{
-			//	if (NextLine(line, true)) continue;
-			//	if (line.Contains('{'))
-			//	{
-			//		if (line.Contains('}')) continue;
-			//		brackets++;
-			//	}
-
-			//	int eIndex = line.IndexOf('=');
-			//	if (eIndex > -1 && brackets.Range(1, 2))
-			//	{
-			//		string temp = line[..eIndex].Trim();
-			//		if (!NOT_CUL.Contains(temp))
-			//		{
-			//			var culture = new Culture(temp);
-			//			switch (brackets)
-			//			{
-			//				case 1:
-			//					cGroup = culture;
-			//					break;
-			//				case 2:
-			//					culture.Group = cGroup;
-			//					break;
-			//			}
-
-			//			// If the function isn't parallelized, there's no need for the lock
-			//			if (mutex != null)
-			//			{
-			//				lock (mutex)
-			//				{
-			//					Cultures.Add(culture);
-			//				}
-			//			}
-			//			else
-			//				Cultures.Add(culture);
-			//		}
-			//	}
-
-			//	if (line.Contains('}') && brackets > 0)
-			//		brackets--;
-			//}
 		}
 
 		/// <summary>
@@ -540,12 +489,9 @@ namespace EU4_PCP
 			var cultureLock = new object();
 			CulFilePrep();
 
-			Stopwatch sw = new();
-			sw.Start();
-
 			// Separate handling because parallel loop seems to work slower for one file.
 			if (CultureFiles.Count == 1)
-				CultureSetup(CultureFiles[0]);
+				CultureSetup(CultureFiles[0], cultureLock);
 			else if (CultureFiles.Count > 1)
 			{
 				Parallel.ForEach(CultureFiles, culFile =>
@@ -553,9 +499,6 @@ namespace EU4_PCP
 					CultureSetup(culFile, cultureLock);
 				});
 			}
-
-			sw.Stop();
-			Trace.WriteLine($"CulturePrep: {sw.Elapsed}");
 		}
 
 		/// <summary>

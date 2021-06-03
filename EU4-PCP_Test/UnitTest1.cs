@@ -386,5 +386,16 @@ namespace EU4_PCP_Test
 			Assert.IsFalse(DigitStr("q45") == "45");
 		}
 
+        [TestMethod]
+        public void CultureSetupTest()
+        {
+			List<Culture> cultures = new();
+
+			CultureSetup($@"{TestFiles}\00_cultures.txt", new object(), cultures);
+
+			Assert.IsTrue(cultures.Count == 10);
+			Assert.IsTrue(cultures.Count(c => c.Group && c.Group.Name == "germanic") == 3);
+			Assert.IsTrue(cultures.Find(c => c.Name == "swedish").Group.Name == "scandinavian");
+        }
 	}
 }
