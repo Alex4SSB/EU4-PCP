@@ -249,6 +249,18 @@ namespace EU4_PCP_Test
 			Console.WriteLine(sw.Elapsed); // Trace.WriteLine() for main app
 		}
 
+        [TestMethod]
+        public void LastCultureEventTest()
+        {
+			DateTime[] dates = {
+				new DateTime(1000, 1, 1),
+				new DateTime(1500, 1, 1)
+			};
+
+			Assert.AreEqual("lombard", LastEvent(Resources.ACH, EventType.Country, dates[0]));
+			Assert.AreEqual("greek", LastEvent(Resources.ACH, EventType.Country, dates[1]));
+		}
+
 		[TestMethod]
 		public void RandomProvColorTest()
 		{

@@ -61,6 +61,41 @@ namespace EU4_PCP_Test.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to government = monarchy
+        ///add_government_reform = feudalism_reform
+        ///government_rank = 1
+        ///technology_group = western
+        ///primary_culture = lombard
+        ///religion = catholic
+        ///capital = 1773	# Mystras
+        ///
+        ///# ADDED FOR TESTING #
+        ///900.1.1 = { primary_culture = lombard religion = catholic }
+        ///
+        ///# Principality of Achaea #
+        ///1396.1.1 = {
+        ///	monarch = {
+        ///		name = &quot;Pietro I&quot;
+        ///		dynasty = &quot;de Saint-Superan&quot;
+        ///		dip = 1
+        ///		adm = 1
+        ///		mil = 2
+        ///	}
+        ///}
+        ///
+        ///1396.1.1 = {
+        ///	heir = {
+        ///		name = &quot;Maria&quot;
+        ///		monarch_name = &quot;Maria II&quot;
+        ///		dynasty = &quot; [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ACH {
+            get {
+                return ResourceManager.GetString("ACH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to # Do not change tags in here without changing every other reference to them.
         ///# If adding new groups or cultures, make sure they are unique.
         ///#
