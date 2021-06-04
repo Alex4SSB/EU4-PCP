@@ -1,10 +1,7 @@
 ﻿using EU4_PCP.Models;
 using EU4_PCP.Services;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -455,15 +452,15 @@ namespace EU4_PCP
 		public static void CultureSetup(string culFile, object mutex, List<Culture> cultureList)
 		{
 			string text;
-            try
-            {
+			try
+			{
 				text = File.ReadAllText(culFile, UTF7);
 			}
-            catch (Exception)
-            {
-                return;
-            }
-            var groups = CulGroupsRE.Matches(CulClearRE.Replace(text, ""));
+			catch (Exception)
+			{
+				return;
+			}
+			var groups = CulGroupsRE.Matches(CulClearRE.Replace(text, ""));
 
 			Parallel.ForEach(groups, group =>
 			{
@@ -1038,7 +1035,7 @@ namespace EU4_PCP
 			}
 
 			StartDate = Bookmarks[SelectedBookmarkIndex].BookDate;
-			StartDateStr = StartDate.ToString(DATE_FORMAT);
+			StartDateStr = StartDate.ToString(DATE_FORMATS[int.Parse(Storage.RetrieveValue(General.DateFormat))], CultureInfo.CreateSpecificCulture("en-US")).ToUpper();
 
 			ShowRnw = Storage.RetrieveBool(General.ShowAllProvinces);
 			UpdateCountries = true;

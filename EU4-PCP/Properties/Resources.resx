@@ -198,6 +198,9 @@
   <data name="SettingsButtonOffset" xml:space="preserve">
     <value>100</value>
   </data>
+  <data name="SettingsDateFormat" xml:space="preserve">
+    <value>Date Format</value>
+  </data>
   <data name="SettingsPageAboutText" xml:space="preserve">
     <value>Settings page placeholder text.  Your app description goes here.</value>
   </data>

@@ -10,6 +10,9 @@ namespace EU4_PCP.Services
 	{
 		
 		public static void StoreValue(string value, Enum keyName) => StoreValue((object)value, keyName.ToString());
+
+		public static void StoreValue(int index, object tag) => StoreValue(index.ToString(), tag);
+
 		public static void StoreValue(string value, object tag) => StoreValue((object)value, (string)tag);
 
 		public static void StoreValue(string value, string keyName) => StoreValue((object)value, keyName);

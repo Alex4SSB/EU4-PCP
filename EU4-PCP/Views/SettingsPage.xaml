@@ -227,6 +227,19 @@
                     Style="{StaticResource SubtitleTextStyle}"
                     Text="{x:Static properties:Resources.SettingsPagePersonalizationTitle}" />
                 <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
+                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.SettingsDateFormat}" />
+                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                        <ComboBox
+                            x:Name="DateFormatComboBox"
+                            Margin="{StaticResource XSmallTopMargin}"
+                            FontSize="{StaticResource MediumFontSize}"
+                            ItemsSource="{Binding Path=DateFormats}"
+                            SelectionChanged="ChangeIndex"
+                            Tag="DateFormat" />
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
                     <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.SettingsPageChooseThemeText}" />
                     <StackPanel Margin="{StaticResource XSmallTopMargin}">
                         <RadioButton

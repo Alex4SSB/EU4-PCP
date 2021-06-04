@@ -80,7 +80,7 @@ namespace EU4_PCP.Views
 			BookmarkComboBox.SelectedIndex = SelectedBookmarkIndex;
 
 			StartDateBlock.Text = StartDateStr;
-			StartDateBlock.ToolTip = DATE_FORMAT;
+			StartDateBlock.ToolTip = DATE_FORMATS[int.Parse(Storage.RetrieveValue(General.DateFormat))].ToUpper();
 
 			ProvCountColor();
 			EnablePicker();

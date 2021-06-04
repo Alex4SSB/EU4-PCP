@@ -4,6 +4,8 @@ namespace EU4_PCP.Converters
 {
     static class AddConst
     {
+        public static int GetDefault(this FrameworkElement control) => (int)GetDefault(control.Tag.ToString());
+
         public static long GetDefault(this string key)
         {
             return long.Parse(Names.GlobalNames[key + "Default"]);

@@ -16,6 +16,7 @@ using System.Windows.Controls.Primitives;
 using static EU4_PCP.PCP_Implementations;
 using static EU4_PCP.PCP_Logic;
 using static EU4_PCP.PCP_Paths;
+using static EU4_PCP.PCP_Const;
 
 namespace EU4_PCP.Views
 {
@@ -43,6 +44,11 @@ namespace EU4_PCP.Views
 			get { return _versionDescription; }
 			set { Set(ref _versionDescription, value); }
 		}
+
+		public static IEnumerable<string> DateFormats
+        {
+			get { return DATE_FORMATS.Select(str => str.ToUpper()); }
+        }
 
 		public SettingsPage(IOptions<AppConfig> appConfig, IThemeSelectorService themeSelectorService, ISystemService systemService, IApplicationInfoService applicationInfoService)
 		{
@@ -131,7 +137,8 @@ namespace EU4_PCP.Views
 				IterateMaxProvBox,
 				ShowIllegalProvBox,
 				IgnoreIllegalBox,
-				InCBox
+				InCBox,
+				DateFormatComboBox
 			});
 		}
 
@@ -211,6 +218,13 @@ namespace EU4_PCP.Views
 				Storage.StoreValue(control.IsChecked.ToString(), control.Tag);
 		}
 
+		private void ChangeIndex(object sender, SelectionChangedEventArgs e)
+        {
+			var box = sender as ComboBox;
+
+			Storage.StoreValue(box.SelectedIndex, box.Tag);
+        }
+
 		private void InitializeSettings()
 		{
 			foreach (FrameworkElement item in Controls)
@@ -218,6 +232,10 @@ namespace EU4_PCP.Views
 				if (item.Tag.ToString().Contains('|')) continue;
 				switch (item)
 				{
+					case ComboBox box:
+						string selectedText = Storage.RetrieveValue(item.Tag);
+						box.SelectedIndex = string.IsNullOrEmpty(selectedText) ? item.GetDefault() : int.Parse(selectedText);
+						break;
 					case TextBlock box:
 						string value = Storage.RetrieveValue(item.Tag);
 						box.Text = string.IsNullOrEmpty(value) ? item.GetPlaceholder() : value;
@@ -247,11 +265,16 @@ namespace EU4_PCP.Views
 		private void UserManual_Click(object sender, RoutedEventArgs e)
 			=> _systemService.OpenInWebBrowser(_appConfig.UserManual);
 
-        private void InCBox_Unchecked(object sender, RoutedEventArgs e)
-        {
+		private void InCBox_Unchecked(object sender, RoutedEventArgs e)
+		{
 			ClearCache();
 
 			Box_Checked(sender, e);
+		}
+
+        private void DateFormatComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

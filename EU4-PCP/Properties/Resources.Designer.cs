@@ -304,6 +304,15 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Date Format.
+        /// </summary>
+        public static string SettingsDateFormat {
+            get {
+                return ResourceManager.GetString("SettingsDateFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings page placeholder text.  Your app description goes here..
         /// </summary>
         public static string SettingsPageAboutText {
