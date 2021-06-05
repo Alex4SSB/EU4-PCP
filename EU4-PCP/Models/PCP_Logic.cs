@@ -86,7 +86,7 @@ namespace EU4_PCP
 			if (Naming != ProvinceNames.Dynamic) DynamicSetup();
 			GameVer();
 
-			StartDateStr = StartDate.ToString(DATE_FORMATS[int.Parse(Storage.RetrieveValue(General.DateFormat))], CultureInfo.CreateSpecificCulture("en-US")).ToUpper();
+			StartDateStr = CurrentDateFormat(true, StartDate);
 			ModVersion = "Mod";
 			if (SelectedMod)
 			{

@@ -1,4 +1,5 @@
-﻿using EU4_PCP.Models;
+﻿using EU4_PCP.Converters;
+using EU4_PCP.Models;
 using EU4_PCP.Services;
 using System;
 using System.Collections.Generic;
@@ -1025,31 +1026,49 @@ namespace EU4_PCP
 		/// Combines the game and mod bookmark CB index changed handlers.
 		/// </summary>
 		public static void EnactBook()
-		{
-			if (Lockdown) return;
-			if (SelectedBookmarkIndex < 0)
+        {
+            if (Lockdown) return;
+            if (SelectedBookmarkIndex < 0)
+            {
+                if (BookmarkList.Any())
+                    SelectedBookmarkIndex = 0;
+                else return;
+            }
+
+            StartDate = Bookmarks[SelectedBookmarkIndex].BookDate;
+            StartDateStr = CurrentDateFormat(true, StartDate);
+
+            ShowRnw = Storage.RetrieveBool(General.ShowAllProvinces);
+            UpdateCountries = true;
+            CountryCulSetup();
+            OwnerSetup(true);
+            ProvNameSetup();
+            DynamicSetup();
+        }
+
+        public static string CurrentDateFormat(bool upperCase = false, DateTime? date = null)
+        {
+            var index = Storage.RetrieveValue(General.DateFormat) is string strIndex
+                ? strIndex.ToInt()
+                : (int)General.DateFormat.ToString().GetDefault();
+
+            var format = DATE_FORMATS[index];
+			var outString = date is DateTime dateTime
+				? dateTime.ToString(format, CultureInfo.CreateSpecificCulture("en-US"))
+				: format;
+
+            return upperCase switch
 			{
-				if (BookmarkList.Any())
-					SelectedBookmarkIndex = 0;
-				else return;
-			}
+				true => outString.ToUpper(),
+				false => outString
+			};
+        }
 
-			StartDate = Bookmarks[SelectedBookmarkIndex].BookDate;
-			StartDateStr = StartDate.ToString(DATE_FORMATS[int.Parse(Storage.RetrieveValue(General.DateFormat))], CultureInfo.CreateSpecificCulture("en-US")).ToUpper();
-
-			ShowRnw = Storage.RetrieveBool(General.ShowAllProvinces);
-			UpdateCountries = true;
-			CountryCulSetup();
-			OwnerSetup(true);
-			ProvNameSetup();
-			DynamicSetup();
-		}
-
-		/// <summary>
-		/// Updates the definition.csv file by writing all current provinces.
-		/// </summary>
-		/// <returns><see langword="false"/> if the operation was not successful.</returns>
-		public static bool WriteProvinces()
+        /// <summary>
+        /// Updates the definition.csv file by writing all current provinces.
+        /// </summary>
+        /// <returns><see langword="false"/> if the operation was not successful.</returns>
+        public static bool WriteProvinces()
 		{
 			string stream = "province;red;green;blue;x;x\r\n";
 

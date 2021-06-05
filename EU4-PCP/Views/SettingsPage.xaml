@@ -8,7 +8,7 @@
     xmlns:models="clr-namespace:EU4_PCP.Models"
     xmlns:properties="clr-namespace:EU4_PCP.Properties"
     xmlns:sys="clr-namespace:System;assembly=System.Runtime"
-    d:DesignHeight="450"
+    d:DesignHeight="1300"
     d:DesignWidth="800"
     Style="{DynamicResource MahApps.Styles.Page}"
     mc:Ignorable="d">
@@ -231,11 +231,14 @@
                     <StackPanel Margin="{StaticResource XSmallTopMargin}">
                         <ComboBox
                             x:Name="DateFormatComboBox"
-                            Margin="{StaticResource XSmallTopMargin}"
+                            Width="Auto"
+                            Margin="6"
+                            HorizontalAlignment="Left"
                             FontSize="{StaticResource MediumFontSize}"
                             ItemsSource="{Binding Path=DateFormats}"
                             SelectionChanged="ChangeIndex"
                             Tag="DateFormat" />
+
                     </StackPanel>
                 </StackPanel>
 
