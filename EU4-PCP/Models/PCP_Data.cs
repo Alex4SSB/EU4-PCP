@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EU4_PCP.Models;
+using System;
 using System.Collections.Generic;
 using System.Windows.Media;
 
@@ -12,6 +13,7 @@ namespace EU4_PCP
 		public static bool Lockdown = false;
 		public static bool CheckDupli;
 		public static bool ShowIllegal;
+		public static AutoLoad LoadValue;
 
 		// GLOBAL OBJECTS
 		public static ModObj SelectedMod;

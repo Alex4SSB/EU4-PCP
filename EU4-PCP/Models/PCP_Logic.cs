@@ -41,8 +41,9 @@ namespace EU4_PCP
 			ModList = modNames;
 
 			var lastSelMod = Storage.RetrieveValue(General.LastSelMod);
+			LoadValue = (AutoLoad)Storage.RetrieveEnumGroup(typeof(AutoLoad));
 
-			if (Storage.RetrieveBoolEnum(AutoLoad.Fully)
+			if (LoadValue == AutoLoad.Fully
 				&& modNames.IndexOf(lastSelMod) is int index
 				&& index > -1)
 			{
@@ -211,7 +212,14 @@ namespace EU4_PCP
 		/// </summary>
 		public static void UpdateProperties()
 		{
-			if (Storage.RetrieveBool(General.ShowAllProvinces) is bool showRnw && showRnw != ShowRnw)
+			if (Storage.RetrieveEnumGroup(typeof(AutoLoad)) is AutoLoad value
+				&& LoadValue == AutoLoad.Disable && value != AutoLoad.Disable)
+				LaunchSequence();
+			else if (Naming != (ProvinceNames)Storage.RetrieveEnumGroup(typeof(ProvinceNames)))
+				MainSequence();
+			else if (Storage.RetrieveBool(General.ShowIllegalProv) != ShowIllegal)
+				MainSequence();
+			else if (Storage.RetrieveBool(General.ShowAllProvinces) is bool showRnw && showRnw != ShowRnw)
 			{
 				ShowRnw = showRnw;
 
@@ -223,19 +231,12 @@ namespace EU4_PCP
 
 				DupliPrep();
 			}
-			
-			if (Storage.RetrieveBool(General.CheckDupli) is bool checkDupli && checkDupli != CheckDupli)
+			else if (Storage.RetrieveBool(General.CheckDupli) is bool checkDupli && checkDupli != CheckDupli)
 			{
 				CheckDupli = checkDupli;
 
 				DupliPrep();
 			}
-
-			if (Naming != (ProvinceNames)Storage.RetrieveEnumGroup(typeof(ProvinceNames)))
-				MainSequence();
-
-			if (Storage.RetrieveBool(General.ShowIllegalProv) != ShowIllegal)
-				MainSequence();
 		}
 
 	}
