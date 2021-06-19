@@ -707,7 +707,7 @@ namespace EU4_PCP
         /// </summary>
         public static void ModPrep()
         {
-            var modLock = new object();
+            object modLock = new();
             string[] files;
             try
             {
