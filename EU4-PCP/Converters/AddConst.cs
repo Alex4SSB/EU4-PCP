@@ -2,7 +2,7 @@
 
 namespace EU4_PCP.Converters
 {
-    static class AddConst
+    public static class AddConst
     {
         public static int GetDefault(this FrameworkElement control) => (int)GetDefault(control.Tag.ToString());
 

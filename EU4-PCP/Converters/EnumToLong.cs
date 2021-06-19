@@ -3,7 +3,7 @@ using System.Windows.Controls.Primitives;
 
 namespace EU4_PCP.Converters
 {
-    static class EnumToLong
+    public static class EnumToLong
     {
         public static long GetIndex(this ToggleButton item) => GetIndex(item.Tag.ToString().Split('|'));
 
