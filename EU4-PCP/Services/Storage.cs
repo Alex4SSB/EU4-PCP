@@ -46,6 +46,7 @@ namespace EU4_PCP.Services
             return RetrieveValue(keyName) switch
             {
                 string value when !string.IsNullOrEmpty(value) => bool.Parse(value),
+                bool value => value,
                 _ => keyName.GetDefault() == 1
             };
         }

@@ -15,6 +15,14 @@
     <Page.Resources>
         <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" EnumType="models:AppTheme" />
         <sys:Double x:Key="ButtonOffset">100</sys:Double>
+        <Style
+            x:Key="HideButtonStyle"
+            BasedOn="{StaticResource MahApps.Styles.Button.Chromeless}"
+            TargetType="Button">
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="Margin" Value="0,0,10,0" />
+        </Style>
     </Page.Resources>
     <ScrollViewer>
         <Grid Margin="{StaticResource SmallTopBottomMargin}">
@@ -28,265 +36,350 @@
                 Grid.Row="1"
                 Margin="{StaticResource MediumLeftRightMargin}">
 
-                <TextBlock
-                    Margin="{StaticResource SmallTopMargin}"
-                    Style="{StaticResource SubtitleTextStyle}"
-                    Text="{x:Static properties:Resources.WorkingDirectories}" />
-                <StackPanel Margin="{StaticResource SmallTopMargin}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="{Binding Source={StaticResource ButtonOffset}}" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
+                <StackPanel Margin="{StaticResource SmallTopMargin}" Orientation="Horizontal">
+                    <Button
+                        x:Name="WorkDirsHideButton"
+                        Click="Button_Click"
+                        Tag="WorkDirs">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource HideButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=WorkDirsStack, Path=Visibility}" Value="Visible">
+                                        <Setter Property="Content" Value="&#xE70D;" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=WorkDirsStack, Path=Visibility}" Value="Collapsed">
+                                        <Setter Property="Content" Value="&#xE76C;" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <TextBlock Style="{StaticResource SubtitleTextStyle}" Text="{x:Static properties:Resources.WorkingDirectories}" />
+                </StackPanel>
+                <StackPanel x:Name="WorkDirsStack" Tag="WorkDirs">
+                    <StackPanel Margin="{StaticResource SmallTopMargin}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding Source={StaticResource ButtonOffset}}" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource BodyTextStyle}"
+                                Tag="GamePath"
+                                Text="{x:Static properties:Resources.GamePath}" />
+                            <Button
+                                x:Name="GamePathButton"
+                                Grid.Column="1"
+                                Click="PathButton_Click"
+                                Content="{x:Static properties:Resources.Change}"
+                                Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}"
+                                Tag="GamePath" />
+                        </Grid>
                         <TextBlock
-                            Grid.Column="0"
-                            VerticalAlignment="Center"
-                            Style="{StaticResource BodyTextStyle}"
-                            Tag="GamePath"
-                            Text="{x:Static properties:Resources.GamePath}" />
-                        <Button
-                            x:Name="GamePathButton"
-                            Grid.Column="1"
-                            Click="PathButton_Click"
-                            Content="{x:Static properties:Resources.Change}"
-                            Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}"
+                            x:Name="GamePathBlock"
+                            Margin="{StaticResource XSmallTopMargin}"
+                            FontFamily="Consolas"
+                            FontSize="14"
+                            Style="{StaticResource MahApps.Styles.TextBlock}"
                             Tag="GamePath" />
-                    </Grid>
-                    <TextBlock
-                        x:Name="GamePathBlock"
-                        Margin="{StaticResource XSmallTopMargin}"
-                        FontFamily="Consolas"
-                        FontSize="14"
-                        Style="{StaticResource MahApps.Styles.TextBlock}"
-                        Tag="GamePath" />
-                </StackPanel>
-                <StackPanel Margin="{StaticResource SmallTopMargin}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="{Binding Source={StaticResource ButtonOffset}}" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
+                    </StackPanel>
+                    <StackPanel Margin="{StaticResource SmallTopMargin}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding Source={StaticResource ButtonOffset}}" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource BodyTextStyle}"
+                                Tag="ModPath"
+                                Text="{x:Static properties:Resources.ModPath}" />
+                            <Button
+                                x:Name="ModPathButton"
+                                Grid.Column="1"
+                                Click="PathButton_Click"
+                                Content="{x:Static properties:Resources.Change}"
+                                Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}"
+                                Tag="ModPath" />
+                        </Grid>
                         <TextBlock
-                            Grid.Column="0"
+                            x:Name="ModPathBlock"
+                            Margin="{StaticResource XSmallTopMargin}"
                             VerticalAlignment="Center"
-                            Style="{StaticResource BodyTextStyle}"
-                            Tag="ModPath"
-                            Text="{x:Static properties:Resources.ModPath}" />
-                        <Button
-                            x:Name="ModPathButton"
-                            Grid.Column="1"
-                            Click="PathButton_Click"
-                            Content="{x:Static properties:Resources.Change}"
-                            Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}"
+                            FontFamily="Consolas"
+                            FontSize="14"
+                            Style="{StaticResource MahApps.Styles.TextBlock}"
                             Tag="ModPath" />
-                    </Grid>
+                    </StackPanel>
+                    <StackPanel Margin="{StaticResource SmallTopMargin}">
+                        <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.AutoLoad}" />
+                        <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                            <RadioButton
+                                x:Name="DisableLoadRadio"
+                                Checked="Box_Checked"
+                                Content="{x:Static properties:Resources.DisableLoad}"
+                                FontSize="{StaticResource MediumFontSize}"
+                                Tag="AutoLoad|Disable" />
+                            <RadioButton
+                                x:Name="RememberLoadRadio"
+                                Margin="{StaticResource XSmallTopMargin}"
+                                Checked="Box_Checked"
+                                Content="{x:Static properties:Resources.RememberLoad}"
+                                FontSize="{StaticResource MediumFontSize}"
+                                Tag="AutoLoad|Remember" />
+                            <RadioButton
+                                x:Name="FullyLoadRadio"
+                                Margin="{StaticResource XSmallTopMargin}"
+                                Checked="Box_Checked"
+                                Content="{x:Static properties:Resources.FullyLoad}"
+                                FontSize="{StaticResource MediumFontSize}"
+                                Tag="AutoLoad|Fully" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Margin="{StaticResource SmallTopMargin}">
+                        <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.IndexAndCache}" />
+                        <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                            <CheckBox
+                                x:Name="InCBox"
+                                Checked="Box_Checked"
+                                Content="{x:Static properties:Resources.EnableInC}"
+                                FontSize="{StaticResource MediumFontSize}"
+                                Tag="InC"
+                                Unchecked="InCBox_Unchecked" />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Margin="{StaticResource SmallTopMargin}" Orientation="Horizontal">
+                    <Button
+                        x:Name="ProvTableHideButton"
+                        Click="Button_Click"
+                        Tag="ProvTable">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource HideButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=ProvTableStack, Path=Visibility}" Value="Visible">
+                                        <Setter Property="Content" Value="&#xE70D;" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=ProvTableStack, Path=Visibility}" Value="Collapsed">
+                                        <Setter Property="Content" Value="&#xE76C;" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <TextBlock Style="{StaticResource SubtitleTextStyle}" Text="{x:Static properties:Resources.ProvTableSettings}" />
+                </StackPanel>
+                <StackPanel x:Name="ProvTableStack" Tag="ProvTable">
+                    <StackPanel Margin="{StaticResource SmallTopMargin}">
+                        <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.ProvinceNames}" />
+                        <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                            <CheckBox
+                                x:Name="DefinitionNamesBox"
+                                Content="{x:Static properties:Resources.Definition}"
+                                FontSize="{StaticResource MediumFontSize}"
+                                IsChecked="True"
+                                IsEnabled="False"
+                                Tag="ProvinceNames|Definition" />
+                            <CheckBox
+                                x:Name="LocalisationNamesBox"
+                                Margin="{StaticResource XSmallTopMargin}"
+                                Checked="Box_Checked"
+                                Content="{x:Static properties:Resources.Localisation}"
+                                FontSize="{StaticResource MediumFontSize}"
+                                Tag="ProvinceNames|Localisation"
+                                Unchecked="Box_Checked" />
+                            <CheckBox
+                                x:Name="DynamicNamesBox"
+                                Margin="{StaticResource XSmallTopMargin}"
+                                Checked="Box_Checked"
+                                Content="{x:Static properties:Resources.Dynamic}"
+                                FontSize="{StaticResource MediumFontSize}"
+                                Tag="ProvinceNames|Dynamic"
+                                Unchecked="Box_Checked" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Margin="{StaticResource SmallTopMargin}">
+                        <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.ProvinceFiltering}" />
+                        <CheckBox
+                            x:Name="ShowAllBox"
+                            Margin="{StaticResource XSmallTopMargin}"
+                            Checked="Box_Checked"
+                            Content="{x:Static properties:Resources.ShowAllProvinces}"
+                            FontSize="{StaticResource MediumFontSize}"
+                            Tag="ShowAllProvinces"
+                            Unchecked="Box_Checked" />
+                        <CheckBox
+                            x:Name="ShowIllegalProvBox"
+                            Margin="{StaticResource XSmallTopMargin}"
+                            Checked="Box_Checked"
+                            Content="{x:Static properties:Resources.ShowIllegalProv}"
+                            FontSize="{StaticResource MediumFontSize}"
+                            Tag="ShowIllegalProv"
+                            Unchecked="Box_Checked" />
+                    </StackPanel>
+                    <StackPanel Margin="{StaticResource SmallTopMargin}">
+                        <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.ColorDupli}" />
+                        <CheckBox
+                            x:Name="CheckDupliBox"
+                            Margin="{StaticResource XSmallTopMargin}"
+                            Checked="Box_Checked"
+                            Content="{x:Static properties:Resources.CheckDupli}"
+                            FontSize="{StaticResource MediumFontSize}"
+                            Tag="CheckDupli"
+                            Unchecked="Box_Checked" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Margin="{StaticResource SmallTopMargin}" Orientation="Horizontal">
+                    <Button
+                        x:Name="ColorPickerHideButton"
+                        Click="Button_Click"
+                        Tag="ColorPicker">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource HideButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=ColorPickerStack, Path=Visibility}" Value="Visible">
+                                        <Setter Property="Content" Value="&#xE70D;" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=ColorPickerStack, Path=Visibility}" Value="Collapsed">
+                                        <Setter Property="Content" Value="&#xE76C;" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <TextBlock Style="{StaticResource SubtitleTextStyle}" Text="{x:Static properties:Resources.ColorPickerSettings}" />
+                </StackPanel>
+                <StackPanel x:Name="ColorPickerStack" Tag="ColorPicker">
+                    <StackPanel Margin="{StaticResource SmallTopMargin}">
+                        <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.MaxProv}" />
+                        <CheckBox
+                            x:Name="UpdateMaxProvBox"
+                            Margin="{StaticResource XSmallTopMargin}"
+                            Checked="Box_Checked"
+                            Content="{x:Static properties:Resources.UpdateMaxProv}"
+                            FontSize="{StaticResource MediumFontSize}"
+                            Tag="UpdateMaxProv"
+                            Unchecked="Box_Checked" />
+                        <CheckBox
+                            x:Name="IterateMaxProvBox"
+                            Margin="{StaticResource XSmallTopMargin}"
+                            Checked="Box_Checked"
+                            Content="{x:Static properties:Resources.IterateMaxProv}"
+                            FontSize="{StaticResource MediumFontSize}"
+                            Tag="IterateMaxProv"
+                            Unchecked="Box_Checked" />
+                    </StackPanel>
+                    <StackPanel Margin="{StaticResource SmallTopMargin}">
+                        <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.ColorPickerIllegal}" />
+                        <CheckBox
+                            x:Name="IgnoreIllegalBox"
+                            Margin="{StaticResource XSmallTopMargin}"
+                            Checked="Box_Checked"
+                            Content="{x:Static properties:Resources.IgnoreIllegal}"
+                            FontSize="{StaticResource MediumFontSize}"
+                            Tag="IgnoreIllegal"
+                            Unchecked="Box_Checked" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Margin="{StaticResource SmallTopMargin}" Orientation="Horizontal">
+                    <Button
+                        x:Name="PersonalizationHideButton"
+                        Click="Button_Click"
+                        Tag="Personalization">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource HideButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=PersonalizationStack, Path=Visibility}" Value="Visible">
+                                        <Setter Property="Content" Value="&#xE70D;" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PersonalizationStack, Path=Visibility}" Value="Collapsed">
+                                        <Setter Property="Content" Value="&#xE76C;" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <TextBlock Style="{StaticResource SubtitleTextStyle}" Text="{x:Static properties:Resources.SettingsPagePersonalizationTitle}" />
+                </StackPanel>
+                <StackPanel x:Name="PersonalizationStack" Tag="Personalization">
+                    <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
+                        <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.SettingsDateFormat}" />
+                        <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                            <ComboBox
+                                x:Name="DateFormatComboBox"
+                                Width="Auto"
+                                Margin="{StaticResource XSmallTopMargin}"
+                                HorizontalAlignment="Left"
+                                FontSize="{StaticResource MediumFontSize}"
+                                ItemsSource="{Binding Path=DateFormats}"
+                                SelectionChanged="ChangeIndex"
+                                Tag="DateFormat" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
+                        <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.SettingsPageChooseThemeText}" />
+                        <StackPanel Margin="{StaticResource XSmallTopMargin}">
+                            <RadioButton
+                                Checked="OnLightChecked"
+                                Content="{x:Static properties:Resources.SettingsPageRadioButtonLightTheme}"
+                                FontSize="{StaticResource MediumFontSize}"
+                                GroupName="AppTheme"
+                                IsChecked="{Binding Theme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Light}" />
+                            <RadioButton
+                                Margin="{StaticResource XSmallTopMargin}"
+                                Checked="OnDarkChecked"
+                                Content="{x:Static properties:Resources.SettingsPageRadioButtonDarkTheme}"
+                                FontSize="{StaticResource MediumFontSize}"
+                                GroupName="AppTheme"
+                                IsChecked="{Binding Theme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Dark}" />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Margin="{StaticResource SmallTopMargin}" Orientation="Horizontal">
+                    <Button
+                        x:Name="AboutHideButton"
+                        Click="Button_Click"
+                        Tag="About">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource HideButtonStyle}" TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=AboutStack, Path=Visibility}" Value="Visible">
+                                        <Setter Property="Content" Value="&#xE70D;" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=AboutStack, Path=Visibility}" Value="Collapsed">
+                                        <Setter Property="Content" Value="&#xE76C;" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <TextBlock Style="{StaticResource SubtitleTextStyle}" Text="{x:Static properties:Resources.SettingsPageAboutTitle}" />
+                </StackPanel>
+                <StackPanel x:Name="AboutStack" Tag="About">
                     <TextBlock
-                        x:Name="ModPathBlock"
                         Margin="{StaticResource XSmallTopMargin}"
-                        VerticalAlignment="Center"
-                        FontFamily="Consolas"
-                        FontSize="14"
-                        Style="{StaticResource MahApps.Styles.TextBlock}"
-                        Tag="ModPath" />
+                        Style="{StaticResource BodyTextStyle}"
+                        Text="{Binding VersionDescription, Mode=OneWay}" />
+                    <TextBlock Margin="{StaticResource SmallTopMargin}" AutomationProperties.Name="{Binding Text, ElementName=settingsPrivacyStatement}">
+                        <Hyperlink AutomationProperties.Name="{Binding Text, ElementName=settingsPrivacyStatement}" Click="OnPrivacyStatementClick">
+                            <TextBlock
+                                x:Name="settingsPrivacyStatement"
+                                Style="{StaticResource BodyTextStyle}"
+                                Text="{x:Static properties:Resources.SettingsPagePrivacyStatementText}" />
+                        </Hyperlink>
+                    </TextBlock>
+                    <TextBlock Margin="{StaticResource SmallTopMargin}" AutomationProperties.Name="{Binding Text, ElementName=settingsUserManual}">
+                        <Hyperlink AutomationProperties.Name="{Binding Text, ElementName=settingsPrivacyStatement}" Click="UserManual_Click">
+                            <TextBlock
+                                x:Name="settingsUserManual"
+                                Style="{StaticResource BodyTextStyle}"
+                                Text="{x:Static properties:Resources.SettingsPageUserManualText}" />
+                        </Hyperlink>
+                    </TextBlock>
                 </StackPanel>
-                <StackPanel Margin="{StaticResource SmallTopMargin}">
-                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.AutoLoad}" />
-                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
-                        <RadioButton
-                            x:Name="DisableLoadRadio"
-                            Checked="Box_Checked"
-                            Content="{x:Static properties:Resources.DisableLoad}"
-                            FontSize="{StaticResource MediumFontSize}"
-                            Tag="AutoLoad|Disable" />
-                        <RadioButton
-                            x:Name="RememberLoadRadio"
-                            Margin="{StaticResource XSmallTopMargin}"
-                            Checked="Box_Checked"
-                            Content="{x:Static properties:Resources.RememberLoad}"
-                            FontSize="{StaticResource MediumFontSize}"
-                            Tag="AutoLoad|Remember" />
-                        <RadioButton
-                            x:Name="FullyLoadRadio"
-                            Margin="{StaticResource XSmallTopMargin}"
-                            Checked="Box_Checked"
-                            Content="{x:Static properties:Resources.FullyLoad}"
-                            FontSize="{StaticResource MediumFontSize}"
-                            Tag="AutoLoad|Fully" />
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel Margin="{StaticResource SmallTopMargin}">
-                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.IndexAndCache}" />
-                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
-                        <CheckBox
-                            x:Name="InCBox"
-                            Checked="Box_Checked"
-                            Content="{x:Static properties:Resources.EnableInC}"
-                            FontSize="{StaticResource MediumFontSize}"
-                            Tag="InC"
-                            Unchecked="InCBox_Unchecked" />
-                    </StackPanel>
-                </StackPanel>
-                <TextBlock
-                    Margin="{StaticResource SmallTopMargin}"
-                    Style="{StaticResource SubtitleTextStyle}"
-                    Text="{x:Static properties:Resources.ProvTableSettings}" />
-                <StackPanel Margin="{StaticResource SmallTopMargin}">
-                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.ProvinceNames}" />
-                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
-                        <CheckBox
-                            x:Name="DefinitionNamesBox"
-                            Content="{x:Static properties:Resources.Definition}"
-                            FontSize="{StaticResource MediumFontSize}"
-                            IsChecked="True"
-                            IsEnabled="False"
-                            Tag="ProvinceNames|Definition" />
-                        <CheckBox
-                            x:Name="LocalisationNamesBox"
-                            Margin="{StaticResource XSmallTopMargin}"
-                            Checked="Box_Checked"
-                            Content="{x:Static properties:Resources.Localisation}"
-                            FontSize="{StaticResource MediumFontSize}"
-                            Tag="ProvinceNames|Localisation"
-                            Unchecked="Box_Checked" />
-                        <CheckBox
-                            x:Name="DynamicNamesBox"
-                            Margin="{StaticResource XSmallTopMargin}"
-                            Checked="Box_Checked"
-                            Content="{x:Static properties:Resources.Dynamic}"
-                            FontSize="{StaticResource MediumFontSize}"
-                            Tag="ProvinceNames|Dynamic"
-                            Unchecked="Box_Checked" />
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel Margin="{StaticResource SmallTopMargin}">
-                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.ProvinceFiltering}" />
-                    <CheckBox
-                        x:Name="ShowAllBox"
-                        Margin="{StaticResource XSmallTopMargin}"
-                        Checked="Box_Checked"
-                        Content="{x:Static properties:Resources.ShowAllProvinces}"
-                        FontSize="{StaticResource MediumFontSize}"
-                        Tag="ShowAllProvinces"
-                        Unchecked="Box_Checked" />
-                    <CheckBox
-                        x:Name="ShowIllegalProvBox"
-                        Margin="{StaticResource XSmallTopMargin}"
-                        Checked="Box_Checked"
-                        Content="{x:Static properties:Resources.ShowIllegalProv}"
-                        FontSize="{StaticResource MediumFontSize}"
-                        Tag="ShowIllegalProv"
-                        Unchecked="Box_Checked" />
-                </StackPanel>
-                <StackPanel Margin="{StaticResource SmallTopMargin}">
-                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.ColorDupli}" />
-                    <CheckBox
-                        x:Name="CheckDupliBox"
-                        Margin="{StaticResource XSmallTopMargin}"
-                        Checked="Box_Checked"
-                        Content="{x:Static properties:Resources.CheckDupli}"
-                        FontSize="{StaticResource MediumFontSize}"
-                        Tag="CheckDupli"
-                        Unchecked="Box_Checked" />
-                </StackPanel>
-                <TextBlock
-                    Margin="{StaticResource SmallTopMargin}"
-                    Style="{StaticResource SubtitleTextStyle}"
-                    Text="{x:Static properties:Resources.ColorPickerSettings}" />
-                <StackPanel Margin="{StaticResource SmallTopMargin}">
-                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.MaxProv}" />
-                    <CheckBox
-                        x:Name="UpdateMaxProvBox"
-                        Margin="{StaticResource XSmallTopMargin}"
-                        Checked="Box_Checked"
-                        Content="{x:Static properties:Resources.UpdateMaxProv}"
-                        FontSize="{StaticResource MediumFontSize}"
-                        Tag="UpdateMaxProv"
-                        Unchecked="Box_Checked" />
-                    <CheckBox
-                        x:Name="IterateMaxProvBox"
-                        Margin="{StaticResource XSmallTopMargin}"
-                        Checked="Box_Checked"
-                        Content="{x:Static properties:Resources.IterateMaxProv}"
-                        FontSize="{StaticResource MediumFontSize}"
-                        Tag="IterateMaxProv"
-                        Unchecked="Box_Checked" />
-                </StackPanel>
-                <StackPanel Margin="{StaticResource SmallTopMargin}">
-                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.ColorPickerIllegal}" />
-                    <CheckBox
-                        x:Name="IgnoreIllegalBox"
-                        Margin="{StaticResource XSmallTopMargin}"
-                        Checked="Box_Checked"
-                        Content="{x:Static properties:Resources.IgnoreIllegal}"
-                        FontSize="{StaticResource MediumFontSize}"
-                        Tag="IgnoreIllegal"
-                        Unchecked="Box_Checked" />
-                </StackPanel>
-                <TextBlock
-                    Margin="{StaticResource SmallTopMargin}"
-                    Style="{StaticResource SubtitleTextStyle}"
-                    Text="{x:Static properties:Resources.SettingsPagePersonalizationTitle}" />
-                <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
-                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.SettingsDateFormat}" />
-                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
-                        <ComboBox
-                            x:Name="DateFormatComboBox"
-                            Width="Auto"
-                            Margin="6"
-                            HorizontalAlignment="Left"
-                            FontSize="{StaticResource MediumFontSize}"
-                            ItemsSource="{Binding Path=DateFormats}"
-                            SelectionChanged="ChangeIndex"
-                            Tag="DateFormat" />
-
-                    </StackPanel>
-                </StackPanel>
-
-                <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
-                    <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.SettingsPageChooseThemeText}" />
-                    <StackPanel Margin="{StaticResource XSmallTopMargin}">
-                        <RadioButton
-                            Checked="OnLightChecked"
-                            Content="{x:Static properties:Resources.SettingsPageRadioButtonLightTheme}"
-                            FontSize="{StaticResource MediumFontSize}"
-                            GroupName="AppTheme"
-                            IsChecked="{Binding Theme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Light}" />
-                        <RadioButton
-                            Margin="{StaticResource XSmallTopMargin}"
-                            Checked="OnDarkChecked"
-                            Content="{x:Static properties:Resources.SettingsPageRadioButtonDarkTheme}"
-                            FontSize="{StaticResource MediumFontSize}"
-                            GroupName="AppTheme"
-                            IsChecked="{Binding Theme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Dark}" />
-                    </StackPanel>
-                </StackPanel>
-
-                <TextBlock
-                    Margin="{StaticResource SmallTopMargin}"
-                    Style="{StaticResource SubtitleTextStyle}"
-                    Text="{x:Static properties:Resources.SettingsPageAboutTitle}" />
-                <TextBlock
-                    Margin="{StaticResource XSmallTopMargin}"
-                    Style="{StaticResource BodyTextStyle}"
-                    Text="{Binding VersionDescription, Mode=OneWay}" />
-
-                <TextBlock Margin="{StaticResource SmallTopMargin}" AutomationProperties.Name="{Binding Text, ElementName=settingsPrivacyStatement}">
-                    <Hyperlink AutomationProperties.Name="{Binding Text, ElementName=settingsPrivacyStatement}" Click="OnPrivacyStatementClick">
-                        <TextBlock
-                            x:Name="settingsPrivacyStatement"
-                            Style="{StaticResource BodyTextStyle}"
-                            Text="{x:Static properties:Resources.SettingsPagePrivacyStatementText}" />
-                    </Hyperlink>
-                </TextBlock>
-
-                <TextBlock Margin="{StaticResource SmallTopMargin}" AutomationProperties.Name="{Binding Text, ElementName=settingsUserManual}">
-                    <Hyperlink AutomationProperties.Name="{Binding Text, ElementName=settingsPrivacyStatement}" Click="UserManual_Click">
-                        <TextBlock
-                            x:Name="settingsUserManual"
-                            Style="{StaticResource BodyTextStyle}"
-                            Text="{x:Static properties:Resources.SettingsPageUserManualText}" />
-                    </Hyperlink>
-                </TextBlock>
             </StackPanel>
         </Grid>
     </ScrollViewer>

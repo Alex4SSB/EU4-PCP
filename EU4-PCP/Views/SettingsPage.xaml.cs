@@ -138,7 +138,17 @@ namespace EU4_PCP.Views
                 ShowIllegalProvBox,
                 IgnoreIllegalBox,
                 InCBox,
-                DateFormatComboBox
+                DateFormatComboBox,
+                WorkDirsHideButton,
+                WorkDirsStack,
+                ProvTableHideButton,
+                ProvTableStack,
+                ColorPickerHideButton,
+                ColorPickerStack,
+                PersonalizationHideButton,
+                PersonalizationStack,
+                AboutHideButton,
+                AboutStack
             });
         }
 
@@ -232,6 +242,9 @@ namespace EU4_PCP.Views
                 if (item.Tag.ToString().Contains('|')) continue;
                 switch (item)
                 {
+                    case StackPanel stack:
+                        stack.Visible(Storage.RetrieveBool(stack.Tag));
+                        break;
                     case ComboBox box:
                         string selectedText = Storage.RetrieveValue(item.Tag);
                         box.SelectedIndex = string.IsNullOrEmpty(selectedText) ? item.GetDefault() : int.Parse(selectedText);
@@ -272,9 +285,13 @@ namespace EU4_PCP.Views
             Box_Checked(sender, e);
         }
 
-        private void DateFormatComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
+            var button = sender as Button;
+            var stack = Controls.Find(c => $"{c.Tag}" == $"{button.Tag}" && c is StackPanel);
 
+            stack.ToggleVisibility();
+            Storage.StoreValue(stack.Visible(), $"{button.Tag}");
         }
     }
 }

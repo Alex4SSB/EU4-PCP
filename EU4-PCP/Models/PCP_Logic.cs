@@ -154,7 +154,7 @@ namespace EU4_PCP
             Parallel.Invoke(
                 () => DefinesPrep(),
                 () => FetchFiles(FileType.Country));
-            
+
             //Parallel.Invoke(
             //	() => { if (enBooks) BookPrep(); },
             //	() => FetchFiles(FileType.Country));
