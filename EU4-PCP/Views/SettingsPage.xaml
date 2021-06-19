@@ -8,7 +8,6 @@
     xmlns:models="clr-namespace:EU4_PCP.Models"
     xmlns:properties="clr-namespace:EU4_PCP.Properties"
     xmlns:sys="clr-namespace:System;assembly=System.Runtime"
-    d:DesignHeight="1300"
     d:DesignWidth="800"
     Style="{DynamicResource MahApps.Styles.Page}"
     mc:Ignorable="d">
@@ -281,6 +280,17 @@
                             Content="{x:Static properties:Resources.IgnoreIllegal}"
                             FontSize="{StaticResource MediumFontSize}"
                             Tag="IgnoreIllegal"
+                            Unchecked="Box_Checked" />
+                    </StackPanel>
+                    <StackPanel Margin="{StaticResource SmallTopMargin}">
+                        <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.Bookmarks}" />
+                        <CheckBox
+                            x:Name="OverrideModBooks"
+                            Margin="{StaticResource XSmallTopMargin}"
+                            Checked="Box_Checked"
+                            Content="{x:Static properties:Resources.OverrideModBooks}"
+                            FontSize="{StaticResource MediumFontSize}"
+                            Tag="OverrideBooks"
                             Unchecked="Box_Checked" />
                     </StackPanel>
                 </StackPanel>

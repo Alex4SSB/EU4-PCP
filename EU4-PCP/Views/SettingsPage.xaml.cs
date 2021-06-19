@@ -148,7 +148,8 @@ namespace EU4_PCP.Views
                 PersonalizationHideButton,
                 PersonalizationStack,
                 AboutHideButton,
-                AboutStack
+                AboutStack,
+                OverrideModBooks
             });
         }
 

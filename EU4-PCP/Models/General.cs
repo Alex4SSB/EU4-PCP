@@ -12,6 +12,7 @@
         ShowIllegalProv,
         IgnoreIllegal,
         InC,
-        DateFormat
+        DateFormat,
+        OverrideBooks
     }
 }

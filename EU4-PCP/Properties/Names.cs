@@ -24,6 +24,7 @@ namespace EU4_PCP
             { "ColorPickerDefault", "0" },
             { "PersonalizationDefault", "0" },
             { "AboutDefault", "1" },
+            { "OverrideBooksDefault", "1" },
             { "MaxProvPositive", "Amount of provinces is within the limit." },
             { "MaxProvNegative", "Amount of provinces exceeds the limit." },
             { "ModProvNegative", "The game has more provinces, so name conflicts may occur." }

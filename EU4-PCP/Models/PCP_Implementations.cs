@@ -1496,7 +1496,7 @@ namespace EU4_PCP
             catch (Exception)
             {
                 // If no mod files were found - just use the game files (except bookmarks)
-                if (scope != FileType.Bookmark)
+                if (scope != FileType.Bookmark || Storage.RetrieveBool(General.OverrideBooks))
                     filesList.AddRange(baseFiles.Select(f => new FileObj(f)));
 
                 return false;

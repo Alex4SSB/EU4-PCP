@@ -88,6 +88,15 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bookmarks.
+        /// </summary>
+        public static string Bookmarks {
+            get {
+                return ResourceManager.GetString("Bookmarks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change.
         /// </summary>
         public static string Change {
@@ -246,6 +255,15 @@ namespace EU4_PCP.Properties {
         public static string ModPath {
             get {
                 return ResourceManager.GetString("ModPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Game Bookmarks When Mod Has None.
+        /// </summary>
+        public static string OverrideModBooks {
+            get {
+                return ResourceManager.GetString("OverrideModBooks", resourceCulture);
             }
         }
         

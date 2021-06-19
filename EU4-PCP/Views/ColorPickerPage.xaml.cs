@@ -1,6 +1,7 @@
 ﻿using EU4_PCP.Models;
 using EU4_PCP.Services;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace EU4_PCP.Views
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void Set<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
+        private void Set<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
             if (Equals(storage, value))
             {
@@ -78,6 +79,12 @@ namespace EU4_PCP.Views
             BookmarkComboBox.IsEnabled = EnableBooks;
             BookmarkComboBox.ItemsSource = BookmarkComboBox.IsEnabled ? BookmarkList : null;
             BookmarkComboBox.SelectedIndex = SelectedBookmarkIndex;
+
+            if (SelectedMod)
+            {
+                string modPath = Directory.GetParent(PCP_Paths.SteamModPath).FullName;
+                BookmarkBlock.Text = $"Bookmark Selection{(BookFiles.Any(b => Directory.GetParent(b.Path).FullName.Contains(modPath)) ? "" : " *")}";
+            }
 
             StartDateBlock.Text = StartDateStr;
             StartDateBlock.ToolTip = CurrentDateFormat(true);
