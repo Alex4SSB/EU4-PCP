@@ -130,6 +130,7 @@
     <PRIResource Include="Strings\en-us\Resources.resw">
       <SubType>Designer</SubType>
     </PRIResource>
+    <None Include="key.pfx" />
     <Content Include="Package.appinstaller" />
   </ItemGroup>
   <ItemGroup>
