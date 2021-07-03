@@ -28,7 +28,7 @@ namespace EU4_PCP
         public static readonly Regex ModNameRE = new(@"(?<=^name *= *"").+?(?="")", RegexOptions.Multiline);
         public static readonly Regex ModReplaceRE = new(@"(?<=^replace_path *= *"")[\w /]+(?="")", RegexOptions.Multiline);
         public static readonly Regex ModVerRE = new(@"(?<=^supported_version *= *"")\d+(\.\d+)*", RegexOptions.Multiline);
-        public static readonly Regex ModPathRE = new(@"(?<=^path *= *"")[\w ()/:]+(?="")", RegexOptions.Multiline);
+        public static readonly Regex ModPathRE = new(@"(?<=^path *= *"").+?(?="")", RegexOptions.Multiline);
         public static readonly Regex RnwRE = new(@"(Unused(Land){0,1}\d+|RNW)");
         public static readonly Regex NewLineRE = new("[\r\n]+");
         public static readonly Regex AsciiRE = new("[\x00-\x7F]");

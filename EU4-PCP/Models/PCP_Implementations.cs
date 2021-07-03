@@ -711,7 +711,7 @@ namespace EU4_PCP
         /// Reads the files from the mod folder, and creates the <see cref="ModObj"/> 
         /// objects in the <see cref="Mods"/> list.
         /// </summary>
-        public static void ModPrep()
+        public static void ModPrep(bool parallel = true)
         {
             object modLock = new();
             string[] files;
@@ -722,28 +722,61 @@ namespace EU4_PCP
             }
             catch (Exception) { return; }
 
-            Parallel.ForEach(files, modFile =>
+            if (parallel)
             {
-                string mFile = File.ReadAllText(modFile);
-                var nameMatch = ModNameRE.Match(mFile);
-                var pathMatch = ModPathRE.Match(mFile);
-                var verMatch = ModVerRE.Match(mFile);
-
-                if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) return;
-
-                var modPath = pathMatch.Value;
-
-                if (!Directory.Exists(modPath))
+                Parallel.ForEach(files, modFile =>
                 {
-                    var tempPath = $@"{Directory.GetParent(ParadoxModPath).FullName}\{modPath.TrimStart('/', '\\')}";
-                    if (Directory.Exists(tempPath))
-                        modPath = tempPath;
-                    else return;
-                }
+                    string mFile = File.ReadAllText(modFile);
+                    var nameMatch = ModNameRE.Match(mFile);
+                    var pathMatch = ModPathRE.Match(mFile);
+                    var verMatch = ModVerRE.Match(mFile);
 
-                // With many mods in the folder, a context switch that will cause an OutOfRange exception is more likely
-                lock (modLock)
+                    if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) return;
+
+                    var modPath = pathMatch.Value;
+
+                    if (!Directory.Exists(modPath))
+                    {
+                        var tempPath = $@"{Directory.GetParent(ParadoxModPath).FullName}\{modPath.TrimStart('/', '\\')}";
+                        if (Directory.Exists(tempPath))
+                            modPath = tempPath;
+                        else return;
+                    }
+
+                    // With many mods in the folder, a context switch that will cause an OutOfRange exception is more likely
+                    lock (modLock)
+                    {
+                        Mods.Add(new ModObj
+                        {
+                            Name = nameMatch.Value,
+                            Path = modPath,
+                            Ver = verMatch.Value,
+                            Replace = ReplacePrep(mFile)
+                        });
+                    }
+                });
+            }
+            else
+            {
+                foreach (var modFile in files)
                 {
+                    string mFile = File.ReadAllText(modFile);
+                    var nameMatch = ModNameRE.Match(mFile);
+                    var pathMatch = ModPathRE.Match(mFile);
+                    var verMatch = ModVerRE.Match(mFile);
+
+                    if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) continue;
+
+                    var modPath = pathMatch.Value;
+
+                    if (!Directory.Exists(modPath))
+                    {
+                        var tempPath = $@"{Directory.GetParent(ParadoxModPath).FullName}\{modPath.TrimStart('/', '\\')}";
+                        if (Directory.Exists(tempPath))
+                            modPath = tempPath;
+                        else continue;
+                    }
+
                     Mods.Add(new ModObj
                     {
                         Name = nameMatch.Value,
@@ -752,7 +785,7 @@ namespace EU4_PCP
                         Replace = ReplacePrep(mFile)
                     });
                 }
-            });
+            }
 
             Mods.Sort();
         }
