@@ -1080,10 +1080,11 @@ namespace EU4_PCP
         {
             string stream = "province;red;green;blue;x;x\r\n";
 
-            foreach (var prov in Provinces.Values)
-            {
-                stream += prov.ToCsv() + "\r\n";
-            }
+            var csvProvs = from prov in Provinces
+                           orderby prov.Key
+                           select prov.Value.ToCsv();
+
+            stream += string.Join("\r\n", csvProvs) + "\r\n";
 
             try
             {
