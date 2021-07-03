@@ -53,7 +53,11 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <TextBlock Style="{StaticResource SubtitleTextStyle}" Text="{x:Static properties:Resources.WorkingDirectories}" />
+                    <TextBlock
+                        MouseUp="TextBlock_MouseUp"
+                        Style="{StaticResource SubtitleTextStyle}"
+                        Tag="WorkDirs"
+                        Text="{x:Static properties:Resources.WorkingDirectories}" />
                 </StackPanel>
                 <StackPanel x:Name="WorkDirsStack" Tag="WorkDirs">
                     <StackPanel Margin="{StaticResource SmallTopMargin}">
@@ -169,7 +173,11 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <TextBlock Style="{StaticResource SubtitleTextStyle}" Text="{x:Static properties:Resources.ProvTableSettings}" />
+                    <TextBlock
+                        MouseUp="TextBlock_MouseUp"
+                        Style="{StaticResource SubtitleTextStyle}"
+                        Tag="ProvTable"
+                        Text="{x:Static properties:Resources.ProvTableSettings}" />
                 </StackPanel>
                 <StackPanel x:Name="ProvTableStack" Tag="ProvTable">
                     <StackPanel Margin="{StaticResource SmallTopMargin}">
@@ -249,7 +257,11 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <TextBlock Style="{StaticResource SubtitleTextStyle}" Text="{x:Static properties:Resources.ColorPickerSettings}" />
+                    <TextBlock
+                        MouseUp="TextBlock_MouseUp"
+                        Style="{StaticResource SubtitleTextStyle}"
+                        Tag="ColorPicker"
+                        Text="{x:Static properties:Resources.ColorPickerSettings}" />
                 </StackPanel>
                 <StackPanel x:Name="ColorPickerStack" Tag="ColorPicker">
                     <StackPanel Margin="{StaticResource SmallTopMargin}">
@@ -312,7 +324,11 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <TextBlock Style="{StaticResource SubtitleTextStyle}" Text="{x:Static properties:Resources.SettingsPagePersonalizationTitle}" />
+                    <TextBlock
+                        MouseUp="TextBlock_MouseUp"
+                        Style="{StaticResource SubtitleTextStyle}"
+                        Tag="Personalization"
+                        Text="{x:Static properties:Resources.SettingsPagePersonalizationTitle}" />
                 </StackPanel>
                 <StackPanel x:Name="PersonalizationStack" Tag="Personalization">
                     <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
@@ -366,7 +382,11 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <TextBlock Style="{StaticResource SubtitleTextStyle}" Text="{x:Static properties:Resources.SettingsPageAboutTitle}" />
+                    <TextBlock
+                        MouseUp="TextBlock_MouseUp"
+                        Style="{StaticResource SubtitleTextStyle}"
+                        Tag="About"
+                        Text="{x:Static properties:Resources.SettingsPageAboutTitle}" />
                 </StackPanel>
                 <StackPanel x:Name="AboutStack" Tag="About">
                     <TextBlock

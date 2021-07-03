@@ -289,10 +289,21 @@ namespace EU4_PCP.Views
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
-            var stack = Controls.Find(c => $"{c.Tag}" == $"{button.Tag}" && c is StackPanel);
+            ToggleCategory(button.Tag);
+        }
+
+        private void ToggleCategory(object tag)
+        {
+            var stack = Controls.Find(c => $"{c.Tag}" == $"{tag}" && c is StackPanel);
 
             stack.ToggleVisibility();
-            Storage.StoreValue(stack.Visible(), $"{button.Tag}");
+            Storage.StoreValue(stack.Visible(), $"{tag}");
+        }
+
+        private void TextBlock_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var block = sender as TextBlock;
+            ToggleCategory(block.Tag);
         }
     }
 }
