@@ -306,13 +306,14 @@ namespace EU4_PCP_Test
                 Color.FromRgb(90, 212, 231)
             };
             var testProv = new List<Province>() {
-                new Province(index: 1, color: colors[0], name: "prov1"),
-                new Province(index: 2000, color: colors[1], name: "prov2000"),
-                new Province(index: 3, color: colors[2], name: "Unused1"),
-                new Province(index: 4, color: colors[3], name: "UnusedLand1"),
-                new Province(index: 5, color: colors[4], name: "RNW"),
-                new Province(index: 773, color: new P_Color(238, 42, 192), name: "Banda Oriente"),
-                new Province(index: 4500, color: new P_Color(-1, -1, 100), name: "")
+                new (index: 1, color: colors[0], name: "prov1"),
+                new (index: 2000, color: colors[1], name: "prov2000"),
+                new (index: 3, color: colors[2], name: "Unused1"),
+                new (index: 4, color: colors[3], name: "UnusedLand1"),
+                new (index: 5, color: colors[4], name: "RNW"),
+                new (index: 773, color: new (238, 42, 192), name: "Banda Oriente"),
+                new (index: 4500, color: new (-1, -1, 100), name: ""),
+                new (index: 40, color: new(10, 20, 30), name: new("def", alt: "alt"))
             };
 
             Assert.IsTrue(testProv[0].ToCsv() == "1;130;12;56;prov1;x");
@@ -322,6 +323,7 @@ namespace EU4_PCP_Test
             Assert.IsTrue(testProv[4].ToCsv() == "5;90;212;231;RNW;");
             Assert.IsTrue(testProv[5].ToCsv() == "773;238;42;192;Banda Oriente;x");
             Assert.IsTrue(testProv[6].ToCsv() == "4500;;;100;;");
+            Assert.IsTrue(testProv[7].ToCsv() == "40;10;20;30;def;alt");
         }
 
         [TestMethod]

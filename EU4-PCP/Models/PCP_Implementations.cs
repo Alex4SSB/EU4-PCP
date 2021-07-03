@@ -205,9 +205,15 @@ namespace EU4_PCP
             else
                 return null;
 
-            var provName = list.Length < 5 ? "" : list[4].Trim();
+            string provName = null, altName = null;
+            if (list.Length >= 5)
+            {
+                provName = list[4].Trim();
+                altName = list.Length > 5 && list[5].Length > 1 ? list[5].Trim() : null;
+            }
+            if (string.IsNullOrEmpty(provName)) provName = null;
 
-            return new Province(i, provName == "" ? null : provName, provColor);
+            return new Province(i, new(provName, alt: altName), provColor);
         }
 
         /// <summary>

@@ -63,7 +63,18 @@ namespace EU4_PCP
 
         public string ToCsv()
         {
-            return $"{Index};{Color.ToCsv()};{Name.Definition};{(!IsRNW(false) && IsNameLegal() && Color.IsLegal() ? "x" : "")}";
+            return $"{Index};{Color.ToCsv()};{Name.Definition};{AddSuffix()}";
+        }
+
+        private string AddSuffix()
+        {
+            if (string.IsNullOrEmpty(Name.AltDefin))
+            {
+                return !IsRNW(false) && IsNameLegal() && Color.IsLegal()
+                    ? "x" : "";
+            }
+            else
+                return Name.AltDefin;
         }
 
         public bool IsRNW(bool updateShow = true)
@@ -133,12 +144,14 @@ namespace EU4_PCP
         public string Definition;
         public string Localisation;
         public string Dynamic;
+        public string AltDefin;
 
-        public CompositeName(string definition = null, string localisation = null, string dynamic = null)
+        public CompositeName(string definition = null, string localisation = null, string dynamic = null, string alt = null)
         {
             Definition = definition;
             Localisation = localisation;
             Dynamic = dynamic;
+            AltDefin = alt;
         }
 
         public override string ToString()
