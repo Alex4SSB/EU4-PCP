@@ -4,6 +4,7 @@ using EU4_PCP.Services;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -35,8 +36,7 @@ namespace EU4_PCP.Views
 
             ProvincesShown = ProvTable.Items.Count.ToString();
 
-            if (Storage.RetrieveBool(General.CheckDupli) || Storage.RetrieveBool(General.ShowIllegalProv))
-                PaintMarkers();
+            PaintMarkers(Storage.RetrieveBool(General.CheckDupli), Storage.RetrieveBool(General.ShowIllegalProv));
         }
 
         public void OnNavigatedFrom()
@@ -58,17 +58,24 @@ namespace EU4_PCP.Views
 
         private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        private void PaintMarkers()
+        private void PaintMarkers(bool dupli, bool legal)
         {
-            foreach (var markedProv in Provinces.Values.Where(prov => prov.NextDupli || !prov.IsNameLegal() || !prov.Color.IsLegal()))
+            if (!dupli && !legal) return;
+
+            foreach (var markedProv in Provinces.Values.Where(prov =>
+                (dupli && prov.NextDupli) ||
+                (legal && (!prov.IsNameLegal() || !prov.Color.IsLegal()))))
             {
-                var marker = new Rectangle() { Height = 4, VerticalAlignment = System.Windows.VerticalAlignment.Bottom, Margin = new System.Windows.Thickness(0, 0, 0, 0), Fill = new SolidColorBrush(markedProv.NextDupli ? RedBackground : PurpleBackground) };
+                var marker = new Rectangle() { Height = 4, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0), Fill = new SolidColorBrush(markedProv.NextDupli ? RedBackground : PurpleBackground) };
                 marker.MouseLeftButtonUp += new MouseButtonEventHandler(Rectangle_MouseLeftButtonUp);
                 marker.Tag = markedProv;
-                var shownProvs = Provinces.Values.Where(p => p && p.Show).OrderBy(p => p.Index).ToList();
-                double ratio = shownProvs.IndexOf(markedProv) / (double)shownProvs.Count;
 
-                var grid = new Grid() { Children = { marker }, RowDefinitions = { new RowDefinition() { Height = new System.Windows.GridLength(ratio, System.Windows.GridUnitType.Star), MinHeight = 4 }, new RowDefinition() { Height = new System.Windows.GridLength(1 - ratio, System.Windows.GridUnitType.Star) } } };
+                var shownProvs = Provinces.Values.Where(p => p && p.Show).OrderBy(p => p.Index).ToList();
+                int index = shownProvs.IndexOf(markedProv);
+                if (index < 0) continue;
+
+                double ratio = index / (double)shownProvs.Count;
+                var grid = new Grid() { Children = { marker }, RowDefinitions = { new RowDefinition() { Height = new GridLength(ratio, GridUnitType.Star), MinHeight = 4 }, new RowDefinition() { Height = new GridLength(1 - ratio, GridUnitType.Star) } } };
                 MarkerGrid.Children.Add(grid);
             }
         }
@@ -78,7 +85,7 @@ namespace EU4_PCP.Views
             ProvTableIndex = e.VerticalOffset;
         }
 
-        private void ProvTable_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        private void ProvTable_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             MoveTableToIndex(ProvTableIndex);
         }
