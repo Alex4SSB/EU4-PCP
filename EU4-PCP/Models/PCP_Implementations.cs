@@ -983,15 +983,12 @@ namespace EU4_PCP
             {
                 case Scope.Game:
                     GameProvinceCount = provCount;
-                    GameIllegalProvinceCount = illegalCount;
                     ModProvinceCount =
                     ModIllegalProvinceCount = "";
                     break;
                 case Scope.Mod:
                     ModProvinceCount = provCount;
                     ModIllegalProvinceCount = illegalCount;
-                    if (string.IsNullOrEmpty(GameIllegalProvinceCount))
-                        GameIllegalProvinceCount = "?";
                     break;
                 default:
                     break;
@@ -1175,7 +1172,7 @@ namespace EU4_PCP
             {
                 prov.Value.NextDupli = null;
             }
-            
+
             if (!CheckDupli || !SelectedMod) return;
 
             var dupliGroups = (from prov in Provinces.Values
@@ -1192,6 +1189,37 @@ namespace EU4_PCP
                     group.ElementAt(i).NextDupli = group.ElementAt(nextIndex);
                 }
             }
+
+            ModDupliProvinceCount = dupliGroups.Count().ToString();
+        }
+
+        /// <summary>
+        /// Marker preparation logic.<br/>
+        /// Assigns the relevant background color, and calculates the relative position of province markers in the table.
+        /// </summary>
+        /// <param name="provinces">The list of provinces from which to search for provinces that need to be marked.</param>
+        /// <param name="dupliEnabled">Whether duplicates are enabled in settings.</param>
+        /// <param name="illegalEnabled">Whether illegal provinces are enabled in settings.</param>
+        /// <returns>A list of tuples that include all the information needed to create each marker.</returns>
+        public static List<Tuple<Province, SolidColorBrush, double>> MarkerPrep(IEnumerable<Province> provinces, bool dupliEnabled, bool illegalEnabled)
+        {
+            var markers = new List<Tuple<Province, SolidColorBrush, double>>();
+            if (!dupliEnabled && !illegalEnabled) return markers;
+
+            var shownProvs = provinces.Where(p => p && p.Show).OrderBy(p => p.Index).ToList();
+
+            foreach (var prov in provinces.Where(prov => prov.IsDupli(dupliEnabled) || !prov.IsLegal(illegalEnabled)))
+            {
+                int index = shownProvs.IndexOf(prov);
+                if (index < 0) continue;
+
+                var fill = new SolidColorBrush(prov.NextDupli ? RedBackground : PurpleBackground);
+                double ratio = index / (double)shownProvs.Count;
+
+                markers.Add(new(prov, fill, ratio));
+            }
+
+            return markers;
         }
 
         /// <summary>

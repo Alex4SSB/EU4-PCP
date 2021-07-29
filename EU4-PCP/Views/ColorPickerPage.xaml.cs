@@ -60,19 +60,13 @@ namespace EU4_PCP.Views
             GameVerBlock.Text = GameVersion;
             ModVerBlock.Text = ModVersion;
 
-            GameProvCountBlock.Text = $" {GameProvinceCount} ";
+            GameProvCountBlock.Text = GameProvinceCount;
+            GameMaxProvBlock.Text = GameMaxProvinces;
             ModProvCountBlock.Text = $" {ModProvinceCount} ";
-            GameMaxProvBlock.Text = $" {GameMaxProvinces} ";
             ModMaxProvBlock.Text = $" {ModMaxProvinces} ";
 
-            if (Storage.RetrieveBool(General.ShowIllegalProv))
-            {
-                IllegalProvCountGrid.Visibility = Visibility.Visible;
-                GameIllegalProvCount.Text = $" {GameIllegalProvinceCount} ";
-                ModIllegalProvCount.Text = $" {ModIllegalProvinceCount} ";
-            }
-            else
-                IllegalProvCountGrid.Visibility = Visibility.Collapsed;
+            IllegalProvCountGrid.Visibility = Visibility.Collapsed;
+            DupliCountGrid.Visibility = Visibility.Collapsed;
 
             ProvShownBlock.Text = ProvincesShown;
 
@@ -84,6 +78,18 @@ namespace EU4_PCP.Views
             {
                 string modPath = Directory.GetParent(PCP_Paths.SteamModPath).FullName;
                 BookmarkBlock.Text = $"Bookmark Selection{(BookFiles.Any(b => Directory.GetParent(b.Path).FullName.Contains(modPath)) ? "" : " *")}";
+
+                if (Storage.RetrieveBool(General.ShowIllegalProv))
+                {
+                    IllegalProvCountGrid.Visibility = Visibility.Visible;
+                    ModIllegalProvCount.Text = ModIllegalProvinceCount;
+                }
+
+                if (Storage.RetrieveBool(General.CheckDupli))
+                {
+                    DupliCountGrid.Visibility = Visibility.Visible;
+                    ModDupliCount.Text = ModDupliProvinceCount;
+                }
             }
 
             StartDateBlock.Text = StartDateStr;
@@ -200,25 +206,6 @@ namespace EU4_PCP.Views
         /// </summary>
         private void ProvCountColor()
         {
-            if (!string.IsNullOrWhiteSpace(GameMaxProvBlock.Text))
-            {
-                if (GameMaxProvBlock.Text.Gt(GameProvCountBlock.Text))
-                {
-                    GameMaxProvBlock.Style = GreenStyle;
-                    GameMaxProvBlock.ToolTip = Names.GlobalNames["MaxProvPositive"];
-                }
-                else
-                {
-                    GameMaxProvBlock.Style = RedStyle;
-                    GameMaxProvBlock.ToolTip = Names.GlobalNames["MaxProvNegative"];
-                }
-            }
-            else
-            {
-                GameMaxProvBlock.Style = null;
-                GameMaxProvBlock.ToolTip = null;
-            }
-
             if (!string.IsNullOrWhiteSpace(ModMaxProvBlock.Text))
             {
                 if (ModMaxProvBlock.Text.Gt(ModProvCountBlock.Text))

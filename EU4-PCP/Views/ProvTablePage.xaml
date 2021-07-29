@@ -9,6 +9,12 @@
     d:DesignWidth="800"
     Style="{DynamicResource MahApps.Styles.Page}"
     mc:Ignorable="d">
+    <Page.Resources>
+        <Style x:Key="MarkerStyle" TargetType="Rectangle">
+            <EventSetter Event="Rectangle.MouseLeftButtonUp" Handler="Rectangle_MouseLeftButtonUp" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+        </Style>
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="48" />
@@ -24,7 +30,15 @@
                 x:Name="MarkerGrid"
                 Width="12"
                 Margin="0,41,0,16"
-                HorizontalAlignment="Right" />
+                HorizontalAlignment="Right">
+                <Grid.Style>
+                    <Style>
+                        <Style.Resources>
+                            <Style BasedOn="{StaticResource MarkerStyle}" TargetType="Rectangle" />
+                        </Style.Resources>
+                    </Style>
+                </Grid.Style>
+            </Grid>
             <DataGrid
                 x:Name="ProvTable"
                 Margin="{StaticResource SmallLeftRightMargin}"
@@ -52,6 +66,11 @@
                         </Style.Triggers>
                     </Style>
                 </DataGrid.RowStyle>
+                <DataGrid.CellStyle>
+                    <Style BasedOn="{StaticResource MahApps.Styles.DataGridCell}" TargetType="DataGridCell">
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                    </Style>
+                </DataGrid.CellStyle>
                 <DataGrid.Columns>
                     <DataGridTextColumn x:Name="B_Color" Header="Color">
                         <DataGridTextColumn.ElementStyle>

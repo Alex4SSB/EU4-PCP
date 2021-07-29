@@ -286,7 +286,7 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provinces Table.
+        ///   Looks up a localized string similar to Provinces List.
         /// </summary>
         public static string ProvTablePageTitle {
             get {

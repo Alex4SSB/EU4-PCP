@@ -324,31 +324,6 @@
                         FontFamily="Consolas"
                         Text="" />
                 </Grid>
-                <Grid x:Name="IllegalProvCountGrid">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20*" />
-                        <ColumnDefinition Width="12*" />
-                        <ColumnDefinition Width="20*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock
-                        Grid.Column="1"
-                        Margin="4"
-                        HorizontalAlignment="Center"
-                        Text="- illegal -" />
-                    <TextBlock
-                        x:Name="GameIllegalProvCount"
-                        Margin="4"
-                        HorizontalAlignment="Center"
-                        FontFamily="Consolas"
-                        Text="" />
-                    <TextBlock
-                        x:Name="ModIllegalProvCount"
-                        Grid.Column="2"
-                        Margin="4"
-                        HorizontalAlignment="Center"
-                        FontFamily="Consolas"
-                        Text="" />
-                </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="20*" />
@@ -368,6 +343,44 @@
                         Text="" />
                     <TextBlock
                         x:Name="ModMaxProvBlock"
+                        Grid.Column="2"
+                        Margin="4"
+                        HorizontalAlignment="Center"
+                        FontFamily="Consolas"
+                        Text="" />
+                </Grid>
+                <Grid x:Name="DupliCountGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20*" />
+                        <ColumnDefinition Width="12*" />
+                        <ColumnDefinition Width="20*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="4"
+                        HorizontalAlignment="Center"
+                        Text="duplicates :" />
+                    <TextBlock
+                        x:Name="ModDupliCount"
+                        Grid.Column="2"
+                        Margin="4"
+                        HorizontalAlignment="Center"
+                        FontFamily="Consolas"
+                        Text="" />
+                </Grid>
+                <Grid x:Name="IllegalProvCountGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20*" />
+                        <ColumnDefinition Width="12*" />
+                        <ColumnDefinition Width="20*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="4"
+                        HorizontalAlignment="Center"
+                        Text="illegal :" />
+                    <TextBlock
+                        x:Name="ModIllegalProvCount"
                         Grid.Column="2"
                         Margin="4"
                         HorizontalAlignment="Center"

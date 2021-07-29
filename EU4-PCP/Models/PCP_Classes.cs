@@ -85,6 +85,10 @@ namespace EU4_PCP
             return isRnw;
         }
 
+        public bool IsDupli(bool dupliEnabled) => NextDupli;
+
+        public bool IsLegal(bool illegalEnabled) => IsNameLegal() && Color.IsLegal();
+
     }
 
     public class TableProvince : Province
@@ -96,7 +100,7 @@ namespace EU4_PCP
         public short Green { get { return Color.G; } }
         public short Blue { get { return Color.B; } }
 
-        public bool IsDupli { get { return NextDupli; } }
+        public new bool IsDupli { get { return NextDupli; } }
         public string IsColorLegal { get { return Color.IsLegal() ? "" : "\uE711"; } }
         public bool IsProvLegal { get { return Color.IsLegal() && IsNameLegal(); } }
 
