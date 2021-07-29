@@ -124,11 +124,29 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount of reused colors.
+        /// </summary>
+        public static string ColorPickerDupliDesc {
+            get {
+                return ResourceManager.GetString("ColorPickerDupliDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Illegal Provinces.
         /// </summary>
         public static string ColorPickerIllegal {
             get {
                 return ResourceManager.GetString("ColorPickerIllegal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount of provinces that do not have a valid name or color.
+        /// </summary>
+        public static string ColorPickerIllegalDesc {
+            get {
+                return ResourceManager.GetString("ColorPickerIllegalDesc", resourceCulture);
             }
         }
         

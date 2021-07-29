@@ -57,7 +57,7 @@
                         <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick" />
                         <EventSetter Event="MouseRightButtonUp" Handler="DataGridRow_MouseRightButtonUp" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsDupli}" Value="True">
+                            <DataTrigger Binding="{Binding IsProvDupli}" Value="True">
                                 <Setter Property="Background" Value="{StaticResource RedRow}" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding IsProvLegal}" Value="False">

@@ -93,16 +93,16 @@ namespace EU4_PCP
 
     public class TableProvince : Province
     {
-        public string B_Color { get { return $"#{(Color.IsLegal() ? Color.Name : "00ffffff")}"; } }
+        public string B_Color { get { return $"#{(Color.IsLegal() ? Color.Name : Colors.Transparent)}"; } }
         public int ID { get { return Index; } }
         public string P_Name { get { return Name.ToString(); } }
         public short Red { get { return Color.R; } }
         public short Green { get { return Color.G; } }
         public short Blue { get { return Color.B; } }
 
-        public new bool IsDupli { get { return NextDupli; } }
+        public bool IsProvDupli { get { return NextDupli; } }
         public string IsColorLegal { get { return Color.IsLegal() ? "" : "\uE711"; } }
-        public bool IsProvLegal { get { return Color.IsLegal() && IsNameLegal(); } }
+        public bool IsProvLegal { get { return IsLegal(true); } }
 
         public TableProvince(Province prov) : base(prov) { }
     }

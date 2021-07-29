@@ -122,7 +122,7 @@ namespace EU4_PCP.Views
 
         private void DataGridRow_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (e.Source is DataGridCellsPresenter row && row.DataContext is TableProvince prov && prov.IsDupli)
+            if (e.Source is DataGridCellsPresenter row && row.DataContext is TableProvince prov && prov.IsProvDupli)
             {
                 ScrollToProv(prov.NextDupli);
             }

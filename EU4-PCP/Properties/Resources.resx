@@ -138,8 +138,14 @@
   <data name="ColorDupli" xml:space="preserve">
     <value>Color Duplicates</value>
   </data>
+  <data name="ColorPickerDupliDesc" xml:space="preserve">
+    <value>Amount of reused colors</value>
+  </data>
   <data name="ColorPickerIllegal" xml:space="preserve">
     <value>Illegal Provinces</value>
+  </data>
+  <data name="ColorPickerIllegalDesc" xml:space="preserve">
+    <value>Amount of provinces that do not have a valid name or color</value>
   </data>
   <data name="ColorPickerPageTitle" xml:space="preserve">
     <value>Color Picker</value>
