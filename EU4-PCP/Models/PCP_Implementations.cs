@@ -1164,7 +1164,7 @@ namespace EU4_PCP
         }
 
         /// <summary>
-        /// Handles duplicate provinces - sets for each province its next duplicate.
+        /// The default overload to call the function with <see cref="Provinces"/>
         /// </summary>
         public static void DupliPrep()
         {
@@ -1175,7 +1175,15 @@ namespace EU4_PCP
 
             if (!CheckDupli || !SelectedMod) return;
 
-            var dupliGroups = (from prov in Provinces.Values
+            ModDupliProvinceCount = DupliPrep(Provinces.Values.ToList()).ToString();
+        }
+
+        /// <summary>
+        /// Handles duplicate provinces - sets for each province its next duplicate.
+        /// </summary>
+        public static int DupliPrep(List<Province> provinces)
+        {
+            var dupliGroups = (from prov in provinces
                                where prov && prov.Show && prov.Color.IsLegal()
                                group prov by (Color)prov.Color)
                               .Where(g => g.Count() > 1);
@@ -1190,7 +1198,7 @@ namespace EU4_PCP
                 }
             }
 
-            ModDupliProvinceCount = dupliGroups.Count().ToString();
+            return dupliGroups.Count();
         }
 
         /// <summary>
@@ -1203,12 +1211,15 @@ namespace EU4_PCP
         /// <returns>A list of tuples that include all the information needed to create each marker.</returns>
         public static List<Tuple<Province, SolidColorBrush, double>> MarkerPrep(IEnumerable<Province> provinces, bool dupliEnabled, bool illegalEnabled)
         {
+
+            // PROVS THAT ARE BOTH DUPLICATE AND ILLEGAL ARE NOT SUPPORTED (YET)
+
             var markers = new List<Tuple<Province, SolidColorBrush, double>>();
             if (!dupliEnabled && !illegalEnabled) return markers;
 
             var shownProvs = provinces.Where(p => p && p.Show).OrderBy(p => p.Index).ToList();
 
-            foreach (var prov in provinces.Where(prov => prov.IsDupli(dupliEnabled) || !prov.IsLegal(illegalEnabled)))
+            foreach (var prov in provinces.Where(prov => prov.IsDupli(dupliEnabled) || prov.IsIllegal(illegalEnabled)))
             {
                 int index = shownProvs.IndexOf(prov);
                 if (index < 0) continue;

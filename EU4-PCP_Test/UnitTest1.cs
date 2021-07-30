@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media;
+using static EU4_PCP.PCP_Const;
 using static EU4_PCP.PCP_Implementations;
 
 namespace EU4_PCP_Test
@@ -409,6 +410,42 @@ namespace EU4_PCP_Test
             Assert.IsTrue(cultures.Count == 10);
             Assert.IsTrue(cultures.Count(c => c.Group && c.Group.Name == "germanic") == 3);
             Assert.IsTrue(cultures.Find(c => c.Name == "swedish").Group.Name == "scandinavian");
+        }
+
+        [TestMethod]
+        public void MarkerPrepTest()
+        {
+            // Also tests DupliPrep
+
+            var testProv = new List<Province>
+            {
+                {new Province(index: 1, color: new P_Color(10, 20, 30), name: "a") },
+                {new Province(index: 2, color: new P_Color(-1, -1, 100), name: "b") },
+                {new Province(index: 3, color: new P_Color(1, 41, 5)) },
+                {new Province(index: 4, color: new P_Color(10, 20, 30), name: "c") },
+                {new Province(index: 5, color: new P_Color(100, 200, 100), name: "d") },
+                {new Province(index: 6, color: new P_Color(100, 200, 100), name: "e") },
+            };
+
+            DupliPrep(testProv);
+            var markers = MarkerPrep(testProv, true, true);
+
+            Assert.IsFalse(markers.Any(m => (new[] { 1, 4, 5, 6 }).Contains(m.Item1.Index) && m.Item2.Color != RedBackground));
+            Assert.IsFalse(markers.Any(m => (new[] { 2, 3 }).Contains(m.Item1.Index) && m.Item2.Color != PurpleBackground));
+            Assert.IsFalse(markers.Any(m => m.Item3 < 0));
+
+            var illegalMarkers = MarkerPrep(testProv, false, true);
+            Assert.IsFalse(illegalMarkers.Any(m => m.Item2.Color == RedBackground));
+            Assert.IsFalse(illegalMarkers.Any(m => (new[] { 2, 3 }).Contains(m.Item1.Index) && m.Item2.Color != PurpleBackground));
+            Assert.IsFalse(illegalMarkers.Any(m => m.Item3 < 0));
+
+            var dupliMarkers = MarkerPrep(testProv, true, false);
+            Assert.IsFalse(dupliMarkers.Any(m => m.Item2.Color == PurpleBackground));
+            Assert.IsFalse(dupliMarkers.Any(m => (new[] { 1, 4, 5, 6 }).Contains(m.Item1.Index) && m.Item2.Color != RedBackground));
+            Assert.IsFalse(dupliMarkers.Any(m => m.Item3 < 0));
+
+            var noMarkers = MarkerPrep(testProv, false, false);
+            Assert.IsFalse(noMarkers.Any());
         }
     }
 }
