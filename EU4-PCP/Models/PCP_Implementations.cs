@@ -530,7 +530,7 @@ namespace EU4_PCP
             Parallel.ForEach(ProvNameFiles, (item) =>
             {
                 var nFile = File.ReadAllText(item.Path, UTF7);
-                var names = LocNamesRE.Matches(nFile).Select(m => new ProvName() { Index = m.Groups["index"].Value.ToInt(), Name = m.Groups["name"].Value });
+                var names = ProvNamesRE.Matches(nFile).Select(m => new ProvName() { Index = m.Groups["index"].Value.ToInt(), Name = m.Groups["name"].Value });
                 string name = item.File.Split('.')[0];
 
                 ProvNameClass query = Countries.Find(c => c.Name == name);
@@ -559,7 +559,7 @@ namespace EU4_PCP
                 }
                 if (DynamicName(prov, NameType.Country)
                     || !prov.Owner.Culture
-                    || DynamicName(prov, NameType.Culture)) 
+                    || DynamicName(prov, NameType.Culture))
                     continue;
 
                 if (prov.Owner.Culture.Group)
@@ -584,9 +584,9 @@ namespace EU4_PCP
             };
 
             if (source == null) return false;
-            var query = source.Where(prv => prv.Index == prov.Index);
-            if (query.Count() != 1) return false;
-            prov.Name.Dynamic = query.First().Name.ToString();
+            var query = source.Find(prv => prv.Index == prov.Index);
+            if (!query) return false;
+            prov.Name.Dynamic = query.Name.ToString();
             return true;
         }
 
