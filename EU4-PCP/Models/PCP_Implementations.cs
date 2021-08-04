@@ -3,6 +3,7 @@ using EU4_PCP.Models;
 using EU4_PCP.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -300,20 +301,6 @@ namespace EU4_PCP
         }
 
         /// <summary>
-        /// Checks validity of the line.
-        /// </summary>
-        /// <param name="line">The line to check.</param>
-        /// <param name="eq"><see langword="true"/> to disable check for '='.</param>
-        /// <returns><see langword="true"/> if the line should be skipped.</returns>
-        public static bool NextLine(string line, bool eq = false)
-        {
-            // validLineRE is a dynamic RegEx so it is local.
-            var validLineRE = new Regex(@$"^(?!#|[\s]+#)({(eq ? "" : ".+=")}[^#]+)");
-
-            return !validLineRE.IsMatch(line);
-        }
-
-        /// <summary>
         /// Finds the result of the last relevant event in the file 
         /// (last owner for <see cref="Province"/>, last culture for <see cref="Country"/>).
         /// </summary>
@@ -540,33 +527,18 @@ namespace EU4_PCP
         /// </summary>
         public static void ProvNameSetup()
         {
-            Parallel.ForEach(ProvNameFiles, fileName =>
+            Parallel.ForEach(ProvNameFiles, (item) =>
             {
-                string[] nFile = File.ReadAllLines(fileName.Path, UTF7);
-                string name = fileName.File.Split('.')[0];
-                List<ProvName> names = new();
+                var nFile = File.ReadAllText(item.Path, UTF7);
+                var names = LocNamesRE.Matches(nFile).Select(m => new ProvName() { Index = m.Groups["index"].Value.ToInt(), Name = m.Groups["name"].Value });
+                string name = item.File.Split('.')[0];
 
-                foreach (var line in nFile)
-                {
-                    if (NextLine(line)) { continue; }
-                    var split = line.Split('=');
-                    names.Add(new ProvName { 
-                        Index = split[0].Trim().ToInt(), 
-                        Name = LocNameRE.Match(split[1]).Value });
-                }
-
-                // store country query in a parent class
-                IEnumerable<ProvNameClass> query = Countries.Where(cnt => cnt.Name == name);
-                
-                // If no matching country was found, update the query with culture
-                if (!query.Any())
-                    query = Cultures.Where(cul => cul.Name == name);
-
-                // If the query contains a country or a culture (or a culture group)
-                if (query.Any())
-                    query.First().ProvNames = names;
+                ProvNameClass query = Countries.Find(c => c.Name == name);
+                if (!query) query = Cultures.Find(c => c.Name == name);
+                if (query) query.ProvNames = names.ToList();
             });
         }
+
         /// <summary>
         /// Finds the correct dynamic name source (owner / culture / group). <br />
         /// Also applies RNW / Unused policy.
