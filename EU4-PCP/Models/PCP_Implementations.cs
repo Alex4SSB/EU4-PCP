@@ -599,16 +599,16 @@ namespace EU4_PCP
             foreach (var bookFile in BookFiles)
             {
                 string bFile = File.ReadAllText(bookFile.Path);
-                var codeMatch = BookmarkCodeRE.Match(bFile);
-                var dateMatch = BookmarkDateRE.Match(bFile);
-                if (!codeMatch.Success || !dateMatch.Success) continue;
+                var match = BookmarkParamsRE.Match(bFile);
+                if (!match.Success) continue;
 
-                DateTime tempDate = DateParser(dateMatch.Value, StartDate.Year < 1000);
+                DateTime tempDate = DateParser(match.Groups["date"].Value, StartDate.Year < 1000);
                 if (tempDate == DateTime.MinValue) { continue; }
-                Bookmarks.Add(new Bookmark {
-                    Code = codeMatch.Value,
+                Bookmarks.Add(new Bookmark
+                {
+                    Code = match.Groups["name"].Value,
                     BookDate = tempDate,
-                    DefBook = BookmarkDefRE.Match(bFile).Success
+                    DefBook = match.Groups["default"].Success
                 });
             }
             if (!Bookmarks.Any()) return;
@@ -686,11 +686,13 @@ namespace EU4_PCP
         public static void ModPrep(bool parallel = true)
         {
             object modLock = new();
-            string[] files;
+            IEnumerable<string> files;
             try
             {
-                files = Directory.GetFiles(ParadoxModPath).ToArray().Where(
-                    f => ModFileRE.Match(f).Success).ToArray();
+                files = from f in Directory.GetFiles(ParadoxModPath)
+                        let match = ModFileRE.Match(f)
+                        where match.Success
+                        select match.Value;
             }
             catch (Exception) { return; }
 
@@ -699,30 +701,17 @@ namespace EU4_PCP
                 Parallel.ForEach(files, modFile =>
                 {
                     string mFile = File.ReadAllText(modFile);
-                    var nameMatch = ModNameRE.Match(mFile);
-                    var pathMatch = ModPathRE.Match(mFile);
-                    var verMatch = ModVerRE.Match(mFile);
-
-                    if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) return;
-
-                    var modPath = pathMatch.Value;
-
-                    if (!Directory.Exists(modPath))
-                    {
-                        var tempPath = $@"{Directory.GetParent(ParadoxModPath).FullName}\{modPath.TrimStart('/', '\\')}";
-                        if (Directory.Exists(tempPath))
-                            modPath = tempPath;
-                        else return;
-                    }
+                    var match = ModParamsRE.Match(mFile);
+                    if (!match.Success) return;
 
                     // With many mods in the folder, a context switch that will cause an OutOfRange exception is more likely
                     lock (modLock)
                     {
                         Mods.Add(new ModObj
                         {
-                            Name = nameMatch.Value,
-                            Path = modPath,
-                            Ver = verMatch.Value,
+                            Name = match.Groups["name"].Value,
+                            Path = ModPathPrep(match.Groups["path"].Value),
+                            Ver = match.Groups["gameVer"].Value,
                             Replace = ReplacePrep(mFile)
                         });
                     }
@@ -733,33 +722,32 @@ namespace EU4_PCP
                 foreach (var modFile in files)
                 {
                     string mFile = File.ReadAllText(modFile);
-                    var nameMatch = ModNameRE.Match(mFile);
-                    var pathMatch = ModPathRE.Match(mFile);
-                    var verMatch = ModVerRE.Match(mFile);
-
-                    if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) continue;
-
-                    var modPath = pathMatch.Value;
-
-                    if (!Directory.Exists(modPath))
-                    {
-                        var tempPath = $@"{Directory.GetParent(ParadoxModPath).FullName}\{modPath.TrimStart('/', '\\')}";
-                        if (Directory.Exists(tempPath))
-                            modPath = tempPath;
-                        else continue;
-                    }
+                    var match = ModParamsRE.Match(mFile);
+                    if (!match.Success) return;
 
                     Mods.Add(new ModObj
                     {
-                        Name = nameMatch.Value,
-                        Path = modPath,
-                        Ver = verMatch.Value,
+                        Name = match.Groups["name"].Value,
+                        Path = ModPathPrep(match.Groups["path"].Value),
+                        Ver = match.Groups["gameVer"].Value,
                         Replace = ReplacePrep(mFile)
                     });
                 }
             }
 
             Mods.Sort();
+        }
+
+        private static string ModPathPrep(string scriptedPath)
+        {
+            if (!Directory.Exists(scriptedPath))
+            {
+                var tempPath = $@"{Directory.GetParent(ParadoxModPath).FullName}\{scriptedPath.TrimStart('/', '\\')}";
+                if (Directory.Exists(tempPath))
+                    scriptedPath = tempPath;
+            }
+
+            return scriptedPath;
         }
 
         /// <summary>
@@ -772,10 +760,11 @@ namespace EU4_PCP
             var vals = ModReplaceRE.Matches(rFile)
                 .OfType<Match>()
                 .Select(m => m.Value);
-                
+
             if (!vals.Any()) return new Replace();
 
-            return new Replace {
+            return new Replace
+            {
                 Cultures = vals.Contains(CulturesRep),
                 Bookmarks = vals.Contains(BookmarksRep),
                 ProvNames = vals.Contains(ProvNamesRep),
@@ -1388,7 +1377,7 @@ namespace EU4_PCP
             }
             else
             {
-                var modified = current.Where(i => 
+                var modified = current.Where(i =>
                     !previous.Exists(p => p.Path == i.Path)
                     || previous.Find(p => p.Path == i.Path)?.LastModified.CompareTo(i.LastModified) != 0).ToList();
 
@@ -1421,7 +1410,7 @@ namespace EU4_PCP
         {
             Regex bookRE = null;
             if (enBooks)
-                bookRE = new Regex($@"^ *({BookPattern()}):\d* *"".+""", RegexOptions.Multiline);
+                bookRE = new Regex($@"^ *(?<code>{BookPattern()}):\d* *""(?<name>.+?)""", RegexOptions.Multiline);
 
             Parallel.ForEach(indexList, item =>
             {
@@ -1435,7 +1424,7 @@ namespace EU4_PCP
                     return;
                 }
 
-                var provMatches = LocProvRE.Matches(text);
+                var provMatches = LocProvsRE.Matches(text);
                 
                 item.ProvDict.Clear();
                 ProvLocDict(provMatches, ref item.ProvDict);
@@ -1453,10 +1442,9 @@ namespace EU4_PCP
         {
             foreach (Match match in collection)
             {
-                var val = match.Value;
-                var id = val.Split(':')[0].ToInt();
-                var name = val.Split('"')[1].Trim();
-                
+                var id = match.Groups["index"].Value.ToInt();
+                var name = match.Groups["name"].Value;
+
                 if (dict.ContainsKey(id)) continue;
 
                 dict.Add(id, name);
@@ -1480,9 +1468,8 @@ namespace EU4_PCP
         {
             foreach (Match match in collection)
             {
-                var val = match.Value;
-                var code = BookLocCodeRE.Match(val).Value;
-                var name = LocNameRE.Match(val).Value;
+                var code = match.Groups["code"].Value;
+                var name = match.Groups["name"].Value;
 
                 if (dict.ContainsKey(code)) continue;
 
