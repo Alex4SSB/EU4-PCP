@@ -271,33 +271,65 @@ namespace EU4_PCP
         /// <see cref="Provinces"/> array according to the start date.
         /// <param name="updateOwner">true to ignore not empty owner.</param>
         /// </summary>
-        public static void OwnerSetup(bool updateOwner = false)
+        public static void OwnerSetup(bool updateOwner = false, bool parallel = true)
         {
-            Parallel.ForEach(ProvFiles, p_file =>
+            if (parallel)
             {
-                var match = ProvFileRE.Match(p_file.File);
-                if (!match.Success) return;
-                int i = match.Value.ToInt();
-                if (!Provinces.ContainsKey(i)) return;
-
-                var prov = Provinces[i];
-                if (!prov || (!updateOwner && prov.Owner)) return;
-
-                string provFile = File.ReadAllText(p_file.Path);
-                var currentOwner = LastEvent(provFile, EventType.Province, StartDate);
-
-                // Order is inverted to make handling of no result from LastEvent easier.
-                // On the other hand, a successful LastEvent result removes the need for the ProvOwnerRE search.
-                if (currentOwner == "")
+                Parallel.ForEach(ProvFiles, p_file =>
                 {
-                    match = ProvOwnerRE.Match(provFile);
+                    var match = ProvFileRE.Match(p_file.File);
                     if (!match.Success) return;
-                    currentOwner = match.Value;
-                }
+                    int i = match.Value.ToInt();
+                    if (!Provinces.ContainsKey(i)) return;
 
-                if (Countries.Find(c => c.Name == currentOwner) is Country country)
-                    prov.Owner = country;
-            });
+                    var prov = Provinces[i];
+                    if (!prov || (!updateOwner && prov.Owner)) return;
+
+                    string provFile = File.ReadAllText(p_file.Path);
+                    var currentOwner = LastEvent(provFile, EventType.Province, StartDate);
+
+                    // Order is inverted to make handling of no result from LastEvent easier.
+                    // On the other hand, a successful LastEvent result removes the need for the ProvOwnerRE search.
+                    if (currentOwner == "")
+                    {
+                        match = ProvOwnerRE.Match(provFile);
+                        if (!match.Success) return;
+                        currentOwner = match.Groups["owner"].Value;
+                    }
+
+                    if (Countries.Find(c => c.Name == currentOwner) is Country country)
+                        prov.Owner = country;
+                });
+            }
+            else
+            {
+                foreach (var p_file in ProvFiles)
+                {
+                    var match = ProvFileRE.Match(p_file.File);
+                    if (!match.Success) continue;
+                    int i = match.Value.ToInt();
+                    if (!Provinces.ContainsKey(i)) continue;
+
+                    var prov = Provinces[i];
+                    if (!prov || (!updateOwner && prov.Owner)) continue;
+
+                    string provFile = File.ReadAllText(p_file.Path);
+                    var currentOwner = LastEvent(provFile, EventType.Province, StartDate);
+
+                    // Order is inverted to make handling of no result from LastEvent easier.
+                    // On the other hand, a successful LastEvent result removes the need for the ProvOwnerRE search.
+                    if (currentOwner == "")
+                    {
+                        match = ProvOwnerRE.Match(provFile);
+                        if (!match.Success) continue;
+                        currentOwner = match.Groups["owner"].Value;
+                    }
+
+                    if (Countries.Find(c => c.Name == currentOwner) is Country country)
+                        prov.Owner = country;
+                }
+            }
+            
         }
 
         /// <summary>
@@ -336,7 +368,7 @@ namespace EU4_PCP
                 };
 
                 if (!match.Success) continue;
-                currentResult = match.Value;
+                currentResult = match.Groups["value"].Value;
                 lastDate = currentDate;
                 currentDate = DateTime.MinValue;
             }
@@ -599,16 +631,17 @@ namespace EU4_PCP
             foreach (var bookFile in BookFiles)
             {
                 string bFile = File.ReadAllText(bookFile.Path);
-                var match = BookmarkParamsRE.Match(bFile);
-                if (!match.Success) continue;
+                var codeMatch = BookmarkCodeRE.Match(bFile);
+                var dateMatch = BookmarkDateRE.Match(bFile);
+                if (!codeMatch.Success || !dateMatch.Success) continue;
 
-                DateTime tempDate = DateParser(match.Groups["date"].Value, StartDate.Year < 1000);
+                DateTime tempDate = DateParser(dateMatch.Value, StartDate.Year < 1000);
                 if (tempDate == DateTime.MinValue) { continue; }
                 Bookmarks.Add(new Bookmark
                 {
-                    Code = match.Groups["name"].Value,
+                    Code = codeMatch.Value,
                     BookDate = tempDate,
-                    DefBook = match.Groups["default"].Success
+                    DefBook = BookmarkDefRE.Match(bFile).Success
                 });
             }
             if (!Bookmarks.Any()) return;
@@ -689,10 +722,7 @@ namespace EU4_PCP
             IEnumerable<string> files;
             try
             {
-                files = from f in Directory.GetFiles(ParadoxModPath)
-                        let match = ModFileRE.Match(f)
-                        where match.Success
-                        select match.Value;
+                files = Directory.GetFiles(ParadoxModPath, "*.mod");
             }
             catch (Exception) { return; }
 
@@ -701,17 +731,20 @@ namespace EU4_PCP
                 Parallel.ForEach(files, modFile =>
                 {
                     string mFile = File.ReadAllText(modFile);
-                    var match = ModParamsRE.Match(mFile);
-                    if (!match.Success) return;
+                    var nameMatch = ModNameRE.Match(mFile);
+                    var pathMatch = ModPathRE.Match(mFile);
+                    var verMatch = ModVerRE.Match(mFile);
+
+                    if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) return;
 
                     // With many mods in the folder, a context switch that will cause an OutOfRange exception is more likely
                     lock (modLock)
                     {
                         Mods.Add(new ModObj
                         {
-                            Name = match.Groups["name"].Value,
-                            Path = ModPathPrep(match.Groups["path"].Value),
-                            Ver = match.Groups["gameVer"].Value,
+                            Name = nameMatch.Value,
+                            Path = ModPathPrep(pathMatch.Value),
+                            Ver = verMatch.Value,
                             Replace = ReplacePrep(mFile)
                         });
                     }
@@ -722,14 +755,17 @@ namespace EU4_PCP
                 foreach (var modFile in files)
                 {
                     string mFile = File.ReadAllText(modFile);
-                    var match = ModParamsRE.Match(mFile);
-                    if (!match.Success) return;
+                    var nameMatch = ModNameRE.Match(mFile);
+                    var pathMatch = ModPathRE.Match(mFile);
+                    var verMatch = ModVerRE.Match(mFile);
+
+                    if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) return;
 
                     Mods.Add(new ModObj
                     {
-                        Name = match.Groups["name"].Value,
-                        Path = ModPathPrep(match.Groups["path"].Value),
-                        Ver = match.Groups["gameVer"].Value,
+                        Name = nameMatch.Value,
+                        Path = ModPathPrep(pathMatch.Value),
+                        Ver = verMatch.Value,
                         Replace = ReplacePrep(mFile)
                     });
                 }

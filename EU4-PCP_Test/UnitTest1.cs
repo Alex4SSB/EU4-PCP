@@ -206,12 +206,18 @@ namespace EU4_PCP_Test
         public void LastCultureEventTest()
         {
             DateTime[] dates = {
-                new DateTime(1000, 1, 1),
+                new DateTime(910, 1, 1),
+                new DateTime(935, 1, 1),
+                new DateTime(945, 1, 1),
+                new DateTime(955, 1, 1),
                 new DateTime(1500, 1, 1)
             };
 
             Assert.AreEqual("lombard", LastEvent(Resources.ACH, EventType.Country, dates[0]));
-            Assert.AreEqual("greek", LastEvent(Resources.ACH, EventType.Country, dates[1]));
+            Assert.AreEqual("lombard", LastEvent(Resources.ACH, EventType.Country, dates[1]));
+            Assert.AreEqual("lombard", LastEvent(Resources.ACH, EventType.Country, dates[2]));
+            Assert.AreEqual("lombard", LastEvent(Resources.ACH, EventType.Country, dates[3]));
+            Assert.AreEqual("greek", LastEvent(Resources.ACH, EventType.Country, dates[4]));
         }
 
         [TestMethod]

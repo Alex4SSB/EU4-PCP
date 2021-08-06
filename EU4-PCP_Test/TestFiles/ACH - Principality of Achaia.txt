@@ -9,6 +9,18 @@ capital = 1773	# Mystras
 # ADDED FOR TESTING #
 900.1.1 = { primary_culture = lombard religion = catholic }
 
+# 930.1.1 = { primary_culture = omani_culture religion = sunni }
+
+#940.1.1 = {
+#	primary_culture = omani_culture
+#	religion = sunni
+#}
+
+950.1.1 = {
+#	primary_culture = omani_culture
+	religion = sunni
+}
+
 # Principality of Achaea #
 1396.1.1 = {
 	monarch = {

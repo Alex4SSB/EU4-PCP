@@ -72,22 +72,19 @@ namespace EU4_PCP_Test.Properties {
         ///# ADDED FOR TESTING #
         ///900.1.1 = { primary_culture = lombard religion = catholic }
         ///
-        ///# Principality of Achaea #
-        ///1396.1.1 = {
-        ///	monarch = {
-        ///		name = &quot;Pietro I&quot;
-        ///		dynasty = &quot;de Saint-Superan&quot;
-        ///		dip = 1
-        ///		adm = 1
-        ///		mil = 2
-        ///	}
+        ///# 930.1.1 = { primary_culture = omani_culture religion = sunni }
+        ///
+        ///#940.1.1 = {
+        ///#	primary_culture = omani_culture
+        ///#	religion = sunni
+        ///#}
+        ///
+        ///950.1.1 = {
+        ///#	primary_culture = omani_culture
+        ///	religion = sunni
         ///}
         ///
-        ///1396.1.1 = {
-        ///	heir = {
-        ///		name = &quot;Maria&quot;
-        ///		monarch_name = &quot;Maria II&quot;
-        ///		dynasty = &quot; [rest of string was truncated]&quot;;.
+        ///# Principality of Ach [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ACH {
             get {
