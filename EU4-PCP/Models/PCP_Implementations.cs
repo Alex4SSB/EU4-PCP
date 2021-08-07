@@ -498,12 +498,16 @@ namespace EU4_PCP
 
             Parallel.ForEach(groups, group =>
             {
-                var cultures = CulSingleRE.Matches(group.Value);
-                var groupName = new Culture(cultures.First().Value);
-
-                for (int i = 0; i < cultures.Count; i++)
+                var cultures = CulSingleRE.Matches(group.Groups["cultures"].Value);
+                var groupName = new Culture(group.Groups["group"].Value);
+                lock (mutex)
                 {
-                    Culture newCul = i == 0 ? groupName : (new() { Name = cultures[i].Value, Group = groupName });
+                    cultureList.Add(groupName);
+                }
+
+                foreach (Match culture in cultures)
+                {
+                    Culture newCul = new() { Name = culture.Groups["name"].Value, Group = groupName };
                     lock (mutex)
                     {
                         cultureList.Add(newCul);
@@ -628,6 +632,7 @@ namespace EU4_PCP
         /// </summary>
         public static void BookPrep()
         {
+            // Multiple RegEx patterns are used to allow different order of bookmark code, date and default
             foreach (var bookFile in BookFiles)
             {
                 string bFile = File.ReadAllText(bookFile.Path);
@@ -635,13 +640,13 @@ namespace EU4_PCP
                 var dateMatch = BookmarkDateRE.Match(bFile);
                 if (!codeMatch.Success || !dateMatch.Success) continue;
 
-                DateTime tempDate = DateParser(dateMatch.Value, StartDate.Year < 1000);
+                DateTime tempDate = DateParser(dateMatch.Groups["date"].Value, StartDate.Year < 1000);
                 if (tempDate == DateTime.MinValue) { continue; }
                 Bookmarks.Add(new Bookmark
                 {
-                    Code = codeMatch.Value,
+                    Code = codeMatch.Groups["name"].Value,
                     BookDate = tempDate,
-                    DefBook = BookmarkDefRE.Match(bFile).Success
+                    DefBook = BookmarkDefRE.Match(bFile).Groups["default"].Success
                 });
             }
             if (!Bookmarks.Any()) return;
@@ -726,6 +731,7 @@ namespace EU4_PCP
             }
             catch (Exception) { return; }
 
+            // Multiple RegEx patterns are used to allow different order of mod name, path and compatible version
             if (parallel)
             {
                 Parallel.ForEach(files, modFile =>
@@ -742,9 +748,9 @@ namespace EU4_PCP
                     {
                         Mods.Add(new ModObj
                         {
-                            Name = nameMatch.Value,
-                            Path = ModPathPrep(pathMatch.Value),
-                            Ver = verMatch.Value,
+                            Name = nameMatch.Groups["name"].Value,
+                            Path = ModPathPrep(pathMatch.Groups["path"].Value),
+                            Ver = verMatch.Groups["gameVer"].Value,
                             Replace = ReplacePrep(mFile)
                         });
                     }
@@ -795,7 +801,7 @@ namespace EU4_PCP
         {
             var vals = ModReplaceRE.Matches(rFile)
                 .OfType<Match>()
-                .Select(m => m.Value);
+                .Select(m => m.Groups["replace"].Value);
 
             if (!vals.Any()) return new Replace();
 
