@@ -284,6 +284,17 @@ namespace EU4_PCP
         public string Name;
         public bool DefBook;
 
+        public Bookmark()
+        { }
+
+        public Bookmark(Bookmark book)
+        {
+            Code = book.Code;
+            BookDate = book.BookDate;
+            Name = book.Name;
+            DefBook = book.DefBook;
+        }
+
         public static implicit operator bool(Bookmark obj)
         {
             return obj is object;
@@ -321,6 +332,14 @@ namespace EU4_PCP
         {
             return left.CompareTo(right) != 0;
         }
+    }
+
+    public class ListBookmark : Bookmark
+    {
+        public string L_Name { get { return Name; } }
+        public string Date { get { return CurrentDateFormat(false, BookDate); } }
+
+        public ListBookmark(Bookmark book) : base(book) { }
     }
 
     public class ModObj : IComparable<ModObj>

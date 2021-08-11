@@ -73,6 +73,24 @@
                             <Setter Property="Margin" Value="4" />
                             <EventSetter Event="RangeBase.ValueChanged" Handler="Slider_ValueChanged" />
                         </Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Square}" TargetType="Button">
+                            <Setter Property="Padding" Value="5" />
+                            <Setter Property="Margin" Value="4" />
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="FontWeight" Value="Normal" />
+                            <Setter Property="Content" Value="&#xE785;" />
+                            <Setter Property="FontFamily" Value="{StaticResource MahApps.Fonts.Family.SymbolTheme}" />
+                            <Setter Property="HorizontalAlignment" Value="Right" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.TextBox}" TargetType="TextBox">
+                            <Setter Property="FontFamily" Value="Consolas" />
+                            <Setter Property="Margin" Value="4,4,0,4" />
+                        </Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Margin" Value="4" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
                     </Grid.Resources>
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -92,28 +110,16 @@
                         </Grid.ColumnDefinitions>
                         <TextBox
                             x:Name="RedTextBox"
-                            Margin="4,4,0,4"
-                            FontFamily="Consolas"
                             Text="{Binding Value, ElementName=RedSlider}"
                             TextChanged="RedTextBox_TextChanged" />
                         <Button
                             x:Name="LockRedButton"
                             Grid.Column="1"
-                            Margin="4"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
                             Click="LockRedButton_Click"
-                            Content="&#xE785;"
-                            FontFamily="{StaticResource MahApps.Fonts.Family.SymbolTheme}"
-                            Style="{StaticResource MahApps.Styles.Button.Square}"
                             ToolTip="Lock red channel" />
                     </Grid>
                     <Border Grid.Column="2">
-                        <TextBlock
-                            x:Name="RedTextBlock"
-                            Margin="4"
-                            VerticalAlignment="Center"
-                            Text="Red" />
+                        <TextBlock x:Name="RedTextBlock" Text="Red" />
                     </Border>
                     <Slider
                         x:Name="GreenSlider"
@@ -126,28 +132,16 @@
                         </Grid.ColumnDefinitions>
                         <TextBox
                             x:Name="GreenTextBox"
-                            Margin="4,4,0,4"
-                            FontFamily="Consolas"
                             Text="{Binding Value, ElementName=GreenSlider}"
                             TextChanged="GreenTextBox_TextChanged" />
                         <Button
                             x:Name="LockGreenButton"
                             Grid.Column="1"
-                            Margin="4"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
                             Click="LockGreenButton_Click"
-                            Content="&#xE785;"
-                            FontFamily="{StaticResource MahApps.Fonts.Family.SymbolTheme}"
-                            Style="{StaticResource MahApps.Styles.Button.Square}"
                             ToolTip="Lock green channel" />
                     </Grid>
                     <Border Grid.Row="1" Grid.Column="2">
-                        <TextBlock
-                            x:Name="GreenTextBlock"
-                            Margin="4"
-                            VerticalAlignment="Center"
-                            Text="Green" />
+                        <TextBlock x:Name="GreenTextBlock" Text="Green" />
                     </Border>
                     <Slider x:Name="BlueSlider" Grid.Row="2" />
                     <Grid Grid.Row="2" Grid.Column="1">
@@ -157,28 +151,16 @@
                         </Grid.ColumnDefinitions>
                         <TextBox
                             x:Name="BlueTextBox"
-                            Margin="4,4,0,4"
-                            FontFamily="Consolas"
                             Text="{Binding Value, ElementName=BlueSlider}"
                             TextChanged="BlueTextBox_TextChanged" />
                         <Button
                             x:Name="LockBlueButton"
                             Grid.Column="1"
-                            Margin="4"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
                             Click="LockBlueButton_Click"
-                            Content="&#xE785;"
-                            FontFamily="{StaticResource MahApps.Fonts.Family.SymbolTheme}"
-                            Style="{StaticResource MahApps.Styles.Button.Square}"
                             ToolTip="Lock Blue channel" />
                     </Grid>
                     <Border Grid.Row="2" Grid.Column="2">
-                        <TextBlock
-                            x:Name="BlueTextBlock"
-                            Margin="4"
-                            VerticalAlignment="Center"
-                            Text="Blue" />
+                        <TextBlock x:Name="BlueTextBlock" Text="Blue" />
                     </Border>
                 </Grid>
                 <Button
@@ -397,16 +379,22 @@
                 <ComboBox
                     x:Name="BookmarkComboBox"
                     Margin="4"
-                    SelectionChanged="BookmarkComboBox_SelectionChanged"
-                    ToolTip="{Binding Text, ElementName=BookmarkComboBox}" />
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="4" Text="Start Date:" />
-                    <TextBlock
-                        x:Name="StartDateBlock"
-                        Margin="4"
-                        VerticalAlignment="Bottom"
-                        FontFamily="Consolas" />
-                </StackPanel>
+                    SelectionChanged="BookmarkComboBox_SelectionChanged">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock
+                                    FontSize="14"
+                                    Text="{Binding L_Name}"
+                                    TextDecorations="Underline" />
+                                <TextBlock
+                                    FontFamily="Consolas"
+                                    FontWeight="Bold"
+                                    Text="{Binding Date}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </StackPanel>
         </Grid>
     </Grid>

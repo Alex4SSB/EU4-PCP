@@ -73,6 +73,7 @@ namespace EU4_PCP.Views
             BookmarkComboBox.IsEnabled = EnableBooks;
             BookmarkComboBox.ItemsSource = BookmarkComboBox.IsEnabled ? BookmarkList : null;
             BookmarkComboBox.SelectedIndex = SelectedBookmarkIndex;
+            BookmarkComboBox.ToolTip = CurrentDateFormat(true);
 
             if (SelectedMod)
             {
@@ -91,9 +92,6 @@ namespace EU4_PCP.Views
                     ModDupliCount.Text = ModDupliProvinceCount;
                 }
             }
-
-            StartDateBlock.Text = StartDateStr;
-            StartDateBlock.ToolTip = CurrentDateFormat(true);
 
             ProvCountColor();
             EnablePicker();

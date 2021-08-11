@@ -42,7 +42,7 @@ namespace EU4_PCP
         public static string StartDateStr;
         public static string GameVersion;
         public static string ModVersion;
-        public static List<string> BookmarkList = new();
+        public static List<ListBookmark> BookmarkList = new();
         public static int SelectedBookmarkIndex = -1;
         public static string GameProvinceCount;
         public static string GameMaxProvinces;

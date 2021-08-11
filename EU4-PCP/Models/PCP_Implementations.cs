@@ -1011,7 +1011,7 @@ namespace EU4_PCP
                 return;
             }
 
-            BookmarkList = Bookmarks.Select(b => b.Name).ToList();
+            BookmarkList = Bookmarks.Select(b => new ListBookmark(b)).ToList();
 
             SelectedBookmarkIndex = 0;
         }
