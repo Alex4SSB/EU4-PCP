@@ -173,7 +173,7 @@ namespace EU4_PCP.Views
                 NewProvBlock.Text = "Existing Province";
                 AddProvButton.Content = "Update";
                 OriginalColorBlock.Visibility = Visibility.Visible;
-                OriginalColorBlock.Text = $"Original color: ({ChosenProv.Color.R}, {ChosenProv.Color.G}, {ChosenProv.Color.B})";
+                OriginalColorBlock.Text = $"Original color: ({ChosenProv.Red}, {ChosenProv.Green}, {ChosenProv.Blue})";
                 OpenProv();
             }
             else
@@ -189,7 +189,7 @@ namespace EU4_PCP.Views
 
         private void OpenProv()
         {
-            NewProvNameTextBox.Text = ChosenProv.Name.Definition;
+            NewProvNameTextBox.Text = ChosenProv.Name;
             if (string.IsNullOrEmpty(NewProvNameTextBox.Text))
                 NewProvNameTextBox.Text = ChosenProv.Name.ToString();
 
@@ -258,7 +258,7 @@ namespace EU4_PCP.Views
                 ColorRectangle.Fill = new SolidColorBrush(PickedColor);
                 RedTextBox.Background =
                 GreenTextBox.Background =
-                BlueTextBox.Background = SelectBG(PickedColor, ChosenProv);
+                BlueTextBox.Background = SelectBG(PickedColor, ChosenProv?.province);
             }
             else
             {
@@ -277,7 +277,7 @@ namespace EU4_PCP.Views
             AddProvButton.IsEnabled = enable;
             NextIllegalButton.IsEnabled = enable
                 && ChosenProv
-                && !(ChosenProv.IsNameLegal() && ChosenProv.Color.IsLegal())
+                && !(ChosenProv.IsNameLegal() && ChosenProv.province.Color.IsLegal())
                 && !Storage.RetrieveBool(General.IgnoreIllegal)
                 && ModIllegalProvinceCount.ToInt() > 1;
         }
@@ -291,7 +291,7 @@ namespace EU4_PCP.Views
             if (!PickedColor.IsLegal()) return false;
 
             if (ChosenProv && (ChosenProv.Color.Equals(PickedColor)
-                    && (ChosenProv.Name.Definition == NewProvNameTextBox.Text)))
+                    && (ChosenProv.Name == NewProvNameTextBox.Text)))
                 return false;
 
             return true;

@@ -566,12 +566,20 @@ namespace EU4_PCP
             Parallel.ForEach(ProvNameFiles, (item) =>
             {
                 var nFile = File.ReadAllText(item.Path, UTF7);
-                var names = ProvNamesRE.Matches(nFile).Select(m => new ProvName() { Index = m.Groups["index"].Value.ToInt(), Name = m.Groups["name"].Value });
+                Dictionary<int, string> names = new();
+                foreach (Match prov in ProvNamesRE.Matches(nFile))
+                {
+                    var index = prov.Groups["index"].Value.ToInt();
+                    if (names.ContainsKey(index)) continue;
+
+                    names.Add(index, prov.Groups["name"].Value);
+                }
+
                 string name = item.File.Split('.')[0];
 
                 ProvNameClass query = Countries.Find(c => c.Name == name);
                 if (!query) query = Cultures.Find(c => c.Name == name);
-                if (query) query.ProvNames = names.ToList();
+                if (query) query.ProvNames = names;
             });
         }
 
@@ -611,7 +619,7 @@ namespace EU4_PCP
         /// <returns><see langword="true"/> if a name was successfully selected.</returns>
         private static bool DynamicName(Province prov, NameType mode)
         {
-            List<ProvName> source = mode switch
+            var source = mode switch
             {
                 NameType.Country => prov.Owner.ProvNames,
                 NameType.Culture => prov.Owner.Culture.ProvNames,
@@ -619,10 +627,8 @@ namespace EU4_PCP
                 _ => throw new NotImplementedException()
             };
 
-            if (source == null) return false;
-            var query = source.Find(prv => prv.Index == prov.Index);
-            if (!query) return false;
-            prov.Name.Dynamic = query.Name.ToString();
+            if (source is null || !source.ContainsKey(prov.Index)) return false;
+            prov.Name.Dynamic = source[prov.Index];
             return true;
         }
 
@@ -645,8 +651,8 @@ namespace EU4_PCP
                 Bookmarks.Add(new Bookmark
                 {
                     Code = codeMatch.Groups["name"].Value,
-                    BookDate = tempDate,
-                    DefBook = BookmarkDefRE.Match(bFile).Groups["default"].Success
+                    Date = tempDate,
+                    IsDefault = BookmarkDefRE.Match(bFile).Groups["default"].Success
                 });
             }
             if (!Bookmarks.Any()) return;
@@ -659,12 +665,12 @@ namespace EU4_PCP
         private static List<Bookmark> SortBooks(List<Bookmark> bookmarks)
         {
             var sortedBooks = new List<Bookmark>();
-            foreach (var item in bookmarks.GroupBy(book => book.BookDate).OrderBy(books => books.Key))
+            foreach (var item in bookmarks.GroupBy(book => book.Date).OrderBy(books => books.Key))
             {
                 if (item.Count() == 1)
                     sortedBooks.Add(item.Single());
-                else if (item.Count(b => b.DefBook) == 1)
-                    sortedBooks.Add(item.First(book => book.DefBook));
+                else if (item.Count(b => b.IsDefault) == 1)
+                    sortedBooks.Add(item.First(book => book.IsDefault));
             };
 
             return sortedBooks;
@@ -1082,7 +1088,7 @@ namespace EU4_PCP
                 else return;
             }
 
-            StartDate = Bookmarks[SelectedBookmarkIndex].BookDate;
+            StartDate = Bookmarks[SelectedBookmarkIndex].Date;
             StartDateStr = CurrentDateFormat(true, StartDate);
 
             ShowRnw = Storage.RetrieveBool(General.ShowAllProvinces);
@@ -1093,11 +1099,15 @@ namespace EU4_PCP
             DynamicSetup();
         }
 
-        public static string CurrentDateFormat(bool upperCase = false, DateTime? date = null)
+        public static string CurrentDateFormat(bool upperCase = false, DateTime? date = null, bool useDefaultFormat = false)
         {
-            var index = Storage.RetrieveValue(General.DateFormat) is string strIndex
+            int index = 0;
+            if (!useDefaultFormat)
+            {
+                index = Storage.RetrieveValue(General.DateFormat) is string strIndex
                 ? strIndex.ToInt()
                 : (int)General.DateFormat.ToString().GetDefault();
+            }
 
             var format = DATE_FORMATS[index];
             var outString = date is DateTime dateTime
@@ -1243,7 +1253,7 @@ namespace EU4_PCP
         /// <returns></returns>
         public static bool AddProv(Province newProv)
         {
-            var update = !(ChosenProv && ChosenProv.Color.IsLegal() && ChosenProv.IsNameLegal());
+            var update = !(ChosenProv && ChosenProv.province.Color.IsLegal() && ChosenProv.IsNameLegal());
 
             if (Provinces.ContainsKey(newProv.Index))
             {

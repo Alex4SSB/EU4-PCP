@@ -406,5 +406,31 @@ namespace EU4_PCP_Test
             var noMarkers = MarkerPrep(testProv, false, false);
             Assert.IsFalse(noMarkers.Any());
         }
+
+        [TestMethod]
+        public void BookmarkCtorTest()
+        {
+            DateTime date = new(2012, 9, 11); // it's the best
+            const string name = "Original bookmark", code = "ORIGIN_BOOK";
+
+            Bookmark origin = new()
+            {
+                Code = code,
+                Date = date,
+                Name = name,
+                IsDefault = true
+            };
+            Bookmark other = new(origin);
+
+            Assert.AreEqual(code, other.Code);
+            Assert.AreEqual(name, other.Name);
+            Assert.AreEqual(date, other.Date);
+            Assert.IsTrue(other.IsDefault);
+
+            ListBookmark book = new(origin, true);
+
+            Assert.AreEqual(name, book.Name);
+            Assert.AreEqual("2012-Sep-11", book.Date);
+        }
     }
 }

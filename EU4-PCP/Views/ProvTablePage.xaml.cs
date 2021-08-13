@@ -126,7 +126,7 @@ namespace EU4_PCP.Views
         {
             if (e.Source is DataGridCellsPresenter row && row.DataContext is TableProvince prov && prov.IsProvDupli)
             {
-                ScrollToProv(prov.NextDupli);
+                ScrollToProv(prov.province.NextDupli);
             }
         }
 

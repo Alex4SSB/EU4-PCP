@@ -6,12 +6,12 @@ using static EU4_PCP.PCP_Implementations;
 namespace EU4_PCP
 {
 
-    public abstract class ProvinceAbstract : IComparable<ProvinceAbstract>
+    public abstract class AbstractProvince : IComparable<AbstractProvince>
     {
-        public int Index;
+        public int Index { get; set; }
         public CompositeName Name;
 
-        public ProvinceAbstract(int index = -1, CompositeName name = null)
+        public AbstractProvince(int index = -1, CompositeName name = null)
         {
             Index = index;
             Name = name is null ? new() : name;
@@ -22,26 +22,26 @@ namespace EU4_PCP
             return ToString() is not null;
         }
 
-        public int CompareTo(ProvinceAbstract other)
+        public int CompareTo(AbstractProvince other)
         {
             return Index.CompareTo(other.Index);
         }
 
         public override string ToString() => Name.ToString();
 
-        public static implicit operator bool(ProvinceAbstract obj)
+        public static implicit operator bool(AbstractProvince obj)
         {
             return obj is object && obj.Index > -1;
         }
 
-        public static implicit operator int(ProvinceAbstract prov)
+        public static implicit operator int(AbstractProvince prov)
         {
             return prov.Index;
         }
 
     }
 
-    public class Province : ProvinceAbstract
+    public class Province : AbstractProvince
     {
         public P_Color Color;
         public Country Owner;
@@ -91,28 +91,30 @@ namespace EU4_PCP
 
     }
 
-    public class TableProvince : Province
+    public class TableProvince : AbstractProvince
     {
-        public string B_Color { get { return $"#{(Color.IsLegal() ? Color.Name : Colors.Transparent)}"; } }
-        public int ID { get { return Index; } }
-        public string P_Name { get { return Name.ToString(); } }
-        public short Red { get { return Color.R; } }
-        public short Green { get { return Color.G; } }
-        public short Blue { get { return Color.B; } }
+        public readonly Province province;
+        public string Color { get { return $"#{(province.Color.IsLegal() ? province.Color.Name : Colors.Transparent)}"; } }
+        public new string Name { get { return province.Name.ToString(); } }
+        public short Red { get { return province.Color.R; } }
+        public short Green { get { return province.Color.G; } }
+        public short Blue { get { return province.Color.B; } }
 
-        public bool IsProvDupli { get { return NextDupli; } }
-        public string IsColorLegal { get { return Color.IsLegal() ? "" : "\uE711"; } }
-        public bool IsProvLegal { get { return IsNameLegal() && Color.IsLegal(); } }
+        public bool IsProvDupli { get { return province.NextDupli; } }
+        public string IsColorLegal { get { return province.Color.IsLegal() ? "" : "\uE711"; } }
+        public bool IsProvLegal { get { return province.IsNameLegal() && province.Color.IsLegal(); } }
 
-        public TableProvince(Province prov) : base(prov) { }
+        public TableProvince(Province prov) : base(prov)
+        {
+            province = prov;
+        }
+
+        public override string ToString() => Name;
     }
-
-    public class ProvName : ProvinceAbstract
-    { }
 
     public class ProvNameClass
     {
-        public List<ProvName> ProvNames;
+        public Dictionary<int, string> ProvNames;
         public string Name;
 
         public static implicit operator bool(ProvNameClass obj)
@@ -277,27 +279,63 @@ namespace EU4_PCP
 
     }
 
-    public class Bookmark : IComparable<Bookmark>
+    public class AbstractBookmark : IComparable<AbstractBookmark>
     {
-        public string Code;
-        public DateTime BookDate;
-        public string Name;
-        public bool DefBook;
+        public DateTime Date { get; set; }
+        public string Name { get; set; }
 
-        public Bookmark()
+        public AbstractBookmark()
         { }
 
-        public Bookmark(Bookmark book)
+        public AbstractBookmark(AbstractBookmark other)
         {
-            Code = book.Code;
-            BookDate = book.BookDate;
-            Name = book.Name;
-            DefBook = book.DefBook;
+            Date = other.Date;
+            Name = other.Name;
         }
 
-        public static implicit operator bool(Bookmark obj)
+        public int CompareTo(AbstractBookmark other)
+        {
+            return Date.CompareTo(other.Date);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is AbstractBookmark bookmark && Date == bookmark.Date;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public static bool operator ==(AbstractBookmark left, AbstractBookmark right)
+        {
+            return left.CompareTo(right) == 0;
+        }
+
+        public static bool operator !=(AbstractBookmark left, AbstractBookmark right)
+        {
+            return left.CompareTo(right) != 0;
+        }
+
+        public static implicit operator bool(AbstractBookmark obj)
         {
             return obj is object;
+        }
+    }
+
+    public class Bookmark : AbstractBookmark
+    {
+        public string Code { get; set; }
+        public bool IsDefault { get; set; }
+
+        public Bookmark() : base()
+        { }
+
+        public Bookmark(Bookmark book) : base(book)
+        {
+            Code = book.Code;
+            IsDefault = book.IsDefault;
         }
 
         public override string ToString()
@@ -307,39 +345,16 @@ namespace EU4_PCP
 
             return Code;
         }
-
-        public int CompareTo(Bookmark other)
-        {
-            return BookDate.CompareTo(other.BookDate);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is Bookmark bookmark && BookDate == bookmark.BookDate;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public static bool operator ==(Bookmark left, Bookmark right)
-        {
-            return left.CompareTo(right) == 0;
-        }
-
-        public static bool operator !=(Bookmark left, Bookmark right)
-        {
-            return left.CompareTo(right) != 0;
-        }
     }
 
-    public class ListBookmark : Bookmark
+    public class ListBookmark : AbstractBookmark
     {
-        public string L_Name { get { return Name; } }
-        public string Date { get { return CurrentDateFormat(false, BookDate); } }
+        public new string Date { get; set; }
 
-        public ListBookmark(Bookmark book) : base(book) { }
+        public ListBookmark(Bookmark book, bool useDefaultFormat = false) : base(book)
+        {
+            Date = CurrentDateFormat(false, base.Date, useDefaultFormat);
+        }
     }
 
     public class ModObj : IComparable<ModObj>
