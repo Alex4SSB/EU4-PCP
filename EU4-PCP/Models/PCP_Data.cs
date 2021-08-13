@@ -1,6 +1,7 @@
 ﻿using EU4_PCP.Models;
 using System;
 using System.Collections.Generic;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace EU4_PCP
@@ -56,5 +57,6 @@ namespace EU4_PCP
         public static TableProvince ChosenProv;
         public static bool NavigateToColorPicker = false;
         public static bool NavigateToSettings = false;
+        public static int SelectedGridRow = -1;
     }
 }

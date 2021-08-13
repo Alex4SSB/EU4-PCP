@@ -37,6 +37,8 @@ namespace EU4_PCP.Views
             ProvincesShown = ProvTable.Items.Count.ToString();
 
             PaintMarkers();
+
+            ProvTable.SelectedIndex = SelectedGridRow;
         }
 
         public void OnNavigatedFrom()
@@ -126,6 +128,11 @@ namespace EU4_PCP.Views
             {
                 ScrollToProv(prov.NextDupli);
             }
+        }
+
+        private void ProvTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectedGridRow = ProvTable.SelectedIndex;
         }
     }
 }

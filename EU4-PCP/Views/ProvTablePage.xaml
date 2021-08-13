@@ -49,6 +49,7 @@
                 ItemsSource="{Binding}"
                 KeyboardNavigation.TabNavigation="Once"
                 ScrollViewer.ScrollChanged="ProvTable_ScrollChanged"
+                SelectionChanged="ProvTable_SelectionChanged"
                 SelectionMode="Single"
                 SelectionUnit="FullRow"
                 SizeChanged="ProvTable_SizeChanged">
