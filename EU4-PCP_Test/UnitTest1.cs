@@ -432,5 +432,15 @@ namespace EU4_PCP_Test
             Assert.AreEqual(name, book.Name);
             Assert.AreEqual("2012-Sep-11", book.Date);
         }
+
+        [TestMethod]
+        public void ProvNameTest()
+        {
+            var provNames = ProvNamePrep(new($@"{TestFiles}\cornish.txt"));
+
+            Assert.AreEqual("cornish", provNames.Name);
+            Assert.AreEqual("Kernow", provNames.ProvNames[233]);
+            Assert.IsTrue(provNames.ProvNames.Count == 11);
+        }
     }
 }

@@ -93,6 +93,25 @@ namespace EU4_PCP_Test.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 233 = &quot;Kernow&quot; #Cornwall
+        ///4373 = &quot;Dewnens&quot; #Devon
+        ///4130 = &quot;Stradneth&quot; #Somerset
+        ///4374 = &quot;Durotriges&quot; #Dorset
+        ///234 = &quot;Belgae&quot; #Hampshire
+        ///236 = &quot;Loundres&quot; #London
+        ///237 = &quot;Rysoghen&quot; #Oxford
+        ///4370 = &quot;Grantapons&quot; #Cambridge
+        ///245 = &quot;Evrek&quot; #York
+        ///373 = &quot;Dulynn&quot; #Dublin
+        ///4369 = &quot;Ceredigion&quot; #Carmarthen.
+        /// </summary>
+        internal static string cornish {
+            get {
+                return ResourceManager.GetString("cornish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to # Do not change tags in here without changing every other reference to them.
         ///# If adding new groups or cultures, make sure they are unique.
         ///#

@@ -117,6 +117,15 @@ namespace EU4_PCP
         public Dictionary<int, string> ProvNames;
         public string Name;
 
+        public ProvNameClass(string name, Dictionary<int, string> provNames)
+        {
+            ProvNames = provNames;
+            Name = name;
+        }
+
+        public ProvNameClass()
+        { }
+
         public static implicit operator bool(ProvNameClass obj)
         {
             return obj is object;

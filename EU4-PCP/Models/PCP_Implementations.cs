@@ -436,7 +436,14 @@ namespace EU4_PCP
             object countryLock = new();
             Parallel.ForEach(CountryFiles, cFile =>
             {
-                string code = cFile.File[..3];
+                var code = "";
+                if (RemoveFileExtRE.Match(cFile.File) is Match fileName && fileName.Success)
+                {
+                    code = fileName.Groups["name"].Value;
+                }
+                else
+                    return;
+                
                 string countryFile = File.ReadAllText(cFile.Path);
                 string priCul = "";
                 var match = PriCulRE.Match(countryFile);
@@ -565,22 +572,37 @@ namespace EU4_PCP
         {
             Parallel.ForEach(ProvNameFiles, (item) =>
             {
-                var nFile = File.ReadAllText(item.Path, UTF7);
-                Dictionary<int, string> names = new();
-                foreach (Match prov in ProvNamesRE.Matches(nFile))
-                {
-                    var index = prov.Groups["index"].Value.ToInt();
-                    if (names.ContainsKey(index)) continue;
-
-                    names.Add(index, prov.Groups["name"].Value);
-                }
-
-                string name = item.File.Split('.')[0];
-
-                ProvNameClass query = Countries.Find(c => c.Name == name);
-                if (!query) query = Cultures.Find(c => c.Name == name);
-                if (query) query.ProvNames = names;
+                var provName = ProvNamePrep(item);
+                if (!provName)
+                    return;
+                
+                ProvNameClass query = Countries.Find(c => c.Name == provName.Name);
+                if (!query) query = Cultures.Find(c => c.Name == provName.Name);
+                if (query) query.ProvNames = provName.ProvNames;
             });
+        }
+
+        public static ProvNameClass ProvNamePrep(FileObj file)
+        {
+            var name = "";
+            if (RemoveFileExtRE.Match(file.File) is Match fileName && fileName.Success)
+            {
+                name = fileName.Groups["name"].Value;
+            }
+            else
+                return null;
+
+            var fileContent = File.ReadAllText(file.Path, UTF7);
+            Dictionary<int, string> provNames = new();
+            foreach (Match prov in ProvNamesRE.Matches(fileContent))
+            {
+                var index = prov.Groups["index"].Value.ToInt();
+                if (provNames.ContainsKey(index)) continue;
+
+                provNames.Add(index, prov.Groups["name"].Value);
+            }
+            
+            return new(name, provNames);
         }
 
         /// <summary>

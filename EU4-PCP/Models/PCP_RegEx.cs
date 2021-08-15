@@ -31,6 +31,7 @@ namespace EU4_PCP
         public static readonly Regex CulClearRE = new(@"\w+_names\s*=\s*{[\s\S]+?}|\w+\s*=\s*\w+|#.*", RegexOptions.Multiline);
         public static readonly Regex CulGroupsRE = new(@"(?<group>\w+)(?<cultures>[\s\S]*?(?:{\s*})+\s+})");
         public static readonly Regex CulSingleRE = new(@"^[^#\r\n\w]*?\s*(?<name>\w+)\s*=", RegexOptions.Multiline);
+        public static readonly Regex RemoveFileExtRE = new(@"(?<name>.*)\..+$");
     }
 
 }
