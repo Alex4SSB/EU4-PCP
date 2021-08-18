@@ -442,5 +442,20 @@ namespace EU4_PCP_Test
             Assert.AreEqual("Kernow", provNames.ProvNames[233]);
             Assert.IsTrue(provNames.ProvNames.Count == 11);
         }
+
+        [TestMethod]
+        public void BookPrepTest()
+        {
+            var ottoBook = BookPrep($@"{TestFiles}\rise_of_the_ottomans.txt");
+
+            Assert.IsTrue(ottoBook.Code == "RISE_OF_THE_OTTOMANS");
+            Assert.IsTrue(ottoBook.Date == new DateTime(1444, 11, 11));
+            Assert.IsTrue(ottoBook.IsDefault);
+
+            var civilBook = BookPrep($@"{TestFiles}\american_civil_war.txt");
+
+            Assert.IsTrue(civilBook.Code == "AMERICAN_CIVIL_WAR_NAME");
+            Assert.IsTrue(civilBook.Date == new DateTime(1861, 7, 1));
+        }
     }
 }

@@ -1,0 +1,14 @@
+
+bookmark =
+{
+date = 1861.7.1 #
+
+# name="CIVIL_WAR_OF_MERICA_NAME"
+
+	name = "AMERICAN_CIVIL_WAR_NAME"
+	desc = "AMERICAN_CIVIL_WAR_DESC"
+	
+	
+	country = USA
+	country = CSA
+}

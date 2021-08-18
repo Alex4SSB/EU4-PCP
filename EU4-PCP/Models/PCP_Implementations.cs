@@ -655,30 +655,44 @@ namespace EU4_PCP
         }
 
         /// <summary>
-        /// Creates the <see cref="Bookmark"/> objects in the <see cref="Bookmarks"/> array. <br /> 
+        /// Creates a <see cref="Bookmark"/> object from a bookmark file. <br /> 
         /// Initializes with code and date.
         /// </summary>
-        public static void BookPrep()
+        /// <param name="bookFile">Full path of the bookmark file</param>
+        /// <returns>A Bookmark object with the correct Code, Date and Default parameters.</returns>
+        public static Bookmark BookPrep(string bookFile)
         {
             // Multiple RegEx patterns are used to allow different order of bookmark code, date and default
-            foreach (var bookFile in BookFiles)
-            {
-                string bFile = File.ReadAllText(bookFile.Path);
-                var codeMatch = BookmarkCodeRE.Match(bFile);
-                var dateMatch = BookmarkDateRE.Match(bFile);
-                if (!codeMatch.Success || !dateMatch.Success) continue;
+            string bFile = File.ReadAllText(bookFile);
+            var codeMatch = BookmarkCodeRE.Match(bFile);
+            var dateMatch = BookmarkDateRE.Match(bFile);
+            if (!codeMatch.Success || !dateMatch.Success)
+                return null;
 
-                DateTime tempDate = DateParser(dateMatch.Groups["date"].Value, StartDate.Year < 1000);
-                if (tempDate == DateTime.MinValue) { continue; }
-                Bookmarks.Add(new Bookmark
-                {
-                    Code = codeMatch.Groups["name"].Value,
-                    Date = tempDate,
-                    IsDefault = BookmarkDefRE.Match(bFile).Groups["default"].Success
-                });
-            }
-            if (!Bookmarks.Any()) return;
-            Bookmarks = SortBooks(Bookmarks);
+            DateTime tempDate = DateParser(dateMatch.Groups["date"].Value, StartDate.Year < 1000);
+            if (tempDate == DateTime.MinValue)
+                return null;
+
+            return new()
+            {
+                Code = codeMatch.Groups["name"].Value,
+                Date = tempDate,
+                IsDefault = BookmarkDefRE.Match(bFile).Groups["default"].Success
+            };
+        }
+
+        /// <summary>
+        /// Populates the <see cref="Bookmarks"/> list.
+        /// </summary>
+        public static void BookSetup()
+        {
+            Bookmarks = (from bookFile in BookFiles
+                         let book = BookPrep(bookFile.Path)
+                         where book
+                         select book).ToList();
+
+            if (Bookmarks.Any())
+                Bookmarks = SortBooks(Bookmarks);
         }
 
         /// <summary>
@@ -749,7 +763,7 @@ namespace EU4_PCP
         /// Reads the files from the mod folder, and creates the <see cref="ModObj"/> 
         /// objects in the <see cref="Mods"/> list.
         /// </summary>
-        public static void ModPrep(bool parallel = true)
+        public static void ModSetup(bool parallel = true)
         {
             object modLock = new();
             IEnumerable<string> files;
@@ -759,53 +773,50 @@ namespace EU4_PCP
             }
             catch (Exception) { return; }
 
-            // Multiple RegEx patterns are used to allow different order of mod name, path and compatible version
             if (parallel)
             {
                 Parallel.ForEach(files, modFile =>
                 {
-                    string mFile = File.ReadAllText(modFile);
-                    var nameMatch = ModNameRE.Match(mFile);
-                    var pathMatch = ModPathRE.Match(mFile);
-                    var verMatch = ModVerRE.Match(mFile);
-
-                    if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) return;
+                    var mod = ModPrep(modFile);
+                    if (!mod) return;
 
                     // With many mods in the folder, a context switch that will cause an OutOfRange exception is more likely
                     lock (modLock)
                     {
-                        Mods.Add(new ModObj
-                        {
-                            Name = nameMatch.Groups["name"].Value,
-                            Path = ModPathPrep(pathMatch.Groups["path"].Value),
-                            Ver = verMatch.Groups["gameVer"].Value,
-                            Replace = ReplacePrep(mFile)
-                        });
+                        Mods.Add(mod);
                     }
                 });
             }
             else
             {
-                foreach (var modFile in files)
-                {
-                    string mFile = File.ReadAllText(modFile);
-                    var nameMatch = ModNameRE.Match(mFile);
-                    var pathMatch = ModPathRE.Match(mFile);
-                    var verMatch = ModVerRE.Match(mFile);
-
-                    if (!(nameMatch.Success && pathMatch.Success && verMatch.Success)) return;
-
-                    Mods.Add(new ModObj
-                    {
-                        Name = nameMatch.Value,
-                        Path = ModPathPrep(pathMatch.Value),
-                        Ver = verMatch.Value,
-                        Replace = ReplacePrep(mFile)
-                    });
-                }
+                Mods = (from modFile in files
+                        let mod = ModPrep(modFile)
+                        where mod
+                        select mod).ToList();
             }
 
             Mods.Sort();
+        }
+
+        public static ModObj ModPrep(string modFile)
+        {
+            // Multiple RegEx patterns are used to allow different order of mod name, path and compatible version
+
+            string mFile = File.ReadAllText(modFile);
+            var nameMatch = ModNameRE.Match(mFile);
+            var pathMatch = ModPathRE.Match(mFile);
+            var verMatch = ModVerRE.Match(mFile);
+
+            if (!(nameMatch.Success && pathMatch.Success && verMatch.Success))
+                return null;
+
+            return new ModObj()
+            {
+                Name = nameMatch.Groups["name"].Value,
+                Path = ModPathPrep(pathMatch.Groups["path"].Value),
+                Ver = verMatch.Groups["gameVer"].Value,
+                Replace = ReplacePrep(mFile)
+            };
         }
 
         private static string ModPathPrep(string scriptedPath)

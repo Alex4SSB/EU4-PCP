@@ -35,7 +35,7 @@ namespace EU4_PCP
             var modNames = new List<string> { "[Vanilla - no mod]" };
             if (PathHandler(Scope.Mod))
             {
-                ModPrep();
+                ModSetup();
                 modNames.AddRange(Mods.Select(m => m.Name));
             }
             ModList = modNames;
@@ -119,7 +119,7 @@ namespace EU4_PCP
             if (Naming == ProvinceNames.Dynamic && SelectedBookmarkIndex < 1)
             {
                 FetchFiles(FileType.Bookmark);
-                BookPrep();
+                BookSetup();
             }
 
             if (!LocalisationSetup(Naming == ProvinceNames.Dynamic))

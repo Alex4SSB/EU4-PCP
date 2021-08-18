@@ -121,6 +121,9 @@
   <data name="ACH" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\testfiles\ach - principality of achaia.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="american_civil_war" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\testfiles\american_civil_war.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
   <data name="cornish" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\testfiles\cornish.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -135,5 +138,8 @@
   </data>
   <data name="Prov_151" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\TestFiles\151 - Thrace.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="rise_of_the_ottomans" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\testfiles\rise_of_the_ottomans.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
 </root>

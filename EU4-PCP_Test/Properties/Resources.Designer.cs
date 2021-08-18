@@ -93,6 +93,25 @@ namespace EU4_PCP_Test.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 
+        ///bookmark =
+        ///{
+        ///	name = &quot;AMERICAN_CIVIL_WAR_NAME&quot;
+        ///	desc = &quot;AMERICAN_CIVIL_WAR_DESC&quot;
+        ///	date = 1861.7.1
+        ///	
+        ///	country = USA
+        ///	country = CSA
+        ///}
+        ///.
+        /// </summary>
+        internal static string american_civil_war {
+            get {
+                return ResourceManager.GetString("american_civil_war", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 233 = &quot;Kernow&quot; #Cornwall
         ///4373 = &quot;Dewnens&quot; #Devon
         ///4130 = &quot;Stradneth&quot; #Somerset
@@ -196,6 +215,39 @@ namespace EU4_PCP_Test.Properties {
         internal static string Prov_151 {
             get {
                 return ResourceManager.GetString("Prov_151", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to bookmark =
+        ///{
+        ///	name = &quot;RISE_OF_THE_OTTOMANS&quot;
+        ///	desc = &quot;RISE_OF_THE_OTTOMANS_DESC&quot;
+        ///	date = 1444.11.11
+        ///	
+        ///	center = 112
+        ///	default = yes
+        ///	
+        ///	country = TUR
+        ///	country = CAS
+        ///	country = POR	
+        ///	country = FRA
+        ///	country = ENG
+        ///	country = HAB
+        ///	country = BRA	
+        ///	country = SWE
+        ///	country = MOS
+        ///	country = BUR
+        ///	country = POL
+        ///	
+        ///	easy_country = CAS
+        ///	easy_country = POR
+        ///	easy_country = TUR
+        ///}.
+        /// </summary>
+        internal static string rise_of_the_ottomans {
+            get {
+                return ResourceManager.GetString("rise_of_the_ottomans", resourceCulture);
             }
         }
     }
