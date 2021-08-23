@@ -6,7 +6,6 @@ namespace EU4_PCP
     {
         // Global read-only RegEx patterns
         public static readonly Regex DefinesDateRE = new(@"(?<=START_DATE *= *"")[\d.]+(?="")");
-        public static readonly Regex DefinesFileRE = new(@"\w+\.lua$");
         public static readonly Regex ProvNamesRE = new(@"(?<index>\d+)\s*=\s*""(?<name>.+?)""", RegexOptions.Multiline);
         public static readonly Regex BookmarkCodeRE = new(@"^[^#\r\n]*name\s*=\s*""(?<name>.+?)""", RegexOptions.Multiline);
         public static readonly Regex BookmarkDateRE = new(@"^[^#\r\n]*date\s*=\s*(?<date>[\d.]+)", RegexOptions.Multiline);

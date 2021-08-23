@@ -3,7 +3,6 @@ using EU4_PCP.Models;
 using EU4_PCP.Services;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -719,13 +718,18 @@ namespace EU4_PCP
         {
             if (!SelectedMod) return;
 
+            if (!Directory.Exists(SteamModPath + DefinesFolderPath))
+                return;
+
             try
             {
-                DefinesFiles = Directory.GetFiles(SteamModPath + DefinesPath).ToArray().Where(
-                    f => DefinesFileRE.Match(f).Success).ToList();
+                DefinesFiles = Directory.GetFiles(SteamModPath + DefinesFolderPath, "*.lua").ToList();
             }
             catch (Exception) { }
-            DefinesFiles.Add(SteamModPath + DefinesLuaPath);
+
+            var path = SteamModPath + DefinesFilePath;
+            if (File.Exists(path))
+                DefinesFiles.Add(path);
         }
 
         /// <summary>
@@ -733,30 +737,62 @@ namespace EU4_PCP
         /// </summary>
         public static void DefinesPrep()
         {
+            StartDate = DateTime.MinValue;
+
             if (SelectedMod)
             {
+                object mutex = new();
+
                 Parallel.ForEach(DefinesFiles, dFile =>
                 {
-                    DefinesSetup(dFile);
+                    DefinesSetup(dFile, mutex);
                 });
-                if (StartDate != DateTime.MinValue) return;
+
+                if (StartDate != DateTime.MinValue)
+                    return;
             }
-            DefinesSetup(GamePath + DefinesLuaPath);
+
+            DefinesSetup(GamePath + DefinesFilePath);
         }
 
         /// <summary>
         /// Parses the start date from a defines file.
         /// </summary>
         /// <param name="path">The defines file to parse.</param>
-        private static void DefinesSetup(string path)
+        private static void DefinesSetup(string path, object mutex = null)
         {
             Match match;
+            string fileContent;
+
             try
             {
-                match = DefinesDateRE.Match(File.ReadAllText(path));
-                StartDate = DateParser(match.Value, true);
+                fileContent = File.ReadAllText(path);
             }
-            catch (Exception) { return; }
+            catch (Exception)
+            {
+                return;
+            }
+
+            match = DefinesDateRE.Match(fileContent);
+            if (!match.Success)
+                return;
+
+            var date = DateParser(match.Value, true);
+
+            if (mutex is null)
+            {
+                StartDate = date;
+            }
+            else
+            {
+                lock (mutex)
+                {
+                    if (StartDate != DateTime.MinValue)
+                        return;
+
+                    StartDate = date;
+                }
+            }
         }
 
         /// <summary>

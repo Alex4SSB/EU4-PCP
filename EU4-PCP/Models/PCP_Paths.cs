@@ -24,8 +24,8 @@ namespace EU4_PCP
         public static readonly string CultureFile = @"\00_cultures.txt";
         public static readonly string ProvNamesPath = @"\common\province_names";
         public static readonly string BookmarksPath = @"\common\bookmarks";
-        public static readonly string DefinesPath = @"\common\defines";
-        public static readonly string DefinesLuaPath = @"\common\defines.lua";
+        public static readonly string DefinesFolderPath = @"\common\defines";
+        public static readonly string DefinesFilePath = @"\common\defines.lua";
 
         // REPLACE FOLDERS
         public static readonly string CulturesRep = "common/cultures";
