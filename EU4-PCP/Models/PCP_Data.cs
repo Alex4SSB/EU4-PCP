@@ -11,7 +11,7 @@ namespace EU4_PCP
         // BOOLEANS
         public static bool ShowRnw;
         public static bool UpdateCountries;
-        public static bool Lockdown = false;
+        public static bool Lockdown;
         public static bool CheckDupli;
         public static bool ShowIllegal;
         public static AutoLoad LoadValue;
@@ -55,8 +55,9 @@ namespace EU4_PCP
         public static double ProvTableIndex = 0;
         public static Color ColorPickerPickedColor;
         public static TableProvince ChosenProv;
-        public static bool NavigateToColorPicker = false;
-        public static bool NavigateToSettings = false;
+        public static bool NavigateToColorPicker;
+        public static bool NavigateToSettings;
         public static int SelectedGridRow = -1;
+        public static bool AreBooksOverridden;
     }
 }

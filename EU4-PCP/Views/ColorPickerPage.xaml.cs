@@ -77,8 +77,7 @@ namespace EU4_PCP.Views
 
             if (SelectedMod)
             {
-                string modPath = Directory.GetParent(PCP_Paths.SteamModPath).FullName;
-                BookmarkBlock.Text = $"Bookmark Selection{(BookFiles.Any(b => Directory.GetParent(b.Path).FullName.Contains(modPath)) ? "" : " *")}";
+                BookmarkBlock.Text = $"Bookmark Selection{(AreBooksOverridden ? " *" : "")}";
 
                 if (Storage.RetrieveBool(General.ShowIllegalProv))
                 {
@@ -189,9 +188,7 @@ namespace EU4_PCP.Views
 
         private void OpenProv()
         {
-            NewProvNameTextBox.Text = ChosenProv.Name;
-            if (string.IsNullOrEmpty(NewProvNameTextBox.Text))
-                NewProvNameTextBox.Text = ChosenProv.Name.ToString();
+            NewProvNameTextBox.Text = ChosenProv.province.Name.Definition;
 
             NextProvBlock.Text = ChosenProv.Index.ToString();
             RedSlider.Value = ChosenProv.Red;

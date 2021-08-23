@@ -91,7 +91,7 @@ namespace EU4_PCP
             ModVersion = "Mod";
             if (SelectedMod)
             {
-                ModVersion += $" - {SelectedMod.Ver}";
+                ModVersion += $" - {SelectedMod.GameVer}";
             }
 
             CountProv(SelectedMod);

@@ -24,7 +24,7 @@ namespace EU4_PCP
         public static readonly Regex DefMapRE = new(@"max_provinces.*");
         public static readonly Regex ModReplaceRE = new(@"^[^#\r\n]*replace_path\s*=\s*""(?<replace>.+?)""", RegexOptions.Multiline);
         public static readonly Regex ModNameRE = new(@"^[^#\r\n]*name\s*=\s*""(?<name>.+?)""", RegexOptions.Multiline);
-        public static readonly Regex ModVerRE = new(@"^[^#\r\n]*supported_version\s*=\s*""(?<gameVer>\d+(?:\.\d+)*?)(?:(?:\.\*)|\.)*""", RegexOptions.Multiline);
+        public static readonly Regex ModVerRE = new(@"^[^#\r\n]*supported_version\s*=\s*""(?<gameVer>\d+(?:\.\d+)*?)(?:(?:\.\*)|\.|\*)*""", RegexOptions.Multiline);
         public static readonly Regex ModPathRE = new(@"^[^#\r\n_]*path\s*=\s*""(?<path>.+?)""", RegexOptions.Multiline);
         public static readonly Regex RnwRE = new(@"Unused(?:Land)?\d+|RNW");
         public static readonly Regex CulClearRE = new(@"\w+_names\s*=\s*{[\s\S]+?}|\w+\s*=\s*\w+|#.*", RegexOptions.Multiline);

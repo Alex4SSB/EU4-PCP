@@ -370,7 +370,7 @@ namespace EU4_PCP
     {
         public string Name;
         public string Path;
-        public string Ver; // Supported game version
+        public string GameVer;
         public Replace Replace;
 
         public static implicit operator bool(ModObj obj)

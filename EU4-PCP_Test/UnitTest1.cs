@@ -457,5 +457,30 @@ namespace EU4_PCP_Test
             Assert.IsTrue(civilBook.Code == "AMERICAN_CIVIL_WAR_NAME");
             Assert.IsTrue(civilBook.Date == new DateTime(1861, 7, 1));
         }
+
+        [TestMethod]
+        public void ModPrepTest()
+        {
+            var eb = ModPrep($@"{TestFiles}\mods\EnhancedBritain.mod", TestFiles);
+
+            Assert.IsTrue(eb.Name == "Enhanced Britain");
+            Assert.IsTrue(!string.IsNullOrEmpty(eb.Path));
+            Assert.IsTrue(eb.GameVer == "1.21");
+
+            var tot = ModPrep($@"{TestFiles}\mods\typus.mod", TestFiles);
+
+            Assert.IsTrue(!string.IsNullOrEmpty(tot.Path));
+
+            var et = ModPrep($@"{TestFiles}\mods\ugc_217416366.mod", TestFiles);
+
+            Assert.IsTrue(et.GameVer == "1.31");
+            Assert.IsTrue(!string.IsNullOrEmpty(et.Path));
+            Assert.IsTrue(et.Replace.Countries && et.Replace.Provinces && !et.Replace.Bookmarks);
+
+            // Directory for Bellum Orbis Terrarum 3 doesn't exist in TestFiles, so null should be returned
+            var bot3 = ModPrep($@"{TestFiles}\mods\lostmc.mod", TestFiles);
+
+            Assert.IsTrue(bot3 is null);
+        }
     }
 }

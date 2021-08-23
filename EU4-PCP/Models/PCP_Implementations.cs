@@ -809,11 +809,12 @@ namespace EU4_PCP
             }
             catch (Exception) { return; }
 
+            var modParentDir = Directory.GetParent(ParadoxModPath).FullName;
             if (parallel)
             {
                 Parallel.ForEach(files, modFile =>
                 {
-                    var mod = ModPrep(modFile);
+                    var mod = ModPrep(modFile, modParentDir);
                     if (!mod) return;
 
                     // With many mods in the folder, a context switch that will cause an OutOfRange exception is more likely
@@ -826,7 +827,7 @@ namespace EU4_PCP
             else
             {
                 Mods = (from modFile in files
-                        let mod = ModPrep(modFile)
+                        let mod = ModPrep(modFile, modParentDir)
                         where mod
                         select mod).ToList();
             }
@@ -834,7 +835,7 @@ namespace EU4_PCP
             Mods.Sort();
         }
 
-        public static ModObj ModPrep(string modFile)
+        public static ModObj ModPrep(string modFile, string modParentDir)
         {
             // Multiple RegEx patterns are used to allow different order of mod name, path and compatible version
 
@@ -846,25 +847,31 @@ namespace EU4_PCP
             if (!(nameMatch.Success && pathMatch.Success && verMatch.Success))
                 return null;
 
+            var modPath = ModPathPrep(pathMatch.Groups["path"].Value, modParentDir);
+            if (modPath is null)
+                return null;
+
             return new ModObj()
             {
                 Name = nameMatch.Groups["name"].Value,
-                Path = ModPathPrep(pathMatch.Groups["path"].Value),
-                Ver = verMatch.Groups["gameVer"].Value,
+                Path = modPath,
+                GameVer = verMatch.Groups["gameVer"].Value,
                 Replace = ReplacePrep(mFile)
             };
         }
 
-        private static string ModPathPrep(string scriptedPath)
+        private static string ModPathPrep(string scriptedPath, string modParentDir)
         {
             if (!Directory.Exists(scriptedPath))
             {
-                var tempPath = $@"{Directory.GetParent(ParadoxModPath).FullName}\{scriptedPath.TrimStart('/', '\\')}";
-                if (Directory.Exists(tempPath))
-                    scriptedPath = tempPath;
+                var tempPath = $@"{modParentDir}\{scriptedPath.TrimStart('/', '\\')}";
+                if (!Directory.Exists(tempPath))
+                    return null;
+
+                scriptedPath = tempPath;
             }
 
-            return scriptedPath;
+            return Path.GetFullPath(scriptedPath);
         }
 
         /// <summary>
@@ -1636,6 +1643,9 @@ namespace EU4_PCP
             var filesList = SelectList(scope);
             IEnumerable<string> baseFiles, addFiles;
 
+            if (scope == FileType.Bookmark)
+                AreBooksOverridden = false;
+
             try
             {
                 baseFiles = Directory.GetFiles(PathRep(scope));
@@ -1654,9 +1664,17 @@ namespace EU4_PCP
             }
             catch (Exception)
             {
-                // If no mod files were found - just use the game files (except bookmarks)
-                if (scope != FileType.Bookmark || Storage.RetrieveBool(General.OverrideBooks))
-                    filesList.AddRange(baseFiles.Select(f => new FileObj(f)));
+                // If no mod files were found - just use the game files (except bookmarks, unless overridden)
+
+                if (scope == FileType.Bookmark)
+                {
+                    if (!Storage.RetrieveBool(General.OverrideBooks))
+                        return false;
+
+                    AreBooksOverridden = true;
+                }
+
+                filesList.AddRange(baseFiles.Select(f => new FileObj(f)));
 
                 return false;
             }
