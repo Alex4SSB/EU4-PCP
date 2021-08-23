@@ -70,14 +70,15 @@ namespace EU4_PCP.Views
 
             ProvShownBlock.Text = ProvincesShown;
 
-            BookmarkComboBox.IsEnabled = EnableBooks;
-            BookmarkComboBox.ItemsSource = BookmarkComboBox.IsEnabled ? BookmarkList : null;
+            NoBooks();
+            BookmarkComboBox.ItemsSource = BookmarkList;
             BookmarkComboBox.SelectedIndex = SelectedBookmarkIndex;
             BookmarkComboBox.ToolTip = CurrentDateFormat(true);
+            BookmarkBlock.Text = "Bookmark Selection";
 
             if (SelectedMod)
             {
-                BookmarkBlock.Text = $"Bookmark Selection{(AreBooksOverridden ? " *" : "")}";
+                BookmarkBlock.Text += AreBooksOverridden ? " *" : "";
 
                 if (Storage.RetrieveBool(General.ShowIllegalProv))
                 {
@@ -97,6 +98,24 @@ namespace EU4_PCP.Views
             UpdatePicker();
 
             Lockdown = false;
+        }
+
+        private void NoBooks()
+        {
+            BookmarkComboBox.IsEnabled = false;
+
+            if (!EnableBooks)
+            {
+                BookmarkList = new() { new() { Date = StartDateStr, Name = Properties.Resources.NoBookmarkPlaceholder } };
+            }
+            else if (BookmarkList.Count > 1)
+            {
+                BookmarkComboBox.IsEnabled = true;
+            }
+            else if (BookmarkList.Count == 1 && string.IsNullOrEmpty(BookmarkList[0].Name))
+            {
+                BookmarkList[0].Name = Properties.Resources.NoBookmarkPlaceholder;
+            }
         }
 
         private void ModSelComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

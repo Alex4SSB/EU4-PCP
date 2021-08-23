@@ -277,6 +277,15 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start Date:.
+        /// </summary>
+        public static string NoBookmarkPlaceholder {
+            get {
+                return ResourceManager.GetString("NoBookmarkPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Game Bookmarks When Mod Has None.
         /// </summary>
         public static string OverrideModBooks {

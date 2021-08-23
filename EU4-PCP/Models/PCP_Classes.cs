@@ -364,6 +364,9 @@ namespace EU4_PCP
         {
             Date = CurrentDateFormat(false, base.Date, useDefaultFormat);
         }
+
+        public ListBookmark() : base()
+        { }
     }
 
     public class ModObj : IComparable<ModObj>

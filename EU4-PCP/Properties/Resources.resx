@@ -189,6 +189,9 @@
   <data name="ModPath" xml:space="preserve">
     <value>Mod Path</value>
   </data>
+  <data name="NoBookmarkPlaceholder" xml:space="preserve">
+    <value>Start Date:</value>
+  </data>
   <data name="OverrideModBooks" xml:space="preserve">
     <value>Show Game Bookmarks When Mod Has None</value>
   </data>

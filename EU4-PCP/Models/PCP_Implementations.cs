@@ -697,7 +697,7 @@ namespace EU4_PCP
         /// <summary>
         /// Removes bookmarks of the same date as the default one, and sorts them by date.
         /// </summary>
-        private static List<Bookmark> SortBooks(List<Bookmark> bookmarks)
+        public static List<Bookmark> SortBooks(List<Bookmark> bookmarks)
         {
             var sortedBooks = new List<Bookmark>();
             foreach (var item in bookmarks.GroupBy(book => book.Date).OrderBy(books => books.Key))
@@ -706,6 +706,8 @@ namespace EU4_PCP
                     sortedBooks.Add(item.Single());
                 else if (item.Count(b => b.IsDefault) == 1)
                     sortedBooks.Add(item.First(book => book.IsDefault));
+                else
+                    sortedBooks.Add(item.OrderBy(book => book.Code).First());
             };
 
             return sortedBooks;
@@ -1643,8 +1645,8 @@ namespace EU4_PCP
             var filesList = SelectList(scope);
             IEnumerable<string> baseFiles, addFiles;
 
-            if (scope == FileType.Bookmark)
-                AreBooksOverridden = false;
+            //if (scope == FileType.Bookmark)
+            //    AreBooksOverridden = false;
 
             try
             {

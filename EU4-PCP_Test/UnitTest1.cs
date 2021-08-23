@@ -461,6 +461,8 @@ namespace EU4_PCP_Test
         [TestMethod]
         public void ModPrepTest()
         {
+            // Also tests ModPathPrep and ReplacePrep
+
             var eb = ModPrep($@"{TestFiles}\mods\EnhancedBritain.mod", TestFiles);
 
             Assert.IsTrue(eb.Name == "Enhanced Britain");
@@ -477,10 +479,56 @@ namespace EU4_PCP_Test
             Assert.IsTrue(!string.IsNullOrEmpty(et.Path));
             Assert.IsTrue(et.Replace.Countries && et.Replace.Provinces && !et.Replace.Bookmarks);
 
+
             // Directory for Bellum Orbis Terrarum 3 doesn't exist in TestFiles, so null should be returned
             var bot3 = ModPrep($@"{TestFiles}\mods\lostmc.mod", TestFiles);
 
             Assert.IsTrue(bot3 is null);
+        }
+
+        [TestMethod]
+        public void SortBooksOrderTest()
+        {
+            List<Bookmark> books = new()
+            {
+                new() { Date = new DateTime(2000, 1, 1), Name = "2000" },
+                new() { Date = new DateTime(1900, 1, 1), Name = "1900" }
+            };
+
+            var sorted = SortBooks(books);
+
+            Assert.IsTrue(sorted.Count == 2);
+            Assert.IsTrue(sorted[1].Name == "2000");
+        }
+
+        [TestMethod]
+        public void SortBooksDefaultTest()
+        {
+            List<Bookmark> books = new()
+            {
+                new() { Date = new DateTime(2000, 1, 1), IsDefault = true, Name = "DefBook" },
+                new() { Date = new DateTime(2000, 1, 1), Name = "NotDefBook" }
+            };
+
+            var sorted = SortBooks(books);
+
+            Assert.IsTrue(sorted.Count == 1);
+            Assert.IsTrue(sorted[0].Name == "DefBook");
+        }
+
+        [TestMethod]
+        public void SortBooksSameDateTest()
+        {
+            List<Bookmark> books = new()
+            {
+                new() { Date = new DateTime(2000, 1, 1), Code = "BOOK_B" },
+                new() { Date = new DateTime(2000, 1, 1), Code = "BOOK_A" }
+            };
+
+            var sorted = SortBooks(books);
+
+            Assert.IsTrue(sorted.Count == 1);
+            Assert.IsTrue(sorted[0].Code == "BOOK_A");
         }
     }
 }

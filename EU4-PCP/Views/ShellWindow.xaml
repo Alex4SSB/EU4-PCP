@@ -14,6 +14,7 @@
     Style="{StaticResource CustomMetroWindow}"
     TitleCharacterCasing="Normal"
     Unloaded="OnUnloaded"
+    WindowStartupLocation="CenterScreen"
     WindowTitleBrush="Black"
     mc:Ignorable="d">
     <controls:MetroWindow.LeftWindowCommands>

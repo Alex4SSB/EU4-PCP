@@ -118,6 +118,7 @@ namespace EU4_PCP
 
             if (Naming == ProvinceNames.Dynamic && SelectedBookmarkIndex < 1)
             {
+                AreBooksOverridden = false;
                 FetchFiles(FileType.Bookmark);
                 BookSetup();
             }
