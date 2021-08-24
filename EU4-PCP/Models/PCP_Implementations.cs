@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using static EU4_PCP.PCP_Const;
 using static EU4_PCP.PCP_Data;
@@ -1422,6 +1423,21 @@ namespace EU4_PCP
         /// <returns>Red background color for a value smaller than 0, green otherwise.</returns>
         public static SolidColorBrush LegalBG(short channel) =>
             new(channel < 0 ? RedBackground : GreenBackground);
+
+        public static void ChannelTooltip(this TextBox box, short value)
+        {
+            if (box.Background.ToString() == GreenBackground.ToString())
+            {
+                box.ToolTip = null;
+                return;
+            }
+
+            box.ToolTip = value switch
+            {
+                -1 => Properties.Resources.ChannelIllegal,
+                _ => Properties.Resources.ColorIllegal,
+            };
+        }
 
         public static bool LocalisationSetup(bool enBooks, bool enProvs = true)
         {

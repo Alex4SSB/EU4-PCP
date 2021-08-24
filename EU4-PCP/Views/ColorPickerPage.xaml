@@ -205,7 +205,8 @@
                         Margin="4"
                         VerticalContentAlignment="Bottom"
                         FontFamily="Consolas"
-                        TextChanged="NewProvNameTextBox_TextChanged" />
+                        TextChanged="NewProvNameTextBox_TextChanged"
+                        ToolTip="From definition" />
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>

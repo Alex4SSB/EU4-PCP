@@ -106,6 +106,15 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color channel value is illegal..
+        /// </summary>
+        public static string ChannelIllegal {
+            get {
+                return ResourceManager.GetString("ChannelIllegal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable Check.
         /// </summary>
         public static string CheckDupli {
@@ -120,6 +129,15 @@ namespace EU4_PCP.Properties {
         public static string ColorDupli {
             get {
                 return ResourceManager.GetString("ColorDupli", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chosen color is not unique..
+        /// </summary>
+        public static string ColorIllegal {
+            get {
+                return ResourceManager.GetString("ColorIllegal", resourceCulture);
             }
         }
         

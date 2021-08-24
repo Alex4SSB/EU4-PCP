@@ -73,7 +73,6 @@ namespace EU4_PCP.Views
             NoBooks();
             BookmarkComboBox.ItemsSource = BookmarkList;
             BookmarkComboBox.SelectedIndex = SelectedBookmarkIndex;
-            BookmarkComboBox.ToolTip = CurrentDateFormat(true);
             BookmarkBlock.Text = "Bookmark Selection";
 
             if (SelectedMod)
@@ -283,6 +282,10 @@ namespace EU4_PCP.Views
                 GreenTextBox.Background = LegalBG(PickedColor.G);
                 BlueTextBox.Background = LegalBG(PickedColor.B);
             }
+
+            RedTextBox.ChannelTooltip(PickedColor.R);
+            GreenTextBox.ChannelTooltip(PickedColor.G);
+            BlueTextBox.ChannelTooltip(PickedColor.B);
 
             NewProvLegal();
         }

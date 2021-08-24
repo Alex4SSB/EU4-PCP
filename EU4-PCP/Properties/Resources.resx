@@ -132,11 +132,17 @@
   <data name="Change" xml:space="preserve">
     <value>Change</value>
   </data>
+  <data name="ChannelIllegal" xml:space="preserve">
+    <value>Color channel value is illegal.</value>
+  </data>
   <data name="CheckDupli" xml:space="preserve">
     <value>Enable Check</value>
   </data>
   <data name="ColorDupli" xml:space="preserve">
     <value>Color Duplicates</value>
+  </data>
+  <data name="ColorIllegal" xml:space="preserve">
+    <value>Chosen color is not unique.</value>
   </data>
   <data name="ColorPickerDupliDesc" xml:space="preserve">
     <value>Amount of reused colors</value>
