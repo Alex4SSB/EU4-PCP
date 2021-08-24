@@ -378,20 +378,23 @@ namespace EU4_PCP_Test
 
             var testProv = new List<Province>
             {
-                {new Province(index: 1, color: new P_Color(10, 20, 30), name: "a") },
-                {new Province(index: 2, color: new P_Color(-1, -1, 100), name: "b") },
-                {new Province(index: 3, color: new P_Color(1, 41, 5)) },
-                {new Province(index: 4, color: new P_Color(10, 20, 30), name: "c") },
-                {new Province(index: 5, color: new P_Color(100, 200, 100), name: "d") },
-                {new Province(index: 6, color: new P_Color(100, 200, 100), name: "e") },
+                { new Province(index: 1, color: new P_Color(10, 20, 30), name: "a") },
+                { new Province(index: 2, color: new P_Color(-1, -1, 100), name: "b") },
+                { new Province(index: 3, color: new P_Color(1, 41, 5)) },
+                { new Province(index: 4, color: new P_Color(10, 20, 30), name: "c") },
+                { new Province(index: 5, color: new P_Color(100, 200, 100), name: "d") },
+                { new Province(index: 6, color: new P_Color(100, 200, 100), name: "e") },
+                { new Province(index: 7, color: new P_Color(200, 10, 1), name: "RNW") },
+                { new Province(index: 8, color: new P_Color(200, 10, 1), name: "RNW") },
             };
 
             DupliPrep(testProv);
             var markers = MarkerPrep(testProv, true, true);
 
-            Assert.IsFalse(markers.Any(m => (new[] { 1, 4, 5, 6 }).Contains(m.Item1.Index) && m.Item2.Color != RedBackground));
+            Assert.IsFalse(markers.Any(m => (new[] { 1, 4, 5, 6, 7, 8 }).Contains(m.Item1.Index) && m.Item2.Color != RedBackground));
             Assert.IsFalse(markers.Any(m => (new[] { 2, 3 }).Contains(m.Item1.Index) && m.Item2.Color != PurpleBackground));
             Assert.IsFalse(markers.Any(m => m.Item3 < 0));
+            Assert.IsTrue(markers.Find(m => m.Item1.Index == 8).Item1.NextDupli.Index == 7);
 
             var illegalMarkers = MarkerPrep(testProv, false, true);
             Assert.IsFalse(illegalMarkers.Any(m => m.Item2.Color == RedBackground));

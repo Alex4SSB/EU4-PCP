@@ -4,6 +4,7 @@ using EU4_PCP.Services;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -112,27 +113,41 @@ namespace EU4_PCP.Views
             ScrollToProv(marker.Tag as Province);
         }
 
-        private void ScrollToProv(Province prov)
+        private void ScrollToProv(Province prov, int previousIndex = -1)
         {
             var provIndex = Provinces.Values.Where(p => p && p.Show).OrderBy(p => p.Index).ToList().IndexOf(prov);
-            var offset = provIndex + (int)(ProvTable.RenderSize.Height / (ProvTable.MinRowHeight + 1) / 2) - 1;
+            var tempOffset = (int)(ProvTable.RenderSize.Height / (ProvTable.MinRowHeight + 1) / 2) - 1;
+            var offset = provIndex;
+            if (previousIndex < prov.Index)
+                offset += tempOffset;
+            else
+                offset -= tempOffset;
+
             if (offset >= ProvTable.Items.Count) offset = ProvTable.Items.Count - 1;
 
-            ProvTable.ScrollIntoView(ProvTable.Items[0]);
+            if (previousIndex < 0)
+                ProvTable.ScrollIntoView(ProvTable.Items[0]);
+
             ProvTable.ScrollIntoView(ProvTable.Items[offset]);
         }
 
         private void DataGridRow_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (e.Source is DataGridCellsPresenter row && row.DataContext is TableProvince prov && prov.IsProvDupli)
+            if (sender is DataGridRow row && row.DataContext is TableProvince prov && prov.IsProvDupli)
             {
-                ScrollToProv(prov.province.NextDupli);
+                ScrollToProv(prov.province.NextDupli, prov.Index);
             }
         }
 
         private void ProvTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SelectedGridRow = ProvTable.SelectedIndex;
+        }
+
+        private void DataGridRow_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGridRow row && row.DataContext is TableProvince prov)
+                ProvTable.SelectedItem = prov;
         }
     }
 }
