@@ -300,14 +300,15 @@ namespace EU4_PCP.Views
 
         private bool EnableAddProv()
         {
-            if (string.IsNullOrWhiteSpace(NewProvNameTextBox.Text)) return false;
+            string provName = NewProvNameTextBox.Text;
+            if (string.IsNullOrWhiteSpace(provName)) return false;
 
-            if (NewProvNameTextBox.Text.Any(c => c > 255)) return false;
+            if (provName.Any(c => c > 255)) return false;
 
             if (!PickedColor.IsLegal()) return false;
 
-            if (ChosenProv && (ChosenProv.Color.Equals(PickedColor)
-                    && (ChosenProv.Name == NewProvNameTextBox.Text)))
+            if (ChosenProv && (ChosenProv.province.Color.Equals(PickedColor)
+                    && (ChosenProv.province.Name.Definition == provName)))
                 return false;
 
             return true;
