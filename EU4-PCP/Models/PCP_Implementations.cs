@@ -1423,7 +1423,7 @@ namespace EU4_PCP
         public static SolidColorBrush LegalBG(short channel) =>
             new(channel < 0 ? RedBackground : GreenBackground);
 
-        public static bool LocalisationSetup(bool enBooks)
+        public static bool LocalisationSetup(bool enBooks, bool enProvs = true)
         {
             var scope = Scope.Game;
             string path = GamePath;
@@ -1445,9 +1445,12 @@ namespace EU4_PCP
             dirs[0] = path + LocPath;
             var indexers = PathIndexer(PathCombiner(dirs), scope, enBooks);
 
-            if (indexers is null) return false;
+            if (indexers is null)
+                return false;
 
-            ReadProvLoc(indexers);
+            if (enProvs)
+                ReadProvLoc(indexers);
+
             if (enBooks)
                 ReadBookLoc(indexers);
 

@@ -59,5 +59,6 @@ namespace EU4_PCP
         public static bool NavigateToSettings;
         public static int SelectedGridRow = -1;
         public static bool AreBooksOverridden;
+        public static bool OverrideBooks;
     }
 }

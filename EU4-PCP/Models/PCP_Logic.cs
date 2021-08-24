@@ -68,6 +68,7 @@ namespace EU4_PCP
             Naming = (ProvinceNames)Storage.RetrieveEnumGroup(typeof(ProvinceNames));
             CheckDupli = Storage.RetrieveBool(General.CheckDupli);
             ShowRnw = Storage.RetrieveBool(General.ShowAllProvinces);
+            OverrideBooks = Storage.RetrieveBool(General.OverrideBooks);
             UpdateCountries = false;
 
             ClearArrays();
@@ -115,18 +116,24 @@ namespace EU4_PCP
         private static bool LocalisationSequence()
         {
             if (Naming == ProvinceNames.Definition) return true;
-
-            if (Naming == ProvinceNames.Dynamic && SelectedBookmarkIndex < 1)
-            {
-                AreBooksOverridden = false;
-                FetchFiles(FileType.Bookmark);
-                BookSetup();
-            }
+            BookmarkSequence();
 
             if (!LocalisationSetup(Naming == ProvinceNames.Dynamic))
                 return ErrorMsg(ErrorType.LocRead);
 
             return DynamicSequence();
+        }
+
+        private static void BookmarkSequence()
+        {
+            if (Naming != ProvinceNames.Dynamic || SelectedBookmarkIndex > 0)
+                return;
+
+            AreBooksOverridden = false;
+            BookFiles.Clear();
+
+            FetchFiles(FileType.Bookmark);
+            BookSetup();
         }
 
         /// <summary>
@@ -148,17 +155,9 @@ namespace EU4_PCP
             else if (!Cultures.Any(cul => cul && cul.Group))
                 return ErrorMsg(ErrorType.NoCulGroups);
 
-            //Parallel.Invoke(
-            //	() => DefinesPrep(),
-            //	() => { if (enBooks) FetchFiles(FileType.Bookmark); });
-
             Parallel.Invoke(
                 () => DefinesPrep(),
                 () => FetchFiles(FileType.Country));
-
-            //Parallel.Invoke(
-            //	() => { if (enBooks) BookPrep(); },
-            //	() => FetchFiles(FileType.Country));
 
             if (!ValDate()) return false;
 
@@ -237,6 +236,24 @@ namespace EU4_PCP
                 CheckDupli = checkDupli;
 
                 DupliPrep();
+            }
+            else if (Storage.RetrieveBool(General.OverrideBooks) is bool overBooks && overBooks != OverrideBooks)
+            {
+                OverrideBooks = overBooks;
+                if (Naming != ProvinceNames.Dynamic)
+                    return;
+
+                if (overBooks)
+                {
+                    BookmarkSequence();
+                    LocalisationSetup(true, false);
+                    PopulateBooks();
+                }
+                else if (AreBooksOverridden)
+                {
+                    BookmarkList.Clear();
+                    AreBooksOverridden = false;
+                }
             }
         }
 
