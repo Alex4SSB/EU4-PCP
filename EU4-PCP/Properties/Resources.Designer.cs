@@ -70,7 +70,7 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.5.93.
+        ///   Looks up a localized string similar to 1.6.0.
         /// </summary>
         public static string AppVersion {
             get {
@@ -417,6 +417,15 @@ namespace EU4_PCP.Properties {
         public static string SettingsPageChooseThemeText {
             get {
                 return ResourceManager.GetString("SettingsPageChooseThemeText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MahApps.Metro.
+        /// </summary>
+        public static string SettingsPageMahappsLinkText {
+            get {
+                return ResourceManager.GetString("SettingsPageMahappsLinkText", resourceCulture);
             }
         }
         

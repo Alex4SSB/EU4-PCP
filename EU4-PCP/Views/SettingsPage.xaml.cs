@@ -62,6 +62,10 @@ namespace EU4_PCP.Views
             AddControls();
 
             InitializeSettings();
+
+            settingsPrivacyStatement.ToolTip = _appConfig.PrivacyStatement;
+            settingsUserManual.ToolTip = _appConfig.UserManual;
+            MahAppsLink.ToolTip = _appConfig.MahappsLink;
         }
 
         public void OnNavigatedTo(object parameter)
@@ -305,5 +309,8 @@ namespace EU4_PCP.Views
             var block = sender as TextBlock;
             ToggleCategory(block.Tag);
         }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+            => _systemService.OpenInWebBrowser(_appConfig.MahappsLink);
     }
 }

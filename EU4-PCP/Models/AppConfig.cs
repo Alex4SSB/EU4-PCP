@@ -9,5 +9,7 @@
         public string PrivacyStatement { get; set; }
 
         public string UserManual { get; set; }
+
+        public string MahappsLink { get; set; }
     }
 }

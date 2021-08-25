@@ -402,11 +402,19 @@
                         </Hyperlink>
                     </TextBlock>
                     <TextBlock Margin="{StaticResource SmallTopMargin}" AutomationProperties.Name="{Binding Text, ElementName=settingsUserManual}">
-                        <Hyperlink AutomationProperties.Name="{Binding Text, ElementName=settingsPrivacyStatement}" Click="UserManual_Click">
+                        <Hyperlink AutomationProperties.Name="{Binding Text, ElementName=settingsUserManual}" Click="UserManual_Click">
                             <TextBlock
                                 x:Name="settingsUserManual"
                                 Style="{StaticResource BodyTextStyle}"
                                 Text="{x:Static properties:Resources.SettingsPageUserManualText}" />
+                        </Hyperlink>
+                    </TextBlock>
+                    <TextBlock Margin="{StaticResource SmallTopMargin}" AutomationProperties.Name="{Binding Text, ElementName=MahAppsLink}">
+                        <Hyperlink AutomationProperties.Name="{Binding Text, ElementName=MahAppsLink}" Click="Hyperlink_Click">
+                            <TextBlock
+                                x:Name="MahAppsLink"
+                                Style="{StaticResource BodyTextStyle}"
+                                Text="{x:Static properties:Resources.SettingsPageMahappsLinkText}" />
                         </Hyperlink>
                     </TextBlock>
                 </StackPanel>
