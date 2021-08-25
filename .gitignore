@@ -338,3 +338,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/EU4-PCP_Test/TestFiles/w_definition.csv

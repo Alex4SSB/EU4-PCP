@@ -1,9 +1,10 @@
-using EU4_PCP;
+﻿using EU4_PCP;
 using EU4_PCP_Test.Properties;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows.Media;
 using static EU4_PCP.PCP_Const;
@@ -561,6 +562,50 @@ namespace EU4_PCP_Test
 
             Assert.IsTrue(dupliA.Index == 4);
             Assert.IsTrue(dupliB.Index == 1);
+        }
+
+        [TestMethod]
+        public void WriteProvincesTest()
+        {
+            var desired =
+@"province;red;green;blue;x;x
+1;130;12;56;Östergötland;x
+3;78;32;47;Unused1;
+4;23;190;200;UnusedLand1;
+5;90;212;231;RNW;
+10;1;2;3;Üçkuduk;x
+40;10;20;30;def;alt
+773;238;42;192;Banda Oriente;x
+2000;1;40;100;prov2000;x
+4500;;;100;;
+";
+
+            var colors = new List<Color>() {
+                Color.FromRgb(130, 12, 56),
+                Color.FromRgb(1, 40, 100),
+                Color.FromRgb(78, 32, 47),
+                Color.FromRgb(23, 190, 200),
+                Color.FromRgb(90, 212, 231)
+            };
+            var testProv = new List<Province>() {
+                new (index: 1, color: colors[0], name: "Östergötland"),
+                new (index: 2000, color: colors[1], name: "prov2000"),
+                new (index: 3, color: colors[2], name: "Unused1"),
+                new (index: 4, color: colors[3], name: "UnusedLand1"),
+                new (index: 5, color: colors[4], name: "RNW"),
+                new (index: 773, color: new (238, 42, 192), name: "Banda Oriente"),
+                new (index: 4500, color: new (-1, -1, 100), name: ""),
+                new (index: 40, color: new(10, 20, 30), name: new("def", alt: "alt")),
+                new (index: 10, color: new(1, 2, 3), name: "Üçkuduk")
+            };
+
+            var success = WriteProvinces(testProv.OrderBy(p => p.Index), TestFiles + "w_definition.csv");
+
+            Assert.IsTrue(success);
+
+            var text = File.ReadAllText(TestFiles + "w_definition.csv", UTF7);
+
+            Assert.AreEqual(desired, text);
         }
     }
 }

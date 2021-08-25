@@ -1200,27 +1200,32 @@ namespace EU4_PCP
             };
         }
 
+        public static bool WriteProvinces()
+        {
+            if (!WriteProvinces(Provinces.Values.OrderBy(p => p.Index), SteamModPath + DefinPath))
+                return ErrorMsg(ErrorType.DefinWrite);
+
+            return true;
+        }
+
         /// <summary>
         /// Updates the definition.csv file by writing all current provinces.
         /// </summary>
         /// <returns><see langword="false"/> if the operation was not successful.</returns>
-        public static bool WriteProvinces()
+        public static bool WriteProvinces(IEnumerable<Province> provinces, string definPath)
         {
-            string stream = "province;red;green;blue;x;x\r\n";
-
-            var csvProvs = from prov in Provinces
-                           orderby prov.Key
-                           select prov.Value.ToCsv();
-
-            stream += string.Join("\r\n", csvProvs) + "\r\n";
+            var csvProvs = provinces.Select(p => p.ToCsv());
+            string stream = "province;red;green;blue;x;x\r\n"
+                + string.Join("\r\n", csvProvs)
+                + "\r\n";
 
             try
             {
-                File.WriteAllBytes(SteamModPath + DefinPath, stream.Select(c => (byte)c).ToArray());
+                File.WriteAllBytes(definPath, stream.Select(c => (byte)c).ToArray());
             }
             catch (Exception)
             {
-                return ErrorMsg(ErrorType.DefinWrite);
+                return false;
             }
 
             return true;
@@ -1231,7 +1236,7 @@ namespace EU4_PCP
         /// </summary>
         /// <param name="newMax">The new max_provinces value</param>
         /// <returns></returns>
-        public static bool WriteDefines(string newMax)
+        public static bool WriteDefMap(string newMax)
         {
             string defMap;
             try
@@ -1371,7 +1376,7 @@ namespace EU4_PCP
                     ? Inc(ModMaxProvinces, 1)
                     : Inc(ModProvinceCount, 2);
 
-                if (Storage.RetrieveBool(General.UpdateMaxProv) && !WriteDefines(ModMaxProvinces))
+                if (Storage.RetrieveBool(General.UpdateMaxProv) && !WriteDefMap(ModMaxProvinces))
                     return false;
 
                 ProvincesShown = Provinces.Values.Count(prov => prov && prov.Show).ToString();
