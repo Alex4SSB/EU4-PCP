@@ -295,6 +295,24 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Write the current data, and load the next duplicate province.
+        /// </summary>
+        public static string NextButtonDupli {
+            get {
+                return ResourceManager.GetString("NextButtonDupli", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write the current data, and load the next illegal province.
+        /// </summary>
+        public static string NextButtonIllegal {
+            get {
+                return ResourceManager.GetString("NextButtonIllegal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start Date:.
         /// </summary>
         public static string NoBookmarkPlaceholder {

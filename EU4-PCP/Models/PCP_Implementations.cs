@@ -1255,6 +1255,24 @@ namespace EU4_PCP
             return true;
         }
 
+        public static TableProvince SelectNextProv(int currentIndex, bool isDupli) => SelectNextProv(Provinces.Values, currentIndex, isDupli);
+
+        public static TableProvince SelectNextProv(IEnumerable<Province> provinces, int currentIndex, bool isDupli)
+        {
+            var provs = isDupli
+                ? provinces.Where(p => p.NextDupli)
+                : provinces.Where(p => !p.IsNameLegal() || !p.Color.IsLegal());
+
+            if (!provs.Any())
+                return null;
+
+            if (provs.Last(p => p.Index != currentIndex)?.Index < currentIndex)
+                currentIndex = -1;
+
+            var prov = provs.First(p => p.Index > currentIndex);
+            return prov ? new(prov) : null;
+        }
+
         /// <summary>
         /// The default overload to call the function with <see cref="Provinces"/>
         /// </summary>
@@ -1326,7 +1344,8 @@ namespace EU4_PCP
         }
 
         /// <summary>
-        /// Adds the given <see cref="Province"/> to the list if it doesn't exist. Otherwise, updates its color and definition name.
+        /// Adds the given <see cref="Province"/> to the list if it doesn't exist. Otherwise, updates its color and definition name. <br />
+        /// Writes all provinces to the definition afterwards.
         /// </summary>
         /// <param name="newProv">The province to add / update</param>
         /// <returns></returns>

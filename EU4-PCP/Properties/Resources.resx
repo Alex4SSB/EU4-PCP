@@ -195,6 +195,12 @@
   <data name="ModPath" xml:space="preserve">
     <value>Mod Path</value>
   </data>
+  <data name="NextButtonDupli" xml:space="preserve">
+    <value>Write the current data, and load the next duplicate province</value>
+  </data>
+  <data name="NextButtonIllegal" xml:space="preserve">
+    <value>Write the current data, and load the next illegal province</value>
+  </data>
   <data name="NoBookmarkPlaceholder" xml:space="preserve">
     <value>Start Date:</value>
   </data>

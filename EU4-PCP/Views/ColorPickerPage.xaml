@@ -241,8 +241,7 @@
                         Click="NextIllegalButton_Click"
                         Content="Next"
                         IsEnabled="False"
-                        Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}"
-                        ToolTip="Write the current data, and load the next illegal province" />
+                        Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" />
                 </Grid>
             </StackPanel>
             <StackPanel Grid.Column="2">

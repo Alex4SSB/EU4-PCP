@@ -378,14 +378,14 @@ namespace EU4_PCP_Test
 
             var testProv = new List<Province>
             {
-                { new Province(index: 1, color: new P_Color(10, 20, 30), name: "a") },
-                { new Province(index: 2, color: new P_Color(-1, -1, 100), name: "b") },
-                { new Province(index: 3, color: new P_Color(1, 41, 5)) },
-                { new Province(index: 4, color: new P_Color(10, 20, 30), name: "c") },
-                { new Province(index: 5, color: new P_Color(100, 200, 100), name: "d") },
-                { new Province(index: 6, color: new P_Color(100, 200, 100), name: "e") },
-                { new Province(index: 7, color: new P_Color(200, 10, 1), name: "RNW") },
-                { new Province(index: 8, color: new P_Color(200, 10, 1), name: "RNW") },
+                { new Province(index: 1, color: new P_Color(10, 20, 30), name: "a") },      // dupli with #4
+                { new Province(index: 2, color: new P_Color(-1, -1, 100), name: "b") },     // illegal color
+                { new Province(index: 3, color: new P_Color(1, 41, 5)) },                   // illegal name
+                { new Province(index: 4, color: new P_Color(10, 20, 30), name: "c") },      // dupli with #1
+                { new Province(index: 5, color: new P_Color(100, 200, 100), name: "d") },   // dupli with #6
+                { new Province(index: 6, color: new P_Color(100, 200, 100), name: "e") },   // dupli with #5
+                { new Province(index: 7, color: new P_Color(200, 10, 1), name: "RNW") },    // RNW, dupli with #8
+                { new Province(index: 8, color: new P_Color(200, 10, 1), name: "RNW") },    // RNW, dupli with #7
             };
 
             DupliPrep(testProv);
@@ -532,6 +532,35 @@ namespace EU4_PCP_Test
 
             Assert.IsTrue(sorted.Count == 1);
             Assert.IsTrue(sorted[0].Code == "BOOK_A");
+        }
+
+        [TestMethod]
+        public void NextProvTest()
+        {
+            var testProv = new List<Province>
+            {
+                { new Province(index: 1, color: new P_Color(10, 20, 30), name: "a") },      // dupli with #4
+                { new Province(index: 2, color: new P_Color(-1, -1, 100), name: "b") },     // illegal color
+                { new Province(index: 3, color: new P_Color(1, 41, 5)) },                   // illegal name
+                { new Province(index: 4, color: new P_Color(10, 20, 30), name: "c") },      // dupli with #1
+                { new Province(index: 5, color: new P_Color(100, 200, 100), name: "d") },   // dupli with #6
+                { new Province(index: 6, color: new P_Color(100, 200, 100), name: "e") },   // dupli with #5
+                { new Province(index: 7, color: new P_Color(200, 10, 1), name: "RNW") },    // RNW, dupli with #8
+                { new Province(index: 8, color: new P_Color(200, 10, 1), name: "RNW") },    // RNW, dupli with #7
+            };
+            DupliPrep(testProv);
+
+            var illegalA = SelectNextProv(testProv, 6, false);
+            var illegalB = SelectNextProv(testProv, 2, false);
+
+            Assert.IsTrue(illegalA.Index == 2);
+            Assert.IsTrue(illegalB.Index == 3);
+
+            var dupliA = SelectNextProv(testProv, 2, true);
+            var dupliB = SelectNextProv(testProv, 9, true);
+
+            Assert.IsTrue(dupliA.Index == 4);
+            Assert.IsTrue(dupliB.Index == 1);
         }
     }
 }

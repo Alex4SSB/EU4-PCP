@@ -1,7 +1,6 @@
 ﻿using EU4_PCP.Models;
 using EU4_PCP.Services;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -182,7 +181,9 @@ namespace EU4_PCP.Views
 
         private void UpdatePicker()
         {
-            if (SelectedModIndex < 1) return;
+            NextIllegalButton.Background = AddProvButton.Background;
+            if (SelectedModIndex < 1)
+                return;
 
             if (ChosenProv)
             {
@@ -212,6 +213,17 @@ namespace EU4_PCP.Views
             RedSlider.Value = ChosenProv.Red;
             GreenSlider.Value = ChosenProv.Green;
             BlueSlider.Value = ChosenProv.Blue;
+
+            if (ChosenProv.IsProvDupli)
+            {
+                NextIllegalButton.Background = new SolidColorBrush(RedBackground);
+                NextIllegalButton.ToolTip = Properties.Resources.NextButtonDupli;
+            }
+            else
+            {
+                NextIllegalButton.Background = new SolidColorBrush(PurpleBackground);
+                NextIllegalButton.ToolTip = Properties.Resources.NextButtonIllegal;
+            }
         }
 
         /// <summary>
@@ -296,9 +308,22 @@ namespace EU4_PCP.Views
             AddProvButton.IsEnabled = enable;
             NextIllegalButton.IsEnabled = enable
                 && ChosenProv
-                && !(ChosenProv.IsNameLegal() && ChosenProv.province.Color.IsLegal())
-                && !Storage.RetrieveBool(General.IgnoreIllegal)
-                && ModIllegalProvinceCount.ToInt() > 1;
+                && EnableNext();
+        }
+
+        private bool EnableNext()
+        {
+            if (ChosenProv.IsProvDupli)
+            {
+                return ChosenProv.IsProvDupli
+                    && ModDupliProvinceCount.ToInt() > 1;
+            }
+            else
+            {
+                return (!ChosenProv.IsNameLegal() || !ChosenProv.province.Color.IsLegal())
+                    && !Storage.RetrieveBool(General.IgnoreIllegal)
+                    && ModIllegalProvinceCount.ToInt() > 1;
+            }
         }
 
         private bool EnableAddProv()
@@ -430,12 +455,12 @@ namespace EU4_PCP.Views
             if (!AddProv(new Province(index, new CompositeName(NewProvNameTextBox.Text), PickedColor)))
                 return;
 
+            DupliPrep();
             if (next)
-                ChosenProv = new(Provinces[index + 1]);
+                ChosenProv = SelectNextProv(index, ChosenProv.IsProvDupli);
 
             CountProv(Scope.Mod);
             InitializeData();
-            DupliPrep();
         }
 
         private void HxValueBlock_MouseDown(object sender, MouseButtonEventArgs e)
