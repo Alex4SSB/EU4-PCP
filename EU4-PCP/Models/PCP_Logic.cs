@@ -212,10 +212,7 @@ namespace EU4_PCP
         /// </summary>
         public static void UpdateProperties()
         {
-            if (Storage.RetrieveEnumGroup(typeof(AutoLoad)) is AutoLoad value
-                && LoadValue == AutoLoad.Disable && value != AutoLoad.Disable)
-                LaunchSequence();
-            else if (Naming != (ProvinceNames)Storage.RetrieveEnumGroup(typeof(ProvinceNames)))
+            if (Naming != (ProvinceNames)Storage.RetrieveEnumGroup(typeof(ProvinceNames)))
                 MainSequence();
             else if (Storage.RetrieveBool(General.ShowIllegalProv) != ShowIllegal)
                 MainSequence();

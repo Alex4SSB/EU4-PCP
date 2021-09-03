@@ -209,7 +209,7 @@ namespace EU4_PCP.Views
             foreach (ToggleButton item in boxes)
             {
                 var i = item.GetIndex();
-                item.IsChecked = (item is RadioButton ? i == index : i <= index);
+                item.IsChecked = i <= index; // (item is RadioButton ? i == index : i <= index)
             }
         }
 

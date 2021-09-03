@@ -943,8 +943,7 @@ namespace EU4_PCP
         {
             string tempGamePath = Storage.RetrieveValue(General.GamePath);
 
-            if (Storage.RetrieveBoolEnum(AutoLoad.Disable) ||
-                string.IsNullOrEmpty(tempGamePath) ||
+            if (string.IsNullOrEmpty(tempGamePath) ||
                 !PathHandler(Scope.Game)) return false;
             GamePath = tempGamePath;
 

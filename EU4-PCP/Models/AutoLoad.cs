@@ -2,7 +2,7 @@
 {
     public enum AutoLoad
     {
-        Disable,
+        ListMods,
         Remember,
         Fully
     }

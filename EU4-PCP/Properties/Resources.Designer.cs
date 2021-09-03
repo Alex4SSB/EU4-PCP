@@ -70,7 +70,7 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.6.0.
+        ///   Looks up a localized string similar to 1.6.1.
         /// </summary>
         public static string AppVersion {
             get {
@@ -192,15 +192,6 @@ namespace EU4_PCP.Properties {
         public static string Definition {
             get {
                 return ResourceManager.GetString("Definition", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Disabled.
-        /// </summary>
-        public static string DisableLoad {
-            get {
-                return ResourceManager.GetString("DisableLoad", resourceCulture);
             }
         }
         
@@ -390,6 +381,15 @@ namespace EU4_PCP.Properties {
         public static string SettingsDateFormat {
             get {
                 return ResourceManager.GetString("SettingsDateFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List Available Mods.
+        /// </summary>
+        public static string SettingsListMods {
+            get {
+                return ResourceManager.GetString("SettingsListMods", resourceCulture);
             }
         }
         

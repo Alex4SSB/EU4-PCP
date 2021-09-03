@@ -120,26 +120,29 @@
                     <StackPanel Margin="{StaticResource SmallTopMargin}">
                         <TextBlock Style="{StaticResource BodyTextStyle}" Text="{x:Static properties:Resources.AutoLoad}" />
                         <StackPanel Margin="{StaticResource XSmallTopMargin}">
-                            <RadioButton
+                            <CheckBox
                                 x:Name="DisableLoadRadio"
-                                Checked="Box_Checked"
-                                Content="{x:Static properties:Resources.DisableLoad}"
+                                Content="{x:Static properties:Resources.SettingsListMods}"
                                 FontSize="{StaticResource MediumFontSize}"
-                                Tag="AutoLoad|Disable" />
-                            <RadioButton
+                                IsChecked="True"
+                                IsEnabled="False"
+                                Tag="AutoLoad|ListMods" />
+                            <CheckBox
                                 x:Name="RememberLoadRadio"
                                 Margin="{StaticResource XSmallTopMargin}"
                                 Checked="Box_Checked"
                                 Content="{x:Static properties:Resources.RememberLoad}"
                                 FontSize="{StaticResource MediumFontSize}"
-                                Tag="AutoLoad|Remember" />
-                            <RadioButton
+                                Tag="AutoLoad|Remember"
+                                Unchecked="Box_Checked" />
+                            <CheckBox
                                 x:Name="FullyLoadRadio"
                                 Margin="{StaticResource XSmallTopMargin}"
                                 Checked="Box_Checked"
                                 Content="{x:Static properties:Resources.FullyLoad}"
                                 FontSize="{StaticResource MediumFontSize}"
-                                Tag="AutoLoad|Fully" />
+                                Tag="AutoLoad|Fully"
+                                Unchecked="Box_Checked" />
                         </StackPanel>
                     </StackPanel>
                     <StackPanel Margin="{StaticResource SmallTopMargin}">

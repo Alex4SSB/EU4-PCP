@@ -121,7 +121,7 @@
     <value>EU4 Province Color Picker</value>
   </data>
   <data name="AppVersion" xml:space="preserve">
-    <value>1.6.0</value>
+    <value>1.6.1</value>
   </data>
   <data name="AutoLoad" xml:space="preserve">
     <value>Auto-Load</value>
@@ -161,9 +161,6 @@
   </data>
   <data name="Definition" xml:space="preserve">
     <value>From Definition</value>
-  </data>
-  <data name="DisableLoad" xml:space="preserve">
-    <value>Disabled</value>
   </data>
   <data name="Dynamic" xml:space="preserve">
     <value>Dynamic</value>
@@ -227,6 +224,9 @@
   </data>
   <data name="SettingsDateFormat" xml:space="preserve">
     <value>Date Format</value>
+  </data>
+  <data name="SettingsListMods" xml:space="preserve">
+    <value>List Available Mods</value>
   </data>
   <data name="SettingsPageAboutText" xml:space="preserve">
     <value>Settings page placeholder text.  Your app description goes here.</value>
