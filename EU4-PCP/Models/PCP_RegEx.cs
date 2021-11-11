@@ -10,7 +10,7 @@ namespace EU4_PCP
         public static readonly Regex BookmarkCodeRE = new(@"^[^#\r\n]*name\s*=\s*""(?<name>.+?)""", RegexOptions.Multiline);
         public static readonly Regex BookmarkDateRE = new(@"^[^#\r\n]*date\s*=\s*(?<date>[\d.]+)", RegexOptions.Multiline);
         public static readonly Regex BookmarkDefRE = new(@"^[^#\r\n]*default\s*=\s*(?<default>yes)", RegexOptions.Multiline);
-        public static readonly Regex GameVerRE = new(@"(?<=^Game Version: \w+ ).*(?=\.\w+)", RegexOptions.Multiline);
+        public static readonly Regex GameVerRE = new(@"(?:Game Version:\s*\w+\s*)(?<version>\w*\d+(?:\.\d+){0,2})[\.\d\s]*(?<name>\w+)", RegexOptions.Multiline);
         public static readonly Regex ProvFileRE = new(@"^[0-9]+(?=.*?$)");
         public static readonly Regex ProvOwnerRE = new(@"^[^{]*?(?<!#[\t ]*)owner\s*=\s*(?<owner>[A-Z][A-Z0-9]{2})");
         public static readonly Regex DateOwnerRE = new(@"(?<!#[\t ]*)owner\s*=\s*(?<value>[A-Z][A-Z0-9]{2})");

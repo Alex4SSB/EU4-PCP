@@ -1048,7 +1048,7 @@ namespace EU4_PCP
             catch (Exception) { }
 
             if (GameVerRE.Match(logText) is Match match && match.Success)
-                gameVer += $" - {match.Value}";
+                gameVer += $" - {match.Groups["version"]} {match.Groups["name"]}";
 
             GameVersion = gameVer;
         }
