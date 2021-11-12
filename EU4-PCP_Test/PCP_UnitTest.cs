@@ -607,5 +607,22 @@ namespace EU4_PCP_Test
 
             Assert.AreEqual(desired, text);
         }
+
+        [TestMethod]
+        public void GameVerTest()
+        {
+            string[] logs =
+            {
+@"[main.cpp:511]: 
+Game Version: EU4 v1.32.0.0 Songhai
+Time:2021-11-12 13:21",
+                "Game Version: EU4 v1.30.6.0 Austria.rf43rw4t43",
+                "Game Version: EU4 v1.31.0 Majapahit."
+            };
+
+            Assert.AreEqual("Game - v1.32.0 Songhai", GameVer(logs[0]));
+            Assert.AreEqual("Game - v1.30.6 Austria", GameVer(logs[1]));
+            Assert.AreEqual("Game - v1.31.0 Majapahit", GameVer(logs[2]));
+        }
     }
 }

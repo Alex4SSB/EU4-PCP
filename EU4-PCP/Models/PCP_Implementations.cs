@@ -1034,11 +1034,10 @@ namespace EU4_PCP
         }
 
         /// <summary>
-        /// Reads game version from the game logs.
+        /// Reads game log file and sets game version accordingly.
         /// </summary>
         public static void GameVer()
         {
-            var gameVer = "Game";
             var logText = "";
 
             try
@@ -1047,10 +1046,22 @@ namespace EU4_PCP
             }
             catch (Exception) { }
 
-            if (GameVerRE.Match(logText) is Match match && match.Success)
+            GameVersion = GameVer(logText);
+        }
+
+        /// <summary>
+        /// Parses game version from game log.
+        /// </summary>
+        /// <param name="gameLog">Game log file content</param>
+        /// <returns></returns>
+        public static string GameVer(string gameLog)
+        {
+            var gameVer = "Game";
+
+            if (GameVerRE.Match(gameLog) is Match match && match.Success)
                 gameVer += $" - {match.Groups["version"]} {match.Groups["name"]}";
 
-            GameVersion = gameVer;
+            return gameVer;
         }
 
         /// <summary>
