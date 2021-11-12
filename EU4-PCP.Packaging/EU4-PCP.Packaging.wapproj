@@ -43,8 +43,8 @@
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.props" />
   <PropertyGroup>
     <ProjectGuid>A4573F5F-C7C8-4B1B-B9B4-A8C9990AF90A</ProjectGuid>
-    <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.22000.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <EntryPointProjectUniqueName>..\EU4-PCP\EU4-PCP.csproj</EntryPointProjectUniqueName>

@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net5.0-windows10.0.22000.0</TargetFramework>
     <RootNamespace>EU4_PCP_Test</RootNamespace>
     <UseWPF>true</UseWPF>
     <IsPackable>false</IsPackable>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
