@@ -181,32 +181,45 @@ namespace EU4_PCP_Test
         }
 
         [TestMethod]
-        public void LastEventTest()
+        public void ProvinceOwnerTest()
         {
+            // Also tests LastEvent
+
             DateTime[] dates = {
+                new DateTime(200, 1, 1),
                 new DateTime(500, 1, 1),
-                new DateTime(1500, 1, 1)
+                new DateTime (1250, 1, 1),
+                new DateTime(1300, 1, 1),
+                new DateTime(1500, 1, 1),
+                new DateTime(1950, 1, 1),
             };
 
             string[] owners = {
+                "ROM",
                 "BYZ",
-                "TUR"
+                "LAT",
+                "BYZ",
+                "TUR",
+                "TKY",
             };
 
             Stopwatch sw = new();
             sw.Start();
             for (int i = 0; i < dates.Length; i++)
             {
-                Assert.AreEqual(owners[i], LastEvent(Resources.Prov_151, EventType.Province, dates[i]));
+                Assert.AreEqual(owners[i], OwnerOrCulture(Resources.Prov_151, EventType.Province, dates[i]));
             }
             sw.Stop();
             Console.WriteLine(sw.Elapsed); // Trace.WriteLine() for main app
         }
 
         [TestMethod]
-        public void LastCultureEventTest()
+        public void CountryCultureTest()
         {
+            // Also tests LastEvent
+
             DateTime[] dates = {
+                new DateTime(800, 1, 1),
                 new DateTime(910, 1, 1),
                 new DateTime(935, 1, 1),
                 new DateTime(945, 1, 1),
@@ -214,11 +227,19 @@ namespace EU4_PCP_Test
                 new DateTime(1500, 1, 1)
             };
 
-            Assert.AreEqual("lombard", LastEvent(Resources.ACH, EventType.Country, dates[0]));
-            Assert.AreEqual("lombard", LastEvent(Resources.ACH, EventType.Country, dates[1]));
-            Assert.AreEqual("lombard", LastEvent(Resources.ACH, EventType.Country, dates[2]));
-            Assert.AreEqual("lombard", LastEvent(Resources.ACH, EventType.Country, dates[3]));
-            Assert.AreEqual("greek", LastEvent(Resources.ACH, EventType.Country, dates[4]));
+            string[] cultures = {
+                "albanian",
+                "lombard",
+                "lombard",
+                "lombard",
+                "lombard",
+                "greek",
+            };
+
+            for (int i = 1; i < 5; i++)
+            {
+                Assert.AreEqual(cultures[i], OwnerOrCulture(Resources.ACH, EventType.Country, dates[i]));
+            }
         }
 
         [TestMethod]
@@ -623,6 +644,14 @@ Time:2021-11-12 13:21",
             Assert.AreEqual("Game - v1.32.0 Songhai", GameVer(logs[0]));
             Assert.AreEqual("Game - v1.30.6 Austria", GameVer(logs[1]));
             Assert.AreEqual("Game - v1.31.0 Majapahit", GameVer(logs[2]));
+        }
+
+        [TestMethod]
+        public void ProvFileIndexTest()
+        {
+            Assert.AreEqual(4, ProvFileIndex("4-Bergslagen.txt"));
+            Assert.AreEqual(1996, ProvFileIndex("1996  Palau.txt"));
+            Assert.IsTrue(ProvFileIndex("") is null);
         }
     }
 }

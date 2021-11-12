@@ -2,7 +2,7 @@ government = monarchy
 add_government_reform = feudalism_reform
 government_rank = 1
 technology_group = western
-primary_culture = lombard
+primary_culture = albanian # Changed for testing
 religion = catholic
 capital = 1773	# Mystras
 
@@ -82,7 +82,11 @@ capital = 1773	# Mystras
 	}
 }
 
-1432.1.1 = { primary_culture = greek religion = orthodox }
+1432.1.1 = 
+{
+primary_culture = greek
+religion = orthodox
+}
 
 # 1432, Despotate of Morea
 

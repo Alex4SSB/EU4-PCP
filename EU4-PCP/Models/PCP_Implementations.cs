@@ -266,6 +266,12 @@ namespace EU4_PCP
             return path.Contains(GameFolder);
         }
 
+        public static int? ProvFileIndex(string fileName)
+        {
+            var index = ProvFileRE.Match(fileName).Groups["index"].Value;
+            return string.IsNullOrEmpty(index) ? null : index.ToInt();
+        }
+
         /// <summary>
         /// Sets the owner object of each <see cref="Province"/> object in the 
         /// <see cref="Provinces"/> array according to the start date.
@@ -277,25 +283,15 @@ namespace EU4_PCP
             {
                 Parallel.ForEach(ProvFiles, p_file =>
                 {
-                    var match = ProvFileRE.Match(p_file.File);
-                    if (!match.Success) return;
-                    int i = match.Value.ToInt();
-                    if (!Provinces.ContainsKey(i)) return;
+                    if (ProvFileIndex(p_file.File) is not int i || !Provinces.ContainsKey(i)) return;
 
                     var prov = Provinces[i];
                     if (!prov || (!updateOwner && prov.Owner)) return;
 
                     string provFile = File.ReadAllText(p_file.Path);
-                    var currentOwner = LastEvent(provFile, EventType.Province, StartDate);
-
-                    // Order is inverted to make handling of no result from LastEvent easier.
-                    // On the other hand, a successful LastEvent result removes the need for the ProvOwnerRE search.
-                    if (currentOwner == "")
-                    {
-                        match = ProvOwnerRE.Match(provFile);
-                        if (!match.Success) return;
-                        currentOwner = match.Groups["owner"].Value;
-                    }
+                    var currentOwner = OwnerOrCulture(provFile, EventType.Province, StartDate);
+                    if (currentOwner is null)
+                        return;
 
                     if (Countries.Find(c => c.Name == currentOwner) is Country country)
                         prov.Owner = country;
@@ -305,25 +301,15 @@ namespace EU4_PCP
             {
                 foreach (var p_file in ProvFiles)
                 {
-                    var match = ProvFileRE.Match(p_file.File);
-                    if (!match.Success) continue;
-                    int i = match.Value.ToInt();
-                    if (!Provinces.ContainsKey(i)) continue;
+                    if (ProvFileIndex(p_file.File) is not int i || !Provinces.ContainsKey(i)) return;
 
                     var prov = Provinces[i];
                     if (!prov || (!updateOwner && prov.Owner)) continue;
 
                     string provFile = File.ReadAllText(p_file.Path);
-                    var currentOwner = LastEvent(provFile, EventType.Province, StartDate);
-
-                    // Order is inverted to make handling of no result from LastEvent easier.
-                    // On the other hand, a successful LastEvent result removes the need for the ProvOwnerRE search.
-                    if (currentOwner == "")
-                    {
-                        match = ProvOwnerRE.Match(provFile);
-                        if (!match.Success) continue;
-                        currentOwner = match.Groups["owner"].Value;
-                    }
+                    var currentOwner = OwnerOrCulture(provFile, EventType.Province, StartDate);
+                    if (currentOwner is null)
+                        continue;
 
                     if (Countries.Find(c => c.Name == currentOwner) is Country country)
                         prov.Owner = country;
@@ -333,18 +319,47 @@ namespace EU4_PCP
         }
 
         /// <summary>
+        /// Finds the current owner of a <see cref="Province"/> or the current primary culture of a <see cref="Country"/> at the specified date.
+        /// </summary>
+        /// <param name="fileContent">The content of the Province or Country history file.</param>
+        /// <param name="scope">Province or Country.</param>
+        /// <param name="selectedStartDate">The date to which to compare the events.</param>
+        /// <returns>Province owner or country primary culture.</returns>
+        public static string OwnerOrCulture(string fileContent, EventType scope, DateTime selectedStartDate)
+        {
+            var currentValue = LastEvent(fileContent, scope, selectedStartDate);
+
+            if (string.IsNullOrEmpty(currentValue))
+            {
+                var match = scope switch
+                {
+                    EventType.Province => ProvOwnerRE.Match(fileContent),
+                    EventType.Country => PriCulRE.Match(fileContent),
+                    _ => throw new NotImplementedException(),
+                };
+
+                if (!match.Success)
+                    return null;
+
+                currentValue = match.Groups["result"].Value;
+            }
+
+            return currentValue;
+        }
+
+        /// <summary>
         /// Finds the result of the last relevant event in the file 
         /// (last owner for <see cref="Province"/>, last culture for <see cref="Country"/>).
         /// </summary>
         /// <param name="eFile">The file to be searched.</param>
         /// <param name="scope">Province or Country.</param>
+        /// <param name="selectedStartDate">The date to which to compare the events.</param>
         /// <returns>Last owner or last culture.</returns>
         public static string LastEvent(string eFile, EventType scope, DateTime selectedStartDate)
         {
             var lastDate = DateTime.MinValue;
             DateTime currentDate;
             MatchCollection eventMatch;
-            Match match;
             var currentResult = "";
 
             eventMatch = scope switch
@@ -356,19 +371,11 @@ namespace EU4_PCP
 
             foreach (Match evnt in eventMatch)
             {
-                currentDate = DateParser(evnt.Value.Split('=')[0].Trim(), true);
+                currentDate = DateParser(evnt.Groups["eventDate"].Value, true);
                 if (currentDate < lastDate) continue;
                 if (currentDate > selectedStartDate) break;
 
-                match = scope switch
-                {
-                    EventType.Province => DateOwnerRE.Match(evnt.Value),
-                    EventType.Country => DateCulRE.Match(evnt.Value),
-                    _ => throw new NotImplementedException(),
-                };
-
-                if (!match.Success) continue;
-                currentResult = match.Groups["value"].Value;
+                currentResult = evnt.Groups["result"].Value;
                 lastDate = currentDate;
                 currentDate = DateTime.MinValue;
             }
@@ -436,22 +443,16 @@ namespace EU4_PCP
             object countryLock = new();
             Parallel.ForEach(CountryFiles, cFile =>
             {
-                var code = "";
-                if (RemoveFileExtRE.Match(cFile.File) is Match fileName && fileName.Success)
-                {
-                    code = fileName.Groups["name"].Value;
-                }
-                else
+                var fileName = RemoveFileExtRE.Match(cFile.File);
+                if (!fileName.Success)
                     return;
-                
-                string countryFile = File.ReadAllText(cFile.Path);
-                string priCul = "";
-                var match = PriCulRE.Match(countryFile);
-                if (!match.Success) return;
 
-                // Order is inverted to make handling of no result from LastEvent easier
-                priCul = LastEvent(countryFile, EventType.Country, StartDate);
-                if (priCul == "") { priCul = match.Value; }
+                var code = fileName.Groups["name"].Value;
+
+                string countryFile = File.ReadAllText(cFile.Path);
+                string priCul = OwnerOrCulture(countryFile, EventType.Country, StartDate);
+                if (priCul is null)
+                    return;
 
                 if (UpdateCountries)
                 {
@@ -479,7 +480,6 @@ namespace EU4_PCP
                     }
                 }
             });
-
         }
 
         private static void CultureSetup(string culFile, object mutex) => CultureSetup(culFile, mutex, Cultures);
@@ -780,7 +780,7 @@ namespace EU4_PCP
             if (!match.Success)
                 return;
 
-            var date = DateParser(match.Value, true);
+            var date = DateParser(match.Groups["startDate"].Value, true);
 
             if (mutex is null)
             {
@@ -1147,15 +1147,15 @@ namespace EU4_PCP
                 }
                 return ErrorMsg(ErrorType.DefMapMaxProv);
             }
-
+            string value = match.Groups["value"].Value;
             switch (scope)
             {
                 case Scope.Game:
-                    GameMaxProvinces = match.Value;
+                    GameMaxProvinces = value;
                     ModMaxProvinces = "";
                     break;
                 case Scope.Mod:
-                    ModMaxProvinces = match.Value;
+                    ModMaxProvinces = value;
                     break;
                 default:
                     break;
