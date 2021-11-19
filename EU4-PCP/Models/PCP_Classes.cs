@@ -463,14 +463,16 @@ namespace EU4_PCP
     {
         public string Path;
         public DateTime LastModified;
+        public string LastVersion;
         public string Source;
         public Dictionary<int, string> ProvDict;
         public Dictionary<string, string> BookDict;
 
-        public Indexer(string path, DateTime lastModified, string source, Dictionary<int, string> provDict = null, Dictionary<string, string> bookDict = null)
+        public Indexer(string path, DateTime lastModified, string lastVersion, string source, Dictionary<int, string> provDict = null, Dictionary<string, string> bookDict = null)
         {
             Path = path;
             LastModified = lastModified;
+            LastVersion = lastVersion;
             Source = source;
 
             ProvDict = provDict is null ? new() : provDict;

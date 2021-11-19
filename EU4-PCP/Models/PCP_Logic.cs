@@ -121,6 +121,9 @@ namespace EU4_PCP
             if (!LocalisationSetup(Naming == ProvinceNames.Dynamic))
                 return ErrorMsg(ErrorType.LocRead);
 
+            if (Bookmarks.Any())
+                Bookmarks = SortBooks(Bookmarks);
+
             return DynamicSequence();
         }
 

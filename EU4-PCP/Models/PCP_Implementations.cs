@@ -690,9 +690,6 @@ namespace EU4_PCP
                          let book = BookPrep(bookFile.Path)
                          where book
                          select book).ToList();
-
-            if (Bookmarks.Any())
-                Bookmarks = SortBooks(Bookmarks);
         }
 
         /// <summary>
@@ -708,8 +705,15 @@ namespace EU4_PCP
                 else if (item.Count(b => b.IsDefault) == 1)
                     sortedBooks.Add(item.First(book => book.IsDefault));
                 else
-                    sortedBooks.Add(item.OrderBy(book => book.Code).First());
+                {
+                    if (item.Where(book => !string.IsNullOrEmpty(book.Name)) is var namedBooks && namedBooks.Any())
+                        sortedBooks.Add(namedBooks.First());
+                    else
+                        sortedBooks.Add(item.OrderBy(book => book.Code).First());
+                }
             };
+
+            sortedBooks.ForEach(book => book.Name = string.IsNullOrEmpty(book.Name) ? book.Code : book.Name);
 
             return sortedBooks;
         }
@@ -1540,7 +1544,10 @@ namespace EU4_PCP
 
             try
             {
-                current = files.Select(f => new Indexer(f, File.GetLastWriteTime(f), IsGameDirectory(f) ? "Game" : source)).ToList();
+                current = files.Select(f => new Indexer(path: f,
+                                                        lastModified: File.GetLastWriteTime(f),
+                                                        lastVersion: Properties.Resources.AppVersion,
+                                                        source: IsGameDirectory(f) ? "Game" : source)).ToList();
             }
             catch (Exception)
             {
@@ -1562,7 +1569,8 @@ namespace EU4_PCP
             {
                 var modified = current.Where(i =>
                     !previous.Exists(p => p.Path == i.Path)
-                    || previous.Find(p => p.Path == i.Path)?.LastModified.CompareTo(i.LastModified) != 0).ToList();
+                    || previous.Find(p => p.Path == i.Path)?.LastModified.CompareTo(i.LastModified) != 0
+                    || previous.Find(p => p.Path == i.Path)?.LastVersion != i.LastVersion).ToList();
 
                 if (modified.Any())
                     CacheLoc(ref modified, enBooks);
