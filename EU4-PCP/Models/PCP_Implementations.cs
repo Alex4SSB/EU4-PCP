@@ -1115,6 +1115,12 @@ namespace EU4_PCP
             SelectedBookmarkIndex = 0;
         }
 
+        public static string ParseMaxProvinces(string fileContent)
+        {
+            var match = MaxProvRE.Match(fileContent);
+            return match.Success ? match.Groups["value"].Value : null;
+        }
+
         /// <summary>
         /// Default file max provinces.
         /// </summary>
@@ -1133,9 +1139,9 @@ namespace EU4_PCP
             {
                 return ErrorMsg(ErrorType.DefMapRead);
             }
-            var match = MaxProvRE.Match(d_file);
-
-            if (!match.Success)
+            
+            var maxProvs = ParseMaxProvinces(d_file);
+            if (maxProvs is null)
             {
                 switch (scope)
                 {
@@ -1151,15 +1157,15 @@ namespace EU4_PCP
                 }
                 return ErrorMsg(ErrorType.DefMapMaxProv);
             }
-            string value = match.Groups["value"].Value;
+            
             switch (scope)
             {
                 case Scope.Game:
-                    GameMaxProvinces = value;
+                    GameMaxProvinces = maxProvs;
                     ModMaxProvinces = "";
                     break;
                 case Scope.Mod:
-                    ModMaxProvinces = value;
+                    ModMaxProvinces = maxProvs;
                     break;
                 default:
                     break;
@@ -1864,7 +1870,7 @@ namespace EU4_PCP
                 "Unable to parse default file", MessageBoxButton.OK, MessageBoxImage.Error),
             ErrorType.DefMapWrite => MessageBox.Show("The default.map file is inaccessible for writing",
                 "Unable to access default file", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.DefMapMaxProv => MessageBox.Show("The 'default.map' file has no max_provinces definition!",
+            ErrorType.DefMapMaxProv => MessageBox.Show("unable to find max_provinces definition in 'default.map' file",
                 "Missing max_provinces", MessageBoxButton.OK, MessageBoxImage.Error),
             ErrorType.LocRead => MessageBox.Show("Localisation folder and its content is missing or inaccessible",
                 "Error reading localisation files", MessageBoxButton.OK, MessageBoxImage.Error),
@@ -1872,7 +1878,7 @@ namespace EU4_PCP
                 "Unable to access province history files", MessageBoxButton.OK, MessageBoxImage.Error),
             ErrorType.ValDate => MessageBox.Show("At least one bookmark, or a defines entry are required to determine the start date",
                 "Unable to determine start date", MessageBoxButton.OK, MessageBoxImage.Error),
-            ErrorType.GameExe => MessageBox.Show("Cannot find the game executable!",
+            ErrorType.GameExe => MessageBox.Show("Cannot find the game executable",
                 "Missing EXE", MessageBoxButton.OK, MessageBoxImage.Error),
             ErrorType.NoCultures => MessageBox.Show("Unable to find any cultures in the culture file(s), or the file(s) / folder are inaccessible",
                 "Missing cultures", MessageBoxButton.OK, MessageBoxImage.Error),

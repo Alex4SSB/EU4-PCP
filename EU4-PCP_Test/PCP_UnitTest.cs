@@ -653,5 +653,29 @@ Time:2021-11-12 13:21",
             Assert.AreEqual(1996, ProvFileIndex("1996  Palau.txt"));
             Assert.IsTrue(ProvFileIndex("") is null);
         }
+
+        [TestMethod()]
+        public void ParseMaxProvincesTest()
+        {
+            string[] maxProvStrings =
+            {
+                "max_provinces	= 5518",
+                " max_provinces=5",
+                "# max_provinces=345",
+            };
+
+            string[] maxProvValues =
+            {
+                "5518",
+                "5",
+                null,
+            };
+
+            for (int i = 0; i < maxProvStrings.Length; i++)
+            {
+                Assert.AreEqual(maxProvValues[i], ParseMaxProvinces(maxProvStrings[i]));
+            }
+            
+        }
     }
 }
