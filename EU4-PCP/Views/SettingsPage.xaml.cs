@@ -143,16 +143,6 @@ namespace EU4_PCP.Views
                 IgnoreIllegalBox,
                 InCBox,
                 DateFormatComboBox,
-                WorkDirsHideButton,
-                WorkDirsStack,
-                ProvTableHideButton,
-                ProvTableStack,
-                ColorPickerHideButton,
-                ColorPickerStack,
-                PersonalizationHideButton,
-                PersonalizationStack,
-                AboutHideButton,
-                AboutStack,
                 OverrideModBooks
             });
         }
@@ -290,27 +280,92 @@ namespace EU4_PCP.Views
             Box_Checked(sender, e);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var button = sender as Button;
-            ToggleCategory(button.Tag);
-        }
-
-        private void ToggleCategory(object tag)
-        {
-            var stack = Controls.Find(c => $"{c.Tag}" == $"{tag}" && c is StackPanel);
-
-            stack.ToggleVisibility();
-            Storage.StoreValue(stack.Visible(), $"{tag}");
-        }
-
-        private void TextBlock_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            var block = sender as TextBlock;
-            ToggleCategory(block.Tag);
-        }
-
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
             => _systemService.OpenInWebBrowser(_appConfig.MahappsLink);
+
+        private bool? workDirsExpanded;
+        public bool WorkDirsExpanded
+        {
+            get
+            {
+                if (workDirsExpanded is null)
+                    workDirsExpanded = Storage.RetrieveBool("WorkDirs");
+
+                return workDirsExpanded.Value;
+            }
+            set
+            {
+                Set(ref workDirsExpanded, value);
+                Storage.StoreValue(value, "WorkDirs");
+            }
+        }
+
+        private bool? provTableExpanded;
+        public bool ProvTableExpanded
+        {
+            get
+            {
+                if (provTableExpanded is null)
+                    provTableExpanded = Storage.RetrieveBool("ProvTable");
+
+                return provTableExpanded.Value;
+            }
+            set
+            {
+                Set(ref provTableExpanded, value);
+                Storage.StoreValue(value, "ProvTable");
+            }
+        }
+
+        private bool? colorPickerExpanded;
+        public bool ColorPickerExpanded
+        {
+            get
+            {
+                if (colorPickerExpanded is null)
+                    colorPickerExpanded = Storage.RetrieveBool("ColorPicker");
+
+                return colorPickerExpanded.Value;
+            }
+            set
+            {
+                Set(ref colorPickerExpanded, value);
+                Storage.StoreValue(value, "ColorPicker");
+            }
+        }
+
+        private bool? personalizationExpanded;
+        public bool PersonalizationExpanded
+        {
+            get
+            {
+                if (personalizationExpanded is null)
+                    personalizationExpanded = Storage.RetrieveBool("Personalization");
+
+                return personalizationExpanded.Value;
+            }
+            set
+            {
+                Set(ref personalizationExpanded, value);
+                Storage.StoreValue(value, "Personalization");
+            }
+        }
+
+        private bool? aboutExpanded;
+        public bool AboutExpanded
+        {
+            get
+            {
+                if (aboutExpanded is null)
+                    aboutExpanded = Storage.RetrieveBool("About");
+
+                return aboutExpanded.Value;
+            }
+            set
+            {
+                Set(ref aboutExpanded, value);
+                Storage.StoreValue(value, "About");
+            }
+        }
     }
 }

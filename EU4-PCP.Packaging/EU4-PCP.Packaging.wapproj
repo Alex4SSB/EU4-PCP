@@ -54,7 +54,7 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>1523ACD93DC5030ED0715313987E34478C56E7D3</PackageCertificateThumbprint>
+    <PackageCertificateKeyFile>EU4-PCP.Packaging_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <AppxBundle>Always</AppxBundle>
@@ -86,6 +86,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <None Include="EU4-PCP.Packaging_TemporaryKey.pfx" />
     <Content Include="Images\LargeTile.scale-100.png" />
     <Content Include="Images\LargeTile.scale-125.png" />
     <Content Include="Images\LargeTile.scale-150.png" />
@@ -130,7 +131,6 @@
     <PRIResource Include="Strings\en-us\Resources.resw">
       <SubType>Designer</SubType>
     </PRIResource>
-    <None Include="key.pfx" />
     <Content Include="Package.appinstaller" />
   </ItemGroup>
   <ItemGroup>
