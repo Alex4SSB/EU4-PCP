@@ -29,6 +29,7 @@ namespace EU4_PCP
         public static readonly Regex CulGroupsRE = new(@"(?<group>\w+)(?<cultures>[\s\S]*?(?:{\s*})+\s+})");
         public static readonly Regex CulSingleRE = new(@"^[^#\r\n\w]*?\s*(?<name>\w+)\s*=", RegexOptions.Multiline);
         public static readonly Regex RemoveFileExtRE = new(@"(?<name>.*)\..+$");
+        public static readonly Regex CountryTagRE = new(@"^(?<tag>[A-Z]{3}).*");
     }
 
 }

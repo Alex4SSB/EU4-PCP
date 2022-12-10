@@ -359,10 +359,9 @@ namespace EU4_PCP
         {
             var lastDate = DateTime.MinValue;
             DateTime currentDate;
-            MatchCollection eventMatch;
             var currentResult = "";
 
-            eventMatch = scope switch
+            var eventMatch = scope switch
             {
                 EventType.Province => ProvEventRE.Matches(eFile),
                 EventType.Country => CulEventRE.Matches(eFile),
@@ -443,11 +442,11 @@ namespace EU4_PCP
             object countryLock = new();
             Parallel.ForEach(CountryFiles, cFile =>
             {
-                var fileName = RemoveFileExtRE.Match(cFile.File);
+                var fileName = CountryTagRE.Match(cFile.File);
                 if (!fileName.Success)
                     return;
 
-                var code = fileName.Groups["name"].Value;
+                var tag = fileName.Groups["tag"].Value;
 
                 string countryFile = File.ReadAllText(cFile.Path);
                 string priCul = OwnerOrCulture(countryFile, EventType.Country, StartDate);
@@ -456,7 +455,7 @@ namespace EU4_PCP
 
                 if (UpdateCountries)
                 {
-                    var tempCountry = Countries.Where(c => c.Name == code);
+                    var tempCountry = Countries.Where(c => c.Name == tag);
                     var tempCulture = Cultures.Where(cul => cul.Name == priCul);
 
                     if (tempCountry.Any() && tempCulture.Any())
@@ -469,13 +468,13 @@ namespace EU4_PCP
 
                     var country = new Country
                     {
-                        Name = code,
+                        Name = tag,
                         Culture = cul.First()
                     };
 
                     lock (countryLock)
                     {
-                        if (!Countries.Any(c => c.Name == code))
+                        if (!Countries.Any(c => c.Name == tag))
                             Countries.Add(country);
                     }
                 }
