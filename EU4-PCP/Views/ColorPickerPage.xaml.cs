@@ -67,8 +67,6 @@ namespace EU4_PCP.Views
             IllegalProvCountGrid.Visibility = Visibility.Collapsed;
             DupliCountGrid.Visibility = Visibility.Collapsed;
 
-            ProvShownBlock.Text = ProvincesShown;
-
             NoBooks();
             BookmarkComboBox.ItemsSource = BookmarkList;
             BookmarkComboBox.SelectedIndex = SelectedBookmarkIndex;
@@ -167,7 +165,6 @@ namespace EU4_PCP.Views
                 case CriticalScope.Mod:
                     ChosenProv = null;
                     ChangeMod();
-                    ProvincesShown = Provinces.Values.Count(prov => prov && prov.Show).ToString();
                     UpdatePicker();
                     break;
                 case CriticalScope.Bookmark:

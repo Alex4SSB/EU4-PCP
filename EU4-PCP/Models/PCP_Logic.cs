@@ -227,7 +227,6 @@ namespace EU4_PCP
                 {
                     prov.Show = !prov.IsRNW() || (ShowRnw && !string.IsNullOrEmpty(prov.Name.ToString()));
                 }
-                ProvincesShown = Provinces.Values.Count(prov => prov && prov.Show).ToString();
 
                 DupliPrep();
             }

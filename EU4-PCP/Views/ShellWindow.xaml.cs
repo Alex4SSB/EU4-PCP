@@ -43,7 +43,7 @@ namespace EU4_PCP.Views
         // TODO WTS: Change the icons and titles for all HamburgerMenuItems here.
         public ObservableCollection<HamburgerMenuItem> MenuItems { get; } = new ObservableCollection<HamburgerMenuItem>()
         {
-            new HamburgerMenuGlyphItem() { Label = Properties.Resources.ShellProvTablePage, Glyph = "\uF0E2", TargetPageType = typeof(ProvTablePage) },
+            new HamburgerMenuGlyphItem() { Label = Properties.Resources.ShellProvTablePage, Glyph = "\uE82D", TargetPageType = typeof(ProvTablePage) },
             new HamburgerMenuGlyphItem() { Label = Properties.Resources.ShellColorPickerPage, Glyph = "\uE790", TargetPageType = typeof(ColorPickerPage) },
         };
 

@@ -1,6 +1,7 @@
 ﻿using EU4_PCP.Contracts.Views;
 using EU4_PCP.Models;
 using EU4_PCP.Services;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -8,7 +9,9 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Shapes;
 using static EU4_PCP.PCP_Const;
 using static EU4_PCP.PCP_Data;
@@ -18,10 +21,27 @@ namespace EU4_PCP.Views
 {
     public partial class ProvTablePage : Page, INotifyPropertyChanged, INavigationAware
     {
+        private string filterText = "";
+        public string FilterText
+        {
+            get => filterText;
+            set => Set(ref filterText, value);
+        }
+
         public ProvTablePage()
         {
             InitializeComponent();
             DataContext = this;
+
+            PropertyChanged += ProvTablePage_PropertyChanged;
+        }
+
+        private void ProvTablePage_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(FilterText))
+            {
+                FilterProvs();
+            }
         }
 
         public void OnNavigatedTo(object parameter)
@@ -35,12 +55,33 @@ namespace EU4_PCP.Views
                                     orderby prov.Index
                                     select new TableProvince(prov);
 
-            ProvincesShown = ProvTable.Items.Count.ToString();
+            FilterProvs();
 
             PaintMarkers();
 
             ProvTable.SelectedIndex = SelectedGridRow;
         }
+
+        private void FilterProvs()
+        {
+            var collectionView = CollectionViewSource.GetDefaultView(ProvTable.ItemsSource);
+
+            collectionView.Filter = new(NameFilter(FilterText.ToLower()));
+
+            ProvTableFilterBox.Background = ProvTable.Items.Count == 0 ? new SolidColorBrush(Colors.Crimson) : null;
+        }
+
+        private static Predicate<object> NameFilter(string filter) => p =>
+        {
+            if (p is not TableProvince prov)
+                return false;
+
+            return prov.province.Name.Definition?.ToLower().Contains(filter) is true
+                || prov.province.Name.AltDefin?.ToLower().Contains(filter) is true
+                || prov.province.Name.Localisation?.ToLower().Contains(filter) is true
+                || prov.province.Name.Dynamic?.ToLower().Contains(filter) is true
+                || prov.Index.ToString().Contains(filter);
+        };
 
         public void OnNavigatedFrom()
         {

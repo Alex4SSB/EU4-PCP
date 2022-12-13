@@ -1397,8 +1397,6 @@ namespace EU4_PCP
 
                 if (Storage.RetrieveBool(General.UpdateMaxProv) && !WriteDefMap(ModMaxProvinces))
                     return false;
-
-                ProvincesShown = Provinces.Values.Count(prov => prov && prov.Show).ToString();
             }
 
             if (!WriteProvinces())

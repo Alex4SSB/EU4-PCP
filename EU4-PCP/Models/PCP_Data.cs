@@ -51,7 +51,6 @@ namespace EU4_PCP
         public static string ModDupliProvinceCount;
         public static string ModIllegalProvinceCount;
         public static string ModMaxProvinces;
-        public static string ProvincesShown;
         public static double ProvTableIndex = 0;
         public static Color ColorPickerPickedColor;
         public static TableProvince ChosenProv;
