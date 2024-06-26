@@ -5,8 +5,7 @@
 
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Alex4SSB/EU4-PCP_WPF_NET5?label=Last%20commit">
 
-An app for selecting colors for new mod provinces.<br />
-It is now using .NET7.0 despite the repo name suggesting .NET5.0.
+An app for selecting colors for new mod provinces.
 
 <a href="https://docs.google.com/document/d/1V01OmjNTXhUqeb1eyciv6_pCOw77W-nwwPUP_CbLa2A/edit?usp=sharing">
   User manual on Google Docs
