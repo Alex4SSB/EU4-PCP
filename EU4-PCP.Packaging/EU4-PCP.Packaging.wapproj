@@ -54,7 +54,7 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
-    <PackageCertificateKeyFile>EU4-PCP.Packaging_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>0A9207071679EF2468658C1B89C45CA50F1A0951</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <AppxBundle>Always</AppxBundle>
