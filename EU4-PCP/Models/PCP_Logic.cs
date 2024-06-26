@@ -35,7 +35,7 @@ namespace EU4_PCP
             var modNames = new List<string> { "[Vanilla - no mod]" };
             if (PathHandler(Scope.Mod))
             {
-                ModSetup();
+                ModSetup(false);
                 modNames.AddRange(Mods.Select(m => m.Name));
             }
             ModList = modNames;

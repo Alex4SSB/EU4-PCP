@@ -868,6 +868,7 @@ namespace EU4_PCP
 
         private static string ModPathPrep(string scriptedPath, string modParentDir)
         {
+            scriptedPath = scriptedPath.Trim('"');
             if (!Directory.Exists(scriptedPath))
             {
                 var tempPath = $@"{modParentDir}\{scriptedPath.TrimStart('/', '\\')}";
