@@ -7,6 +7,12 @@
 
 An app for selecting colors for new mod provinces.
 
+<a href="https://docs.google.com/document/d/1V01OmjNTXhUqeb1eyciv6_pCOw77W-nwwPUP_CbLa2A/edit?usp=sharing">
+  User manual on Google Docs
+</a>
+
+<br /><br />
+
 <a href="https://www.microsoft.com/store/apps/9P5H169WP259">
       <img alt="Issues" width=300px src="https://get.microsoft.com/images/en-us%20light.svg" />
 </a>
