@@ -380,7 +380,7 @@
                                 <TextBlock
                                     FontFamily="Consolas"
                                     FontWeight="Bold"
-                                    Text="{Binding Date}" />
+                                    Text="{Binding DateString}" />
                             </StackPanel>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>

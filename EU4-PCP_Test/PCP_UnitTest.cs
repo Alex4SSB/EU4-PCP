@@ -452,10 +452,10 @@ namespace EU4_PCP_Test
             Assert.AreEqual(date, other.Date);
             Assert.IsTrue(other.IsDefault);
 
-            ListBookmark book = new(origin, true);
+            ListBookmark book = new(origin);
 
             Assert.AreEqual(name, book.Name);
-            Assert.AreEqual("2012-Sep-11", book.Date);
+            Assert.AreEqual("2012-Sep-11", book.DateString);
         }
 
         [TestMethod]

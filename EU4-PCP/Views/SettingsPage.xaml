@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:EU4_PCP.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:EU4_PCP"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:EU4_PCP.Models"
     xmlns:properties="clr-namespace:EU4_PCP.Properties"
@@ -42,7 +43,7 @@
                 <StackPanel.Margin>
                     <StaticResource ResourceKey="MediumLeftRightMargin" />
                 </StackPanel.Margin>
-                <Expander IsExpanded="{Binding WorkDirsExpanded}">
+                <Expander IsExpanded="{Binding Source={x:Static Member=local:PCP_Data.Notifiable}, Path=WorkDirsExpanded}">
                     <Expander.Header>
                         <TextBlock Text="{x:Static properties:Resources.WorkingDirectories}" />
                     </Expander.Header>
@@ -146,7 +147,7 @@
                         </StackPanel>
                     </StackPanel>
                 </Expander>
-                <Expander IsExpanded="{Binding ProvTableExpanded}">
+                <Expander IsExpanded="{Binding Source={x:Static Member=local:PCP_Data.Notifiable}, Path=ProvTableExpanded}">
                     <Expander.Header>
                         <TextBlock Text="{x:Static properties:Resources.ProvTableSettings}" />
                     </Expander.Header>
@@ -212,7 +213,7 @@
                         </StackPanel>
                     </StackPanel>
                 </Expander>
-                <Expander IsExpanded="{Binding ColorPickerExpanded}">
+                <Expander IsExpanded="{Binding Source={x:Static Member=local:PCP_Data.Notifiable}, Path=ColorPickerExpanded}">
                     <Expander.Header>
                         <TextBlock Text="{x:Static properties:Resources.ColorPickerSettings}" />
                     </Expander.Header>
@@ -259,46 +260,30 @@
                         </StackPanel>
                     </StackPanel>
                 </Expander>
-                <Expander IsExpanded="{Binding PersonalizationExpanded}">
+                <Expander IsExpanded="{Binding Source={x:Static Member=local:PCP_Data.Notifiable}, Path=PersonalizationExpanded}">
                     <Expander.Header>
                         <TextBlock Text="{x:Static properties:Resources.SettingsPagePersonalizationTitle}" />
                     </Expander.Header>
                     <StackPanel>
                         <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
-                            <TextBlock Style="{StaticResource ListTitleStyle}" Text="{x:Static properties:Resources.SettingsDateFormat}" />
-                            <StackPanel Margin="{StaticResource XSmallLeftTopRightBottomMargin}">
-                                <ComboBox
-                                    x:Name="DateFormatComboBox"
-                                    Width="Auto"
-                                    Margin="{StaticResource XSmallTopMargin}"
-                                    HorizontalAlignment="Left"
-                                    FontSize="{StaticResource MediumFontSize}"
-                                    ItemsSource="{Binding DateFormats}"
-                                    SelectionChanged="ChangeIndex"
-                                    Tag="DateFormat" />
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
                             <TextBlock Style="{StaticResource ListTitleStyle}" Text="{x:Static properties:Resources.SettingsPageChooseThemeText}" />
                             <StackPanel Margin="{StaticResource XSmallLeftTopRightBottomMargin}">
                                 <RadioButton
-                                    Checked="OnLightChecked"
                                     Content="{x:Static properties:Resources.SettingsPageRadioButtonLightTheme}"
                                     FontSize="{StaticResource MediumFontSize}"
                                     GroupName="AppTheme"
-                                    IsChecked="{Binding Theme, ConverterParameter=Light, Converter={StaticResource EnumToBooleanConverter}}" />
+                                    IsChecked="{Binding Source={x:Static Member=local:PCP_Data.Notifiable}, Path=Theme, ConverterParameter=Light, Converter={StaticResource EnumToBooleanConverter}}" />
                                 <RadioButton
                                     Margin="{StaticResource XSmallTopMargin}"
-                                    Checked="OnDarkChecked"
                                     Content="{x:Static properties:Resources.SettingsPageRadioButtonDarkTheme}"
                                     FontSize="{StaticResource MediumFontSize}"
                                     GroupName="AppTheme"
-                                    IsChecked="{Binding Theme, ConverterParameter=Dark, Converter={StaticResource EnumToBooleanConverter}}" />
+                                    IsChecked="{Binding Source={x:Static Member=local:PCP_Data.Notifiable}, Path=Theme, ConverterParameter=Dark, Converter={StaticResource EnumToBooleanConverter}}" />
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </Expander>
-                <Expander IsExpanded="{Binding AboutExpanded}">
+                <Expander IsExpanded="{Binding Source={x:Static Member=local:PCP_Data.Notifiable}, Path=AboutExpanded}">
                     <Expander.Header>
                         <TextBlock Text="{x:Static properties:Resources.SettingsPageAboutTitle}" />
                     </Expander.Header>
@@ -306,31 +291,37 @@
                         <TextBlock
                             Margin="{StaticResource XSmallTopMargin}"
                             Style="{StaticResource ListTitleStyle}"
-                            Text="{Binding VersionDescription, Mode=OneWay}" />
-                        <TextBlock Margin="{StaticResource XSmallLeftTopRightBottomMargin}" AutomationProperties.Name="{Binding Text, ElementName=settingsPrivacyStatement}"><Hyperlink AutomationProperties.Name="{Binding Text, ElementName=settingsPrivacyStatement}" Click="OnPrivacyStatementClick">
+                            Text="{Binding Source={x:Static Member=local:PCP_Data.Notifiable}, Path=VersionDescription, Mode=OneWay}" />
+                        <TextBlock Margin="{StaticResource XSmallLeftTopRightBottomMargin}" AutomationProperties.Name="{Binding Text, ElementName=settingsPrivacyStatement}">
+                            <Hyperlink AutomationProperties.Name="{Binding Text, ElementName=settingsPrivacyStatement}" Click="OnPrivacyStatementClick">
                                 <InlineUIContainer>
                                     <TextBlock
                                         x:Name="settingsPrivacyStatement"
                                         Style="{StaticResource BodyTextStyle}"
                                         Text="{x:Static properties:Resources.SettingsPagePrivacyStatementText}" />
                                 </InlineUIContainer>
-                            </Hyperlink></TextBlock>
-                        <TextBlock Margin="{StaticResource XSmallLeftTopRightBottomMargin}" AutomationProperties.Name="{Binding Text, ElementName=settingsUserManual}"><Hyperlink AutomationProperties.Name="{Binding Text, ElementName=settingsUserManual}" Click="UserManual_Click">
+                            </Hyperlink>
+                        </TextBlock>
+                        <TextBlock Margin="{StaticResource XSmallLeftTopRightBottomMargin}" AutomationProperties.Name="{Binding Text, ElementName=settingsUserManual}">
+                            <Hyperlink AutomationProperties.Name="{Binding Text, ElementName=settingsUserManual}" Click="UserManual_Click">
                                 <InlineUIContainer>
                                     <TextBlock
                                         x:Name="settingsUserManual"
                                         Style="{StaticResource BodyTextStyle}"
                                         Text="{x:Static properties:Resources.SettingsPageUserManualText}" />
                                 </InlineUIContainer>
-                            </Hyperlink></TextBlock>
-                        <TextBlock Margin="{StaticResource XSmallLeftTopRightBottomMargin}" AutomationProperties.Name="{Binding Text, ElementName=MahAppsLink}"><Hyperlink AutomationProperties.Name="{Binding Text, ElementName=MahAppsLink}" Click="Hyperlink_Click">
+                            </Hyperlink>
+                        </TextBlock>
+                        <TextBlock Margin="{StaticResource XSmallLeftTopRightBottomMargin}" AutomationProperties.Name="{Binding Text, ElementName=MahAppsLink}">
+                            <Hyperlink AutomationProperties.Name="{Binding Text, ElementName=MahAppsLink}" Click="Hyperlink_Click">
                                 <InlineUIContainer>
                                     <TextBlock
                                         x:Name="MahAppsLink"
                                         Style="{StaticResource BodyTextStyle}"
                                         Text="{x:Static properties:Resources.SettingsPageMahappsLinkText}" />
                                 </InlineUIContainer>
-                            </Hyperlink></TextBlock>
+                            </Hyperlink>
+                        </TextBlock>
                     </StackPanel>
                 </Expander>
             </StackPanel>

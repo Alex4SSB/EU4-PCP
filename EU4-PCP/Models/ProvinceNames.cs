@@ -1,9 +1,8 @@
-﻿namespace EU4_PCP.Models
+﻿namespace EU4_PCP.Models;
+
+public enum ProvinceNames
 {
-    public enum ProvinceNames
-    {
-        Definition,
-        Localisation,
-        Dynamic
-    }
+    Definition,
+    Localisation,
+    Dynamic
 }

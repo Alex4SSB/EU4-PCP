@@ -1,18 +1,17 @@
-﻿namespace EU4_PCP.Models
+﻿namespace EU4_PCP.Models;
+
+public enum General
 {
-    public enum General
-    {
-        ShowAllProvinces,
-        GamePath,
-        ModPath,
-        LastSelMod,
-        CheckDupli,
-        UpdateMaxProv,
-        IterateMaxProv,
-        ShowIllegalProv,
-        IgnoreIllegal,
-        InC,
-        DateFormat,
-        OverrideBooks
-    }
+    ShowAllProvinces,
+    GamePath,
+    ModPath,
+    LastSelMod,
+    CheckDupli,
+    UpdateMaxProv,
+    IterateMaxProv,
+    ShowIllegalProv,
+    IgnoreIllegal,
+    InC,
+    DateFormat,
+    OverrideBooks
 }

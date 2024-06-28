@@ -1,9 +1,8 @@
-﻿namespace EU4_PCP.Models
+﻿namespace EU4_PCP.Models;
+
+public enum AppTheme
 {
-    public enum AppTheme
-    {
-        Default,
-        Light,
-        Dark
-    }
+    Default,
+    Light,
+    Dark
 }

@@ -1,15 +1,14 @@
-﻿namespace EU4_PCP.Models
+﻿namespace EU4_PCP.Models;
+
+public class AppConfig
 {
-    public class AppConfig
-    {
-        public string ConfigurationsFolder { get; set; }
+    public string ConfigurationsFolder { get; set; }
 
-        public string AppPropertiesFileName { get; set; }
+    public string AppPropertiesFileName { get; set; }
 
-        public string PrivacyStatement { get; set; }
+    public string PrivacyStatement { get; set; }
 
-        public string UserManual { get; set; }
+    public string UserManual { get; set; }
 
-        public string MahappsLink { get; set; }
-    }
+    public string MahappsLink { get; set; }
 }

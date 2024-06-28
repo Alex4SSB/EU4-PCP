@@ -1,9 +1,8 @@
-﻿namespace EU4_PCP.Models
+﻿namespace EU4_PCP.Models;
+
+public enum AutoLoad
 {
-    public enum AutoLoad
-    {
-        ListMods,
-        Remember,
-        Fully
-    }
+    ListMods,
+    Remember,
+    Fully
 }
