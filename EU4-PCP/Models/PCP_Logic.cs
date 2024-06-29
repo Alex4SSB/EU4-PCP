@@ -59,7 +59,10 @@ public static class PCP_Logic
     /// <returns><see langword="false"/> if any of the sub-sequences fails.</returns>
     private static bool MainSequence()
     {
-        Naming = (ProvinceNames)Storage.RetrieveEnumGroup(typeof(ProvinceNames));
+        Naming = string.IsNullOrEmpty(PCP_Data.Notifiable.ExternalDefinition)
+            ? (ProvinceNames)Storage.RetrieveEnumGroup(typeof(ProvinceNames))
+            : ProvinceNames.Definition;
+
         CheckDupli = Storage.RetrieveBool(General.CheckDupli);
         ShowRnw = Storage.RetrieveBool(General.ShowAllProvinces);
         OverrideBooks = Storage.RetrieveBool(General.OverrideBooks);
@@ -68,7 +71,7 @@ public static class PCP_Logic
         ClearArrays();
         StartDate = DateTime.MinValue;
 
-        if (BookStatus(true) && !DefinSetup(DecidePath()))
+        if (BookStatus(Naming is ProvinceNames.Dynamic) && !DefinSetup(DecidePath()))
             return ErrorMsg(ErrorType.DefinRead);
 
         if (Naming != ProvinceNames.Dynamic)
@@ -91,11 +94,14 @@ public static class PCP_Logic
         CountProv(SelectedMod);
         PopulateBooks();
 
-        // Unless a bookmark is selected, perform relevant max_provinces check
-        if ((BookStatus(true) &&
-            !SelectedMod && !MaxProvinces(Scope.Game)) ||
-            (SelectedMod && !MaxProvinces(Scope.Mod)))
-            return false;
+        if (Naming > ProvinceNames.Definition)
+        {
+            // Unless a bookmark is selected, perform relevant max_provinces check
+            if ((BookStatus(true) &&
+                !SelectedMod && !MaxProvinces(Scope.Game)) ||
+                (SelectedMod && !MaxProvinces(Scope.Mod)))
+                return false;
+        }
 
         DupliPrep();
 

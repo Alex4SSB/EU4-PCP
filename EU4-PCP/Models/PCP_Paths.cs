@@ -15,8 +15,9 @@ public static class PCP_Paths
     // MAIN FOLDERS
     public static string GamePath { get; set; } = "";
 
+    public const string DEFIN_FILE = "definition.csv";
+    public const string DEFIN_PATH = @"\map\" + DEFIN_FILE;
     public const string GAME_FILE = @"\eu4.exe";
-    public const string DEFIN_PATH = @"\map\definition.csv";
     public const string DEF_MAP_PATH = @"\map\default.map";
     public const string LOC_PATH = @"\localisation";
     public const string REP_LOC_PATH = @"\localisation\replace";

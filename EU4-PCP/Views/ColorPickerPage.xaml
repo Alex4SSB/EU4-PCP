@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:EU4_PCP"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:EU4_PCP.Properties"
@@ -40,12 +41,11 @@
                     </StackPanel.Resources>
                     <Border BorderBrush="Gray" BorderThickness="1">
                         <Grid>
-                            <TextBlock
+                            <mah:FontIcon
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
                                 FontSize="36"
-                                Text="&#xE711;" />
+                                Glyph="&#xE711;" />
                             <Rectangle
                                 x:Name="ColorRectangle"
                                 Height="40"
@@ -116,7 +116,22 @@
                             x:Name="LockRedButton"
                             Grid.Column="1"
                             Click="LockRedButton_Click"
-                            ToolTip="Lock red channel" />
+                            ToolTip="Lock red channel">
+                            <Button.Content>
+                                <mah:FontIcon FontSize="12">
+                                    <mah:FontIcon.Style>
+                                        <Style BasedOn="{StaticResource GlyphFont}" TargetType="mah:FontIcon">
+                                            <Setter Property="Glyph" Value="&#xE72E;" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Source={x:Static Member=local:PCP_Data.Notifiable}, Path=RedLock}" Value="False">
+                                                    <Setter Property="Glyph" Value="&#xE785;" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </mah:FontIcon.Style>
+                                </mah:FontIcon>
+                            </Button.Content>
+                        </Button>
                     </Grid>
                     <Border Grid.Column="2">
                         <TextBlock x:Name="RedTextBlock" Text="Red" />
@@ -138,7 +153,22 @@
                             x:Name="LockGreenButton"
                             Grid.Column="1"
                             Click="LockGreenButton_Click"
-                            ToolTip="Lock green channel" />
+                            ToolTip="Lock green channel">
+                            <Button.Content>
+                                <mah:FontIcon FontSize="12">
+                                    <mah:FontIcon.Style>
+                                        <Style BasedOn="{StaticResource GlyphFont}" TargetType="mah:FontIcon">
+                                            <Setter Property="Glyph" Value="&#xE72E;" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Source={x:Static Member=local:PCP_Data.Notifiable}, Path=GreenLock}" Value="False">
+                                                    <Setter Property="Glyph" Value="&#xE785;" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </mah:FontIcon.Style>
+                                </mah:FontIcon>
+                            </Button.Content>
+                        </Button>
                     </Grid>
                     <Border Grid.Row="1" Grid.Column="2">
                         <TextBlock x:Name="GreenTextBlock" Text="Green" />
@@ -157,7 +187,22 @@
                             x:Name="LockBlueButton"
                             Grid.Column="1"
                             Click="LockBlueButton_Click"
-                            ToolTip="Lock Blue channel" />
+                            ToolTip="Lock Blue channel">
+                            <Button.Content>
+                                <mah:FontIcon FontSize="12">
+                                    <mah:FontIcon.Style>
+                                        <Style BasedOn="{StaticResource GlyphFont}" TargetType="mah:FontIcon">
+                                            <Setter Property="Glyph" Value="&#xE72E;" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Source={x:Static Member=local:PCP_Data.Notifiable}, Path=BlueLock}" Value="False">
+                                                    <Setter Property="Glyph" Value="&#xE785;" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </mah:FontIcon.Style>
+                                </mah:FontIcon>
+                            </Button.Content>
+                        </Button>
                     </Grid>
                     <Border Grid.Row="2" Grid.Column="2">
                         <TextBlock x:Name="BlueTextBlock" Text="Blue" />
@@ -245,146 +290,189 @@
                 </Grid>
             </StackPanel>
             <StackPanel Grid.Column="2">
-                <TextBlock
-                    Margin="4"
-                    HorizontalAlignment="Center"
-                    FontSize="14"
-                    Text="Mod Selection" />
-                <ComboBox
-                    x:Name="ModSelComboBox"
-                    Margin="4"
-                    SelectionChanged="ModSelComboBox_SelectionChanged"
-                    ToolTip="{Binding Text, ElementName=ModSelComboBox}" />
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20*" />
-                        <ColumnDefinition Width="12*" />
-                        <ColumnDefinition Width="20*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <TextBlock
-                        x:Name="GameVerBlock"
-                        HorizontalAlignment="Center"
-                        Text="Game"
-                        TextWrapping="Wrap" />
-                    <TextBlock
-                        x:Name="ModVerBlock"
-                        Grid.Column="2"
-                        HorizontalAlignment="Center"
-                        Text="Mod" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Margin="4"
-                        HorizontalAlignment="Center"
-                        Text="- provinces -" />
-                    <TextBlock
-                        x:Name="GameProvCountBlock"
-                        Grid.Row="1"
-                        Margin="4"
-                        HorizontalAlignment="Center"
-                        FontFamily="Consolas"
-                        Text="" />
-                    <TextBlock
-                        x:Name="ModProvCountBlock"
-                        Grid.Row="1"
-                        Grid.Column="2"
-                        Margin="4"
-                        HorizontalAlignment="Center"
-                        FontFamily="Consolas"
-                        Text="" />
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Margin="4"
-                        HorizontalAlignment="Center"
-                        Text="- max -" />
-                    <TextBlock
-                        x:Name="GameMaxProvBlock"
-                        Grid.Row="2"
-                        Margin="4"
-                        HorizontalAlignment="Center"
-                        FontFamily="Consolas"
-                        Text="" />
-                    <TextBlock
-                        x:Name="ModMaxProvBlock"
-                        Grid.Row="2"
-                        Grid.Column="2"
-                        Margin="4"
-                        HorizontalAlignment="Center"
-                        FontFamily="Consolas"
-                        Text="" />
+                <Grid AllowDrop="True">
+                    <Border x:Name="ExternalDefBorder" BorderThickness="6">
+                        <StackPanel Margin="4" IsHitTestVisible="False">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="14"
+                                IsHitTestVisible="False"
+                                Text="External Definition" />
+                            <mah:FontIcon
+                                Margin="6"
+                                Glyph="&#xE8E5;"
+                                IsHitTestVisible="False" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                IsHitTestVisible="False"
+                                Text="Click to select an external definition.csv file, or drop it here." />
+                        </StackPanel>
+                    </Border>
+                    <Border
+                        AllowDrop="True"
+                        Background="Transparent"
+                        BorderBrush="Gray"
+                        BorderThickness="1"
+                        DragEnter="Border_DragEnter"
+                        DragLeave="Border_DragLeave"
+                        Drop="Border_Drop"
+                        IsHitTestVisible="True"
+                        MouseDown="Border_MouseDown" />
                 </Grid>
-                <Grid x:Name="DupliCountGrid">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20*" />
-                        <ColumnDefinition Width="12*" />
-                        <ColumnDefinition Width="20*" />
-                    </Grid.ColumnDefinitions>
+                <StackPanel>
                     <TextBlock
-                        Grid.Column="1"
                         Margin="4"
                         HorizontalAlignment="Center"
-                        Text="duplicates :" />
+                        FontSize="14"
+                        Text="Mod Selection" />
+                    <ComboBox
+                        x:Name="ModSelComboBox"
+                        Margin="4"
+                        SelectionChanged="ModSelComboBox_SelectionChanged"
+                        ToolTip="{Binding Text, ElementName=ModSelComboBox}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20*" />
+                            <ColumnDefinition Width="12*" />
+                            <ColumnDefinition Width="20*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            x:Name="GameVerBlock"
+                            HorizontalAlignment="Center"
+                            Text="Game"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            x:Name="ModVerBlock"
+                            Grid.Column="2"
+                            HorizontalAlignment="Center"
+                            Text="Mod" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="4"
+                            HorizontalAlignment="Center"
+                            Text="- provinces -" />
+                        <TextBlock
+                            x:Name="GameProvCountBlock"
+                            Grid.Row="1"
+                            Margin="4"
+                            HorizontalAlignment="Center"
+                            FontFamily="Consolas"
+                            Text="" />
+                        <TextBlock
+                            x:Name="ModProvCountBlock"
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Margin="4"
+                            HorizontalAlignment="Center"
+                            FontFamily="Consolas"
+                            Text="" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Margin="4"
+                            HorizontalAlignment="Center"
+                            Text="- max -" />
+                        <TextBlock
+                            x:Name="GameMaxProvBlock"
+                            Grid.Row="2"
+                            Margin="4"
+                            HorizontalAlignment="Center"
+                            FontFamily="Consolas"
+                            Text="" />
+                        <TextBlock
+                            x:Name="ModMaxProvBlock"
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Margin="4"
+                            HorizontalAlignment="Center"
+                            FontFamily="Consolas"
+                            Text="" />
+                    </Grid>
+                    <Grid x:Name="DupliCountGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20*" />
+                            <ColumnDefinition Width="12*" />
+                            <ColumnDefinition Width="20*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="4"
+                            HorizontalAlignment="Center"
+                            Text="duplicates :" />
+                        <TextBlock
+                            x:Name="ModDupliCount"
+                            Grid.Column="2"
+                            Margin="4"
+                            HorizontalAlignment="Center"
+                            FontFamily="Consolas"
+                            Text=""
+                            ToolTip="{x:Static properties:Resources.ColorPickerDupliDesc}" />
+                    </Grid>
+                    <Grid x:Name="IllegalProvCountGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20*" />
+                            <ColumnDefinition Width="12*" />
+                            <ColumnDefinition Width="20*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="4"
+                            HorizontalAlignment="Center"
+                            Text="illegal :" />
+                        <TextBlock
+                            x:Name="ModIllegalProvCount"
+                            Grid.Column="2"
+                            Margin="4"
+                            HorizontalAlignment="Center"
+                            FontFamily="Consolas"
+                            Text=""
+                            ToolTip="{x:Static properties:Resources.ColorPickerIllegalDesc}" />
+                    </Grid>
+                </StackPanel>
+                <StackPanel>
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Source={x:Static Member=local:PCP_Data.Notifiable}, Path=ExternalDefinition}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <Separator Margin="0,10,0,0" />
                     <TextBlock
-                        x:Name="ModDupliCount"
-                        Grid.Column="2"
+                        x:Name="BookmarkBlock"
                         Margin="4"
                         HorizontalAlignment="Center"
-                        FontFamily="Consolas"
-                        Text=""
-                        ToolTip="{x:Static properties:Resources.ColorPickerDupliDesc}" />
-                </Grid>
-                <Grid x:Name="IllegalProvCountGrid">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20*" />
-                        <ColumnDefinition Width="12*" />
-                        <ColumnDefinition Width="20*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock
-                        Grid.Column="1"
+                        FontSize="14"
+                        Text="Bookmark Selection" />
+                    <ComboBox
+                        x:Name="BookmarkComboBox"
                         Margin="4"
-                        HorizontalAlignment="Center"
-                        Text="illegal :" />
-                    <TextBlock
-                        x:Name="ModIllegalProvCount"
-                        Grid.Column="2"
-                        Margin="4"
-                        HorizontalAlignment="Center"
-                        FontFamily="Consolas"
-                        Text=""
-                        ToolTip="{x:Static properties:Resources.ColorPickerIllegalDesc}" />
-                </Grid>
-                <Separator Margin="0,10,0,0" />
-                <TextBlock
-                    x:Name="BookmarkBlock"
-                    Margin="4"
-                    HorizontalAlignment="Center"
-                    FontSize="14"
-                    Text="Bookmark Selection" />
-                <ComboBox
-                    x:Name="BookmarkComboBox"
-                    Margin="4"
-                    SelectionChanged="BookmarkComboBox_SelectionChanged">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <TextBlock
-                                    FontSize="14"
-                                    Text="{Binding Name}"
-                                    TextDecorations="Underline" />
-                                <TextBlock
-                                    FontFamily="Consolas"
-                                    FontWeight="Bold"
-                                    Text="{Binding DateString}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                        SelectionChanged="BookmarkComboBox_SelectionChanged">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock
+                                        FontSize="14"
+                                        Text="{Binding Name}"
+                                        TextDecorations="Underline" />
+                                    <TextBlock
+                                        FontFamily="Consolas"
+                                        FontWeight="Bold"
+                                        Text="{Binding DateString}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>

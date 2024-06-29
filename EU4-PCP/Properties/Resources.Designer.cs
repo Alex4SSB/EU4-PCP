@@ -70,7 +70,7 @@ namespace EU4_PCP.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.6.18.
+        ///   Looks up a localized string similar to 1.6.19.
         /// </summary>
         public static string AppVersion {
             get {

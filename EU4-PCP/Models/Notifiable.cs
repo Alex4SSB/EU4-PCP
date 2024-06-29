@@ -57,4 +57,32 @@ public class Notifiable : ViewModelBase
         get => versionDescription;
         set => Set(ref versionDescription, value);
     }
+
+    private bool redLock = false;
+    public bool RedLock
+    {
+        get => redLock;
+        set => Set(ref redLock, value);
+    }
+
+    private bool greenLock = false;
+    public bool GreenLock
+    {
+        get => greenLock;
+        set => Set(ref greenLock, value);
+    }
+
+    private bool blueLock = false;
+    public bool BlueLock
+    {
+        get => blueLock;
+        set => Set(ref blueLock, value);
+    }
+
+    private string externalDefinition = null;
+    public string ExternalDefinition
+    {
+        get => externalDefinition;
+        set => Set(ref externalDefinition, value);
+    }
 }

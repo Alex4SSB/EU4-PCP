@@ -9,9 +9,8 @@ namespace EU4_PCP.Views;
 
 public partial class ColorPickerPage : Page
 {
+    private const string externDef = "[ External Definition ]";
     private readonly P_Color PickedColor = ColorPickerPickedColor;
-
-    private bool RedLock = false, GreenLock = false, BlueLock = false;
 
     public ColorPickerPage()
     {
@@ -19,6 +18,20 @@ public partial class ColorPickerPage : Page
         DataContext = this;
 
         InitializeData();
+
+        PCP_Data.Notifiable.PropertyChanged += Notifiable_PropertyChanged;
+    }
+
+    private void Notifiable_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(PCP_Data.Notifiable.ExternalDefinition) && PCP_Data.Notifiable.ExternalDefinition is not null)
+        {
+            if (ModList.Last() is not externDef)
+                ModList.Add(externDef);
+
+            ModSelComboBox.Items.Refresh();
+            ModSelComboBox.SelectedItem = externDef;
+        }
     }
 
     private static bool EnableBooks => Storage.RetrieveBoolEnum(ProvinceNames.Dynamic)
@@ -94,8 +107,35 @@ public partial class ColorPickerPage : Page
     private void ModSelComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         EnablePicker();
-        if (Lockdown) return;
+
+        if (Lockdown)
+            return;
+
+        if (ModSelComboBox.SelectedItem is not externDef)
+        {
+            ModList.Remove(externDef);
+            Mods.RemoveAll(m => m.Name is externDef);
+            PCP_Data.Notifiable.ExternalDefinition = null;
+
+            ModProvCountBlock.Visibility =
+            ModVerBlock.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            Mods.Add(new()
+            {
+                Name = externDef,
+                Path = PCP_Data.Notifiable.ExternalDefinition,
+                GameVer = null,
+                Replace = new()
+            });
+
+            ModProvCountBlock.Visibility =
+            ModVerBlock.Visibility = Visibility.Hidden;
+        }
+
         SelectedModIndex = ModSelComboBox.SelectedIndex;
+
         EnactChange(CriticalScope.Mod);
     }
 
@@ -111,11 +151,11 @@ public partial class ColorPickerPage : Page
         RandomizeButton.IsEnabled = isMod;
 
         RedSlider.IsEnabled =
-        RedTextBox.IsEnabled = isMod && !RedLock;
+        RedTextBox.IsEnabled = isMod && !PCP_Data.Notifiable.RedLock;
         GreenSlider.IsEnabled =
-        GreenTextBox.IsEnabled = isMod && !GreenLock;
+        GreenTextBox.IsEnabled = isMod && !PCP_Data.Notifiable.GreenLock;
         BlueSlider.IsEnabled =
-        BlueTextBox.IsEnabled = isMod && !BlueLock;
+        BlueTextBox.IsEnabled = isMod && !PCP_Data.Notifiable.BlueLock;
 
         if (!isMod)
         {
@@ -285,7 +325,7 @@ public partial class ColorPickerPage : Page
             && EnableNext();
     }
 
-    private bool EnableNext()
+    private static bool EnableNext()
     {
         if (ChosenProv.IsProvDupli)
         {
@@ -323,9 +363,9 @@ public partial class ColorPickerPage : Page
 
     private void Randomize()
     {
-        int r = RedLock ? (int)RedSlider.Value : -1;
-        int g = GreenLock ? (int)GreenSlider.Value : -1;
-        int b = BlueLock ? (int)BlueSlider.Value : -1;
+        int r = PCP_Data.Notifiable.RedLock ? (int)RedSlider.Value : -1;
+        int g = PCP_Data.Notifiable.GreenLock ? (int)GreenSlider.Value : -1;
+        int b = PCP_Data.Notifiable.BlueLock ? (int)BlueSlider.Value : -1;
 
         var tempColor = RandomProvColor(Provinces, r, g, b);
         RedSlider.Value = tempColor.R;
@@ -376,33 +416,30 @@ public partial class ColorPickerPage : Page
 
     private void LockRedButton_Click(object sender, RoutedEventArgs e)
     {
-        RedLock = !RedLock;
+        PCP_Data.Notifiable.RedLock ^= true;
 
         RedSlider.IsEnabled = 
-        RedTextBox.IsEnabled = !RedLock;
-        LockRedButton.Content = RedLock ? "\uE72E" : "\uE785";
+        RedTextBox.IsEnabled = !PCP_Data.Notifiable.RedLock;
 
         EnableRandomize();
     }
 
     private void LockGreenButton_Click(object sender, RoutedEventArgs e)
     {
-        GreenLock = !GreenLock;
+        PCP_Data.Notifiable.GreenLock ^= true;
 
         GreenSlider.IsEnabled = 
-        GreenTextBox.IsEnabled = !GreenLock;
-        LockGreenButton.Content = GreenLock ? "\uE72E" : "\uE785";
+        GreenTextBox.IsEnabled = !PCP_Data.Notifiable.GreenLock;
 
         EnableRandomize();
     }
 
     private void LockBlueButton_Click(object sender, RoutedEventArgs e)
     {
-        BlueLock = !BlueLock;
+        PCP_Data.Notifiable.BlueLock ^= true;
 
         BlueSlider.IsEnabled = 
-        BlueTextBox.IsEnabled = !BlueLock;
-        LockBlueButton.Content = BlueLock ? "\uE72E" : "\uE785";
+        BlueTextBox.IsEnabled = !PCP_Data.Notifiable.BlueLock;
 
         EnableRandomize();
     }
@@ -461,5 +498,38 @@ public partial class ColorPickerPage : Page
     private void HxValueBlock_MouseLeave(object sender, MouseEventArgs e)
     {
         HxValueBlock.TextDecorations.Clear();
+    }
+
+    private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Filter = $"Definition file|{PCP_Paths.DEFIN_FILE}",
+        };
+
+        if (dialog.ShowDialog() is true)
+            PCP_Data.Notifiable.ExternalDefinition = dialog.FileName;
+    }
+
+    private void Border_DragEnter(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetData(DataFormats.FileDrop) is not string[] items || items.Length != 1 || !items[0].EndsWith(PCP_Paths.DEFIN_FILE))
+            return;
+
+        // # FFD4CF94
+        ExternalDefBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(212, 207, 148));
+    }
+
+    private void Border_DragLeave(object sender, DragEventArgs e)
+    {
+        ExternalDefBorder.BorderBrush = new SolidColorBrush(Colors.Transparent);
+    }
+
+    private void Border_Drop(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetData(DataFormats.FileDrop) is string[] items && items.Length == 1 && items[0].EndsWith(PCP_Paths.DEFIN_FILE))
+            PCP_Data.Notifiable.ExternalDefinition = items[0];
+
+        ExternalDefBorder.BorderBrush = new SolidColorBrush(Colors.Transparent);
     }
 }

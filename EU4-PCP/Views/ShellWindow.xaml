@@ -25,11 +25,10 @@
                 Click="OnGoBack"
                 IsEnabled="{Binding CanGoBack}"
                 ToolTip="{x:Static properties:Resources.ShellGoBackButton}">
-                <TextBlock
+                <controls:FontIcon
                     AutomationProperties.Name="{x:Static properties:Resources.ShellGoBackButton}"
-                    FontFamily="Segoe MDL2 Assets"
                     FontSize="14"
-                    Text="&#xE72B;" />
+                    Glyph="&#xE72B;" />
             </Button>
         </controls:WindowCommands>
     </controls:MetroWindow.LeftWindowCommands>
@@ -42,13 +41,12 @@
                             <ColumnDefinition Width="48" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <TextBlock
+                        <controls:FontIcon
                             Grid.Column="0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            FontFamily="Segoe MDL2 Assets"
                             FontSize="16"
-                            Text="{Binding Glyph}"
+                            Glyph="{Binding Glyph}"
                             ToolTip="{Binding Label}" />
                         <TextBlock
                             Grid.Column="1"

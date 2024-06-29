@@ -159,7 +159,11 @@ public static class PCP_Implementations
     /// <returns><see langword="false"/> if an exception occurs while trying to read from the definition file.</returns>
     public static bool DefinSetup(string path)
     {
-        var provList = DefinRead(path + DEFIN_PATH, true, !Storage.RetrieveBool(General.ShowIllegalProv));
+        string definPath = string.IsNullOrEmpty(PCP_Data.Notifiable.ExternalDefinition)
+            ? path + DEFIN_PATH
+            : path;
+
+        var provList = DefinRead(definPath, true, !Storage.RetrieveBool(General.ShowIllegalProv));
         if (provList is null)
             return false;
         
