@@ -71,8 +71,11 @@ public static class PCP_Logic
         ClearArrays();
         StartDate = DateTime.MinValue;
 
-        if (BookStatus(Naming is ProvinceNames.Dynamic) && !DefinSetup(DecidePath()))
-            return ErrorMsg(ErrorType.DefinRead);
+        if (Naming is not ProvinceNames.Dynamic || SelectedBookmarkIndex < 1)
+        {
+            if (!DefinSetup(DecidePath()))
+                return ErrorMsg(ErrorType.DefinRead);
+        }
 
         if (Naming != ProvinceNames.Dynamic)
         {
@@ -85,11 +88,16 @@ public static class PCP_Logic
         if (Naming != ProvinceNames.Dynamic) DynamicSetup();
         GameVer();
 
-        ModVersion = "Mod";
-        if (SelectedMod)
+        if (string.IsNullOrEmpty(PCP_Data.Notifiable.ExternalDefinition))
         {
-            ModVersion += $" - {SelectedMod.GameVer}";
+            ModVersion = "Mod";
+            if (SelectedMod)
+            {
+                ModVersion += $" - {SelectedMod.GameVer}";
+            }
         }
+        else
+            ModVersion = "External";
 
         CountProv(SelectedMod);
         PopulateBooks();

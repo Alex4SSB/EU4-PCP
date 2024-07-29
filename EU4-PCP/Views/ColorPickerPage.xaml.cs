@@ -111,16 +111,7 @@ public partial class ColorPickerPage : Page
         if (Lockdown)
             return;
 
-        if (ModSelComboBox.SelectedItem is not externDef)
-        {
-            ModList.Remove(externDef);
-            Mods.RemoveAll(m => m.Name is externDef);
-            PCP_Data.Notifiable.ExternalDefinition = null;
-
-            ModProvCountBlock.Visibility =
-            ModVerBlock.Visibility = Visibility.Visible;
-        }
-        else
+        if (ModSelComboBox.SelectedItem is externDef)
         {
             Mods.Add(new()
             {
@@ -130,9 +121,20 @@ public partial class ColorPickerPage : Page
                 Replace = new()
             });
 
-            ModProvCountBlock.Visibility =
-            ModVerBlock.Visibility = Visibility.Hidden;
+            //ModProvCountBlock.Visibility =
+            //ModVerBlock.Visibility = Visibility.Hidden;
         }
+        else
+        {
+            ModList.Remove(externDef);
+            Mods.RemoveAll(m => m.Name is externDef);
+            PCP_Data.Notifiable.ExternalDefinition = null;
+
+            
+        }
+
+        ModProvCountBlock.Visibility =
+        ModVerBlock.Visibility = Visibility.Visible;
 
         SelectedModIndex = ModSelComboBox.SelectedIndex;
 

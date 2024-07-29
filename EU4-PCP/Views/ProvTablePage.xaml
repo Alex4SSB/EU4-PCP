@@ -110,6 +110,7 @@
                                 <Setter Property="TextAlignment" Value="Center" />
                                 <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
                                 <Setter Property="ToolTip" Value="{Binding Color}" />
+                                <EventSetter Event="MouseRightButtonUp" Handler="TextBlock_MouseRightButtonUp" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>

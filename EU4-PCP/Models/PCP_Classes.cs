@@ -92,7 +92,7 @@ public class Province : AbstractProvince
 public class TableProvince : AbstractProvince
 {
     public readonly Province province;
-    public string Color { get { return $"#{(province.Color.IsLegal() ? province.Color.Name : Colors.Transparent)}"; } }
+    public string Color { get { return $"#{(province.Color.IsLegal() ? province.Color.Name[2..] : Colors.Transparent)}"; } }
     public new string Name { get { return province.Name.ToString(); } }
     public short Red { get { return province.Color.R; } }
     public short Green { get { return province.Color.G; } }

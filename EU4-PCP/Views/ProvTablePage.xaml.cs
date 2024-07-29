@@ -167,4 +167,9 @@ public partial class ProvTablePage : Page, INavigationAware
         if (sender is DataGridRow row && row.DataContext is TableProvince prov)
             ProvTable.SelectedItem = prov;
     }
+
+    private void TextBlock_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        Clipboard.SetText(((FrameworkElement)sender).ToolTip as string);
+    }
 }
