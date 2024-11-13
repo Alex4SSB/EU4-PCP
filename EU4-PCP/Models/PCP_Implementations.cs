@@ -228,7 +228,7 @@ public static class PCP_Implementations
         catch (Exception)
         { return null; }
 
-        Dictionary<int, Province> provList = new();
+        Dictionary<int, Province> provList = [];
         if (parallel)
         {
             var definLock = new object();
@@ -277,9 +277,7 @@ public static class PCP_Implementations
         {
             Parallel.ForEach(ProvFiles, p_file =>
             {
-                if (ProvFileIndex(p_file.File) is not int i || !Provinces.ContainsKey(i)) return;
-
-                var prov = Provinces[i];
+                if (ProvFileIndex(p_file.File) is not int i || !Provinces.TryGetValue(i, out Province prov)) return;
                 if (!prov || (!updateOwner && prov.Owner)) return;
 
                 string provFile = File.ReadAllText(p_file.Path);
@@ -295,9 +293,7 @@ public static class PCP_Implementations
         {
             foreach (var p_file in ProvFiles)
             {
-                if (ProvFileIndex(p_file.File) is not int i || !Provinces.ContainsKey(i)) return;
-
-                var prov = Provinces[i];
+                if (ProvFileIndex(p_file.File) is not int i || !Provinces.TryGetValue(i, out Province prov)) return;
                 if (!prov || (!updateOwner && prov.Owner)) continue;
 
                 string provFile = File.ReadAllText(p_file.Path);
@@ -545,13 +541,13 @@ public static class PCP_Implementations
         {
             try
             {
-                CultureFiles.AddRange(Directory.GetFiles(SteamModPath + CULTURE_PATH).ToList());
+                CultureFiles.AddRange([.. Directory.GetFiles(SteamModPath + CULTURE_PATH)]);
             }
             catch (Exception) { }
         }
         try
         {
-            CultureFiles.AddRange(Directory.GetFiles(GamePath + CULTURE_PATH).ToList());
+            CultureFiles.AddRange([.. Directory.GetFiles(GamePath + CULTURE_PATH)]);
         }
         catch (Exception) { }
     }
@@ -586,7 +582,7 @@ public static class PCP_Implementations
             return null;
 
         var fileContent = File.ReadAllText(file.Path, UTF7);
-        Dictionary<int, string> provNames = new();
+        Dictionary<int, string> provNames = [];
         foreach (Match prov in RE_PROV_NAMES().Matches(fileContent))
         {
             var index = prov.Groups["index"].Value.ToInt();
@@ -642,8 +638,8 @@ public static class PCP_Implementations
             _ => throw new NotImplementedException()
         };
 
-        if (source is null || !source.ContainsKey(prov.Index)) return false;
-        prov.Name.Dynamic = source[prov.Index];
+        if (source is null || !source.TryGetValue(prov.Index, out string value)) return false;
+        prov.Name.Dynamic = value;
         return true;
     }
 
@@ -723,7 +719,7 @@ public static class PCP_Implementations
 
         try
         {
-            DefinesFiles = Directory.GetFiles(SteamModPath + DEFINES_FOLDER_PATH, "*.lua").ToList();
+            DefinesFiles = [.. Directory.GetFiles(SteamModPath + DEFINES_FOLDER_PATH, "*.lua")];
         }
         catch (Exception) { }
 
@@ -1017,7 +1013,7 @@ public static class PCP_Implementations
     /// <param name="scope">Game / Mod.</param>
     /// <returns>The path as string.</returns>
     private static string PathRead(Scope scope) 
-        => Storage.RetrieveValue(Enum.GetName(typeof(Scope), scope) + "Path") is string str 
+        => Storage.RetrieveValue(Enum.GetName(scope) + "Path") is string str 
         ? str 
         : "";
 
@@ -1028,7 +1024,7 @@ public static class PCP_Implementations
     /// <param name="path">The path as string.</param>
     private static void PathWrite(Scope scope, string path)
     {
-        Storage.StoreValue(path, Enum.GetName(typeof(Scope), scope) + "Path");
+        Storage.StoreValue(path, Enum.GetName(scope) + "Path");
     }
 
     /// <summary>
@@ -1176,7 +1172,7 @@ public static class PCP_Implementations
         if (Lockdown) return;
         if (SelectedBookmarkIndex < 0)
         {
-            if (BookmarkList.Any())
+            if (BookmarkList.Count != 0)
                 SelectedBookmarkIndex = 0;
             else return;
         }
@@ -1303,7 +1299,7 @@ public static class PCP_Implementations
 
         if (!CheckDupli || !SelectedMod) return;
 
-        ModDupliProvinceCount = DupliPrep(Provinces.Values.ToList()).ToString();
+        ModDupliProvinceCount = DupliPrep([.. Provinces.Values]).ToString();
     }
 
     /// <summary>
@@ -1371,9 +1367,8 @@ public static class PCP_Implementations
     {
         var update = !(ChosenProv && ChosenProv.province.Color.IsLegal() && ChosenProv.IsNameLegal());
 
-        if (Provinces.ContainsKey(newProv.Index))
+        if (Provinces.TryGetValue(newProv.Index, out Province prov))
         {
-            var prov = Provinces[newProv.Index];
             prov.Color = newProv.Color;
             prov.Name.Definition = newProv.Name.Definition;
         }
@@ -1525,7 +1520,7 @@ public static class PCP_Implementations
         {
             var replace = files.Where(f => f.Contains(REP_LOC_PATH)).ToDictionary(f => Path.GetFileName(f), f => f);
 
-            files.RemoveAll(f => replace.Keys.Contains(Path.GetFileName(f)) && !replace.Values.Contains(f));
+            files.RemoveAll(f => replace.ContainsKey(Path.GetFileName(f)) && !replace.ContainsValue(f));
         }
         
         return files;
@@ -1569,7 +1564,7 @@ public static class PCP_Implementations
                 || previous.Find(p => p.Path == i.Path)?.LastModified.CompareTo(i.LastModified) != 0
                 || previous.Find(p => p.Path == i.Path)?.LastVersion != i.LastVersion).ToList();
 
-            if (modified.Any())
+            if (modified.Count != 0)
                 CacheLoc(ref modified, enBooks);
 
             foreach (var item in previous)
@@ -1645,9 +1640,9 @@ public static class PCP_Implementations
         {
             foreach (var prov in item.ProvDict)
             {
-                if (Provinces.ContainsKey(prov.Key)
-                    && (string.IsNullOrEmpty(Provinces[prov.Key].Name.Localisation) || item.Source != "Game"))
-                    Provinces[prov.Key].Name.Localisation = prov.Value;
+                if (Provinces.TryGetValue(prov.Key, out Province value)
+                    && (string.IsNullOrEmpty(value.Name.Localisation) || item.Source != "Game"))
+                    value.Name.Localisation = prov.Value;
             }
         }
     }

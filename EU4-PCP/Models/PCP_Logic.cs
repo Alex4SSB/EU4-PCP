@@ -128,7 +128,7 @@ public static class PCP_Logic
         if (!LocalisationSetup(Naming == ProvinceNames.Dynamic))
             return ErrorMsg(ErrorType.LocRead);
 
-        if (Bookmarks.Any())
+        if (Bookmarks.Count != 0)
             Bookmarks = SortBooks(Bookmarks);
 
         return DynamicSequence();
@@ -160,7 +160,7 @@ public static class PCP_Logic
             CulturePrep,
             FetchDefines);
 
-        if (!Cultures.Any())
+        if (Cultures.Count == 0)
             return ErrorMsg(ErrorType.NoCultures);
         else if (!Cultures.Any(cul => cul && cul.Group))
             return ErrorMsg(ErrorType.NoCulGroups);
@@ -178,7 +178,7 @@ public static class PCP_Logic
         if (!success)
             return ErrorMsg(ErrorType.HistoryProvFolder);
 
-        if (!Countries.Any())
+        if (Countries.Count == 0)
             return ErrorMsg(ErrorType.NoCountries);
 
         Parallel.Invoke(
@@ -206,7 +206,7 @@ public static class PCP_Logic
             SelectedMod = Mods[SelectedModIndex - 1];
             SteamModPath = SelectedMod.Path;
         }
-        SelectedBookmarkIndex = BookmarkList != null && BookmarkList.Any() ? 0 : -1;
+        SelectedBookmarkIndex = BookmarkList != null && BookmarkList.Count != 0 ? 0 : -1;
 
         if (MainSequence())
             Storage.StoreValue(SelectedMod ? SelectedMod.Name : "-1", General.LastSelMod.ToString());

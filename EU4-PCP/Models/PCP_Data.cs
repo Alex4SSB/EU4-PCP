@@ -19,23 +19,23 @@ public static class PCP_Data
     public static DateTime StartDate { get; set; } = DateTime.MinValue;
 
     // STRING LISTS
-    public static List<string> DefinesFiles { get; set; } = new();
-    public static List<string> CultureFiles { get; set; } = new();
+    public static List<string> DefinesFiles { get; set; } = [];
+    public static List<string> CultureFiles { get; set; } = [];
 
     // CLASS DICT AND LISTS
-    public static Dictionary<int, Province> Provinces { get; set; } = new();
-    public static List<Country> Countries { get; set; } = new();
-    public static List<Culture> Cultures { get; set; } = new();
-    public static List<Bookmark> Bookmarks { get; set; } = new();
-    public static List<ModObj> Mods { get; set; } = new();
-    public static List<FileObj> CountryFiles { get; set; } = new();
-    public static List<FileObj> BookFiles { get; set; } = new();
-    public static List<FileObj> ProvFiles { get; set; } = new();
-    public static List<FileObj> ProvNameFiles { get; set; } = new();
+    public static Dictionary<int, Province> Provinces { get; set; } = [];
+    public static List<Country> Countries { get; set; } = [];
+    public static List<Culture> Cultures { get; set; } = [];
+    public static List<Bookmark> Bookmarks { get; set; } = [];
+    public static List<ModObj> Mods { get; set; } = [];
+    public static List<FileObj> CountryFiles { get; set; } = [];
+    public static List<FileObj> BookFiles { get; set; } = [];
+    public static List<FileObj> ProvFiles { get; set; } = [];
+    public static List<FileObj> ProvNameFiles { get; set; } = [];
 
     // Control public data sources
-    public static List<string> ModList { get; set; } = new();
-    public static List<ListBookmark> BookmarkList { get; set; } = new();
+    public static List<string> ModList { get; set; } = [];
+    public static List<ListBookmark> BookmarkList { get; set; } = [];
 
     public static Color ColorPickerPickedColor { get; set; }
     public static TableProvince ChosenProv { get; set; }

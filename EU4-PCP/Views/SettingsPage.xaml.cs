@@ -17,7 +17,7 @@ public partial class SettingsPage : Page, INavigationAware
     private bool _isInitialized;
     private bool _isBusy = false;
     
-    public List<FrameworkElement> Controls = new();
+    public List<FrameworkElement> Controls = [];
 
     public SettingsPage(IOptions<AppConfig> appConfig, IThemeSelectorService themeSelectorService, ISystemService systemService, IApplicationInfoService applicationInfoService)
     {
@@ -64,8 +64,8 @@ public partial class SettingsPage : Page, INavigationAware
 
     private void AddControls()
     {
-        Controls.AddRange(new FrameworkElement[]
-        {
+        Controls.AddRange(
+        [
             GamePathBlock,
             GamePathButton,
             ModPathBlock,
@@ -84,7 +84,7 @@ public partial class SettingsPage : Page, INavigationAware
             IgnoreIllegalBox,
             InCBox,
             OverrideModBooks
-        });
+        ]);
     }
 
     private void PathButton_Click(object sender, RoutedEventArgs e)
@@ -136,7 +136,7 @@ public partial class SettingsPage : Page, INavigationAware
     {
         var boxes = Controls.Where(c => c.Tag.ToString().Contains('|') && c.Tag.ToString().Split('|')[0] == group);
 
-        foreach (ToggleButton item in boxes)
+        foreach (ToggleButton item in boxes.Cast<ToggleButton>())
         {
             var i = item.GetIndex();
             item.IsChecked = i <= index; // (item is RadioButton ? i == index : i <= index)

@@ -36,7 +36,7 @@ public partial class ColorPickerPage : Page
 
     private static bool EnableBooks => Storage.RetrieveBoolEnum(ProvinceNames.Dynamic)
         && BookmarkList != null
-        && BookmarkList.Any();
+        && BookmarkList.Count != 0;
 
     private void InitializeData()
     {
@@ -92,7 +92,7 @@ public partial class ColorPickerPage : Page
 
         if (!EnableBooks)
         {
-            BookmarkList = new() { new() { Date = StartDate, Name = Properties.Resources.NoBookmarkPlaceholder } };
+            BookmarkList = [new() { Date = StartDate, Name = Properties.Resources.NoBookmarkPlaceholder }];
         }
         else if (BookmarkList.Count > 1)
         {

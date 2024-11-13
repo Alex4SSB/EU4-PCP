@@ -29,7 +29,7 @@ public abstract class AbstractProvince : IComparable<AbstractProvince>
 
     public static implicit operator bool(AbstractProvince obj)
     {
-        return obj is object && obj.Index > -1;
+        return obj is not null && obj.Index > -1;
     }
 
     public static implicit operator int(AbstractProvince prov)
@@ -89,9 +89,9 @@ public class Province : AbstractProvince
 
 }
 
-public class TableProvince : AbstractProvince
+public class TableProvince(Province prov) : AbstractProvince(prov)
 {
-    public readonly Province province;
+    public readonly Province province = prov;
     public string Color { get { return $"#{(province.Color.IsLegal() ? province.Color.Name[2..] : Colors.Transparent)}"; } }
     public new string Name { get { return province.Name.ToString(); } }
     public short Red { get { return province.Color.R; } }
@@ -101,11 +101,6 @@ public class TableProvince : AbstractProvince
     public bool IsProvDupli { get { return province.NextDupli; } }
     public string IsColorLegal { get { return province.Color.IsLegal() ? "" : "\uE711"; } }
     public bool IsProvLegal { get { return province.IsNameLegal() && province.Color.IsLegal(); } }
-
-    public TableProvince(Province prov) : base(prov)
-    {
-        province = prov;
-    }
 
     public override string ToString() => Name;
 }
@@ -126,7 +121,7 @@ public class ProvNameClass
 
     public static implicit operator bool(ProvNameClass obj)
     {
-        return obj is object;
+        return obj is not null;
     }
 
     public override string ToString()
@@ -152,20 +147,12 @@ public class Culture : ProvNameClass
     }
 }
 
-public class CompositeName
+public class CompositeName(string definition = null, string localisation = null, string dynamic = null, string alt = null)
 {
-    public string Definition;
-    public string Localisation;
-    public string Dynamic;
-    public string AltDefin;
-
-    public CompositeName(string definition = null, string localisation = null, string dynamic = null, string alt = null)
-    {
-        Definition = definition;
-        Localisation = localisation;
-        Dynamic = dynamic;
-        AltDefin = alt;
-    }
+    public string Definition = definition;
+    public string Localisation = localisation;
+    public string Dynamic = dynamic;
+    public string AltDefin = alt;
 
     public override string ToString()
     {
@@ -181,7 +168,7 @@ public class CompositeName
 
     public static implicit operator bool(CompositeName obj)
     {
-        return obj is object;
+        return obj is not null;
     }
 }
 
@@ -241,7 +228,7 @@ public class P_Color
 
     public byte[] AsByteArr()
     {
-        return new byte[] { R_(), G_(), B_() };
+        return [R_(), G_(), B_()];
     }
 
     public bool IsLegal() => R.Range(0, 255) && G.Range(0, 255) && B.Range(0, 255);
@@ -327,7 +314,7 @@ public class AbstractBookmark : IComparable<AbstractBookmark>
 
     public static implicit operator bool(AbstractBookmark obj)
     {
-        return obj is object;
+        return obj is not null;
     }
 }
 
@@ -374,7 +361,7 @@ public class ModObj : IComparable<ModObj>
 
     public static implicit operator bool(ModObj obj)
     {
-        return obj is object;
+        return obj is not null;
     }
 
     public static implicit operator Scope(ModObj obj)
@@ -407,26 +394,20 @@ public class Replace
 
     public static implicit operator bool(Replace obj)
     {
-        return obj is object;
+        return obj is not null;
     }
 
     public Replace() { }
 }
 
-public class FileObj
+public class FileObj(string fPath)
 {
-    public string Path;
-    public string File;
+    public string Path = fPath;
+    public string File = System.IO.Path.GetFileName(fPath);
 
     public static implicit operator bool(FileObj obj)
     {
-        return obj is object;
-    }
-
-    public FileObj(string fPath)
-    {
-        Path = fPath;
-        File = System.IO.Path.GetFileName(fPath);
+        return obj is not null;
     }
 
     public static bool operator ==(FileObj left, FileObj right)
@@ -471,15 +452,15 @@ public class Indexer
         LastVersion = lastVersion;
         Source = source;
 
-        ProvDict = provDict is null ? new() : provDict;
-        BookDict = bookDict is null ? new() : bookDict;
+        ProvDict = provDict is null ? [] : provDict;
+        BookDict = bookDict is null ? [] : bookDict;
     }
 
     public Indexer() { }
 
     public static implicit operator bool(Indexer obj)
     {
-        return obj is object;
+        return obj is not null;
     }
 
     public override string ToString()
