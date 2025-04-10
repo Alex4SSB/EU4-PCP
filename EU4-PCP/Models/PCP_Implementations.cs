@@ -1380,7 +1380,7 @@ public static class PCP_Implementations
 
         if (update)
         {
-            ModMaxProvinces = Storage.RetrieveBool(General.IterateMaxProv)
+            ModMaxProvinces = ModMaxProvinces is not null && Storage.RetrieveBool(General.IterateMaxProv)
                 ? Inc(ModMaxProvinces, 1)
                 : Inc(ModProvinceCount, 2);
 
