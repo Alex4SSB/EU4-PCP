@@ -5,6 +5,7 @@
 
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Alex4SSB/EU4-PCP_WPF_NET5?label=Last%20commit">
 
+NO LONGER IN DEVELOPMENT<br/><br/>
 An app for selecting colors for new mod provinces.
 
 <a href="https://docs.google.com/document/d/1V01OmjNTXhUqeb1eyciv6_pCOw77W-nwwPUP_CbLa2A/edit?usp=sharing">
